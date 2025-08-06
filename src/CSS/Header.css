@@ -1,0 +1,155 @@
+/* Header container styles */
+.header {
+  background-color: #ffffff;
+  color: #1f2937;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  height: 10vh;
+  position: sticky;
+}
+
+/* Wrapper for layout (logo | nav | buttons) */
+.header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+}
+
+/* Logo on the left */
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: uppercasefont;
+}
+
+.logo img {
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.logo h2 {
+  color: #2497fe;
+}
+.logo h2 span {
+  color: #14db9a;
+}
+
+/* Center nav section */
+.nav-wrapper {
+  flex: 2;
+  display: flex;
+  justify-content: center;
+}
+
+.desktop-nav {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+/* Nav links */
+.nav-link {
+  color: #1f2937;
+  text-decoration: none;
+  font-family: uppercasefont;
+  font-weight: 500;
+  font-style: normal;
+  transition: color 0.2s ease-in-out;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: #2563eb;
+}
+
+/* Right side buttons */
+.action-buttons {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.btn {
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid #d1d5db;
+  transition: all 0.2s ease;
+}
+
+.btn.signin {
+  background-color: #fff;
+  color: #1f2937;
+}
+
+.btn.signin:hover {
+  background-color: #f3f4f6;
+}
+
+.btn.get-started {
+  background-color: #111827;
+  color: #fff;
+  border: none;
+}
+
+.btn.get-started:hover {
+  background-color: #1f2937;
+}
+
+/* Mobile menu toggle */
+.menu-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: none;
+}
+
+.menu-icon {
+  width: 24px;
+  height: 24px;
+  stroke: #1f2937;
+}
+
+/* Mobile menu */
+.mobile-menu {
+  background-color: #ffffff;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .nav-wrapper,
+  .action-buttons {
+    display: none;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+}
+.user-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #1f2937;
+  transition: color 0.2s ease-in-out;
+}
+
+.user-icon:hover {
+  color: #2563eb;
+}
