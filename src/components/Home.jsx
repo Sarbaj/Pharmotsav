@@ -11,7 +11,7 @@ const Home = () => {
         <div className="container">
           <div className="div1">
             <h1>
-              Global <span style={{ color: "#2497fe" }}>B2BS Marketplace</span>
+              Global <span style={{ color: "#2497fe" }}>B2B Marketplace</span>
               <br></br>
               for Healthcare & Pharma
             </h1>
