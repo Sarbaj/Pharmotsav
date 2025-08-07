@@ -219,7 +219,9 @@
 }
 
 .inquire-button:hover {
-  background-color: #2497fe;
+  background-color: #ffffff;
+  border: 1px solid #2497fe;
+  color: #2497fe;
 }
 
 /* Responsive Styles */
