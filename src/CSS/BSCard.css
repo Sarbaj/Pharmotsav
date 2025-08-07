@@ -1,6 +1,6 @@
-
 .card_container {
   width: 50%;
+  height: 15rem;
   background-color: rgb(26, 255, 179);
   display: flex;
   align-items: center;
@@ -12,6 +12,8 @@
   background-color: #f9f9f9;
   transition: all 0.3s ease;
   border: 2px solid #ffbf00;
+  font-family: uppercasefont;
+  overflow-x: visible;
 }
 
 .card_container.reverse {
@@ -25,12 +27,12 @@
 
 .card_image {
   width: 100%;
+  object-fit: cover;
   max-width: 300px;
-  height: auto;
+  height: 15rem;
   border-radius: 8px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
 }
-
 
 .card_content_container {
   flex: 2;
@@ -56,16 +58,16 @@
   justify-content: center;
 }
 
-.buyer_guid_title{
+.buyer_guid_title {
   text-align: center;
- 
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-style: normal;
   font-size: 4rem;
   font-weight: bold;
   color: #3e8bff;
   margin: 2rem 0;
-  }
-
-
+}
 
 /* Container holding text and image side-by-side */
 .Buyer_first_section {
@@ -80,9 +82,11 @@
 .Buyer_first_content {
   flex: 1;
   padding-right: 2rem;
+  overflow-x: visible;
 }
 
 .Buyer_first_title h1 {
+  font-family: uppercasefont;
   font-size: 2.5rem;
   font-weight: 700;
   color: #1a1a1a;
@@ -93,6 +97,7 @@
   font-size: 1.1rem;
   color: #555;
   margin-bottom: 1.5rem;
+  font-family: uppercasefont;
 }
 
 .Buyer_button_start {
@@ -121,4 +126,66 @@
 .Buyer_first_image img {
   max-width: 100%;
   height: auto;
+}
+@media (max-width: 900px) {
+  .Buyer_first_section {
+    flex-direction: column;
+    padding: 2rem 1rem;
+    gap: 2rem;
+  }
+  .Buyer_first_content,
+  .Buyer_first_image {
+    padding-right: 0 !important;
+    flex: 1 1 100%;
+    width: 100%;
+  }
+  .Buyer_first_image img {
+    max-width: 90%;
+    margin: 0 auto;
+  }
+  .buyer_guid_title {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 750px) {
+  .card_container {
+    flex-direction: column !important;
+    width: 95%;
+    padding: 1.5rem 1rem;
+    gap: 1rem;
+  }
+  .card_container.reverse {
+    flex-direction: column-reverse !important;
+  }
+  .image_container,
+  .card_content_container {
+    flex: 1 1 100%;
+    width: 100%;
+    text-align: center;
+    padding: 0;
+  }
+  .card_image {
+    max-width: 85vw;
+  }
+  .card_title {
+    font-size: 1.4rem;
+  }
+  .card_content {
+    font-size: 0.95rem;
+  }
+}
+
+/* For smaller devices */
+@media (max-width: 500px) {
+  .buyer_guid_title {
+    font-size: 1.6rem;
+    margin: 1rem 0;
+  }
+  .Buyer_first_section {
+    padding: 1rem 0.5rem;
+  }
+  .card_container {
+    padding: 1rem 0.5rem;
+  }
 }
