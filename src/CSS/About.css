@@ -37,6 +37,8 @@
 
 .about-box {
   display: flex;
+  height: 15rem;
+
   align-items: center;
   gap: 30px;
 

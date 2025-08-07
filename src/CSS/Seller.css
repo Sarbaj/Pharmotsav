@@ -1,0 +1,107 @@
+.Seller_all_card {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+}
+
+.seller_guid_title {
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  font-size: 4rem;
+  font-weight: bold;
+  color: #3e8bff;
+  margin: 2rem 0;
+}
+
+.Seller_first_section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3rem 5rem;
+  background: linear-gradient(to bottom, #e6f7f9, #ffffff);
+}
+
+.Seller_first_content {
+  flex: 1;
+  padding-right: 2rem;
+  overflow-x: visible;
+}
+
+.Seller_first_title h1 {
+  font-family: uppercasefont;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 1rem;
+}
+
+.Seller_first_content p {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+  font-family: uppercasefont;
+}
+
+.Seller_button_start {
+  background-color: #028769;
+  color: #fff;
+  padding: 0.75rem 1.8rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.3s ease;
+}
+
+.Seller_button_start:hover {
+  background-color:#026d58;
+  transform: scale(1.05);
+}
+
+.Seller_first_image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.Seller_first_image img {
+  max-width: 100%;
+  height: auto;
+}
+
+@media (max-width: 900px) {
+  .Seller_first_section {
+    flex-direction: column;
+    padding: 2rem 1rem;
+    gap: 2rem;
+  }
+
+  .Seller_first_content,
+  .Seller_first_image {
+    padding-right: 0 !important;
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .Seller_first_image img {
+    max-width: 90%;
+    margin: 0 auto;
+  }
+
+  .seller_guid_title {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .seller_guid_title {
+    font-size: 1.6rem;
+    margin: 1rem 0;
+  }
+
+  .Seller_first_section {
+    padding: 1rem 0.5rem;
+  }
+}

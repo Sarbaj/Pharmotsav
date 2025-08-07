@@ -3,6 +3,7 @@ import React from "react";
 import "../CSS/About.css";
 
 function About() {
+  
   return (
     <div className="about_main">   
      <section className="about-section">

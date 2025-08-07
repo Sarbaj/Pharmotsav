@@ -1,7 +1,7 @@
 .card_container {
   width: 50%;
   height: 15rem;
-  background-color: rgb(26, 255, 179);
+  background-color: #f9f9f9;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -9,7 +9,6 @@
   margin: 2rem 0;
   padding: 2rem;
   border-radius: 10px;
-  background-color: #f9f9f9;
   transition: all 0.3s ease;
   border: 2px solid #ffbf00;
   font-family: uppercasefont;
@@ -51,103 +50,6 @@
   color: #333;
 }
 
-.Buyer_all_card {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  justify-content: center;
-}
-
-.buyer_guid_title {
-  text-align: center;
-  font-family: "Poppins", sans-serif;
-  font-weight: 600;
-  font-style: normal;
-  font-size: 4rem;
-  font-weight: bold;
-  color: #3e8bff;
-  margin: 2rem 0;
-}
-
-/* Container holding text and image side-by-side */
-.Buyer_first_section {
-  display: flex;
-  align-items: center;
-  padding: 0 3rem;
-  justify-content: space-between;
-  padding: 3rem 5rem;
-  background: linear-gradient(to bottom, #e6f7f9, #ffffff);
-}
-
-.Buyer_first_content {
-  flex: 1;
-  padding-right: 2rem;
-  overflow-x: visible;
-}
-
-.Buyer_first_title h1 {
-  font-family: uppercasefont;
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin-bottom: 1rem;
-}
-
-.Buyer_first_content p {
-  font-size: 1.1rem;
-  color: #555;
-  margin-bottom: 1.5rem;
-  font-family: uppercasefont;
-}
-
-.Buyer_button_start {
-  background-color: #028769;
-  color: #fff;
-  padding: 0.75rem 1.8rem;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: 0.3s ease;
-}
-
-.Buyer_button_start:hover {
-  background-color: #026d58;
-  transform: scale(1.05);
-}
-
-.Buyer_first_image {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.Buyer_first_image img {
-  max-width: 100%;
-  height: auto;
-}
-@media (max-width: 900px) {
-  .Buyer_first_section {
-    flex-direction: column;
-    padding: 2rem 1rem;
-    gap: 2rem;
-  }
-  .Buyer_first_content,
-  .Buyer_first_image {
-    padding-right: 0 !important;
-    flex: 1 1 100%;
-    width: 100%;
-  }
-  .Buyer_first_image img {
-    max-width: 90%;
-    margin: 0 auto;
-  }
-  .buyer_guid_title {
-    font-size: 2.5rem;
-  }
-}
-
 @media (max-width: 750px) {
   .card_container {
     flex-direction: column !important;
@@ -173,19 +75,5 @@
   }
   .card_content {
     font-size: 0.95rem;
-  }
-}
-
-/* For smaller devices */
-@media (max-width: 500px) {
-  .buyer_guid_title {
-    font-size: 1.6rem;
-    margin: 1rem 0;
-  }
-  .Buyer_first_section {
-    padding: 1rem 0.5rem;
-  }
-  .card_container {
-    padding: 1rem 0.5rem;
   }
 }
