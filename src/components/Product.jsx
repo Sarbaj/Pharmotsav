@@ -1,26 +1,20 @@
 import React from "react";
 import "../CSS/Product.css"; // Link to external CSS file
 
-const categories = {
-  "Active Pharmaceutical Ingredients": [
-    "Antibiotics",
-    "Cardiovascular",
-    "Oncology",
-  ],
-  "Chemicals & Reagents": [
-    "Organic Chemicals",
-    "Inorganic Chemicals",
-    "Lab Reagents",
-  ],
-  Excipients: ["Binders", "Fillers", "Coatings"],
-  "Raw Materials": ["Intermediates", "Starting Materials"],
-};
 
+//error ave he
+
+// const categories = ["Active Pharmaceutical Ingredients", "Excipients",    "Biological Raw materials",  "Herbal Products",  "Packaging Materials",  "Additctives and Reagents","intermadiates","solvents" ,""]
 const featuredProducts = [
   {
-    name: "Paracetamol API",
+    productname: "Paracetamol API",
     description: "High purity pharmaceutical grade",
-    price: "$45/kg",
+    minquntity: "1 kg",
+    category: "Active Pharmaceutical Ingredients",
+    image: "paracetamol.jpg",
+    price: "$12/kg"
+
+
   },
   {
     name: "Microcrystalline Cellulose",
@@ -69,7 +63,9 @@ const Product = () => {
       <div className="content">
         <aside className="sidebar">
           <h2 className="categories-title">Categories</h2>
-          {Object.entries(categories).map(([category, items]) => (
+
+          //make sure items.map is array
+          {/* {Object.entries(categories).map(([category, items]) => (
             <div key={category} className="category-group">
               <h3 className="category-name">{category}</h3>
               <ul className="category-list">
@@ -80,7 +76,7 @@ const Product = () => {
                 ))}
               </ul>
             </div>
-          ))}
+          ))} */}
         </aside>
         <main className="main-content">
           <div className="products-header">
