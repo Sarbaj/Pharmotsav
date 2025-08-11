@@ -1,3 +1,10 @@
+.superdiv {
+  position: relative;
+
+  width: 100vw;
+  min-height: 100vh;
+  background: rgba(134, 230, 136, 0.24);
+}
 .card_container {
   width: 50%;
   height: 15rem;
@@ -71,11 +78,13 @@
 
 /* Container holding text and image side-by-side */
 .Buyer_first_section {
+  position: relative;
+  height: 90vh;
   display: flex;
   align-items: center;
   padding: 0 3rem;
   justify-content: space-between;
-  padding: 3rem 5rem;
+  padding: 0rem 5rem;
   background: linear-gradient(to bottom, #e6f7f9, #ffffff);
 }
 

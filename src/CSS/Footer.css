@@ -1,11 +1,12 @@
 /* Footer base styles */
 .footer {
-  background: #5eacec48;
+  background: #ffffff48;
   /* box-shadow: 0 1px 4px rgba(0, 0, 0, 0.659); */
   padding: 2rem 2.5rem;
   font-family: Arial, sans-serif;
   position: relative;
   box-sizing: border-box;
+  border-top: 1px solid black;
 }
 
 /* Container layout */
