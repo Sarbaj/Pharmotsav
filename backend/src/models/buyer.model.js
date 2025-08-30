@@ -1,6 +1,7 @@
 import mongoose,{Schema} from "mongoose";
-import { PASSWORD_BCRYPT_ROUNDS } from "../costants";
-import { isPasswordCorrect,generateAccessToken,generateRefreshToken } from "../utils/userCommonMethods";
+import bcrypt from 'bcrypt'
+import { PASSWORD_BCRYPT_ROUNDS } from "../costants.js";
+import { isPasswordCorrect,generateAccessToken,generateRefreshToken } from "../utils/userCommonMethods.js";
 
 const buyerSchema=new Schema({
     firstName:{
@@ -18,7 +19,7 @@ const buyerSchema=new Schema({
         lowercase:true
     },
     mobileNumber:{
-        type:String,
+        type:Number,
         required:true,
         unique:true
     },
@@ -34,6 +35,9 @@ const buyerSchema=new Schema({
         type:String,
         enum:['Pharmacy','Hospital','Agent','Distributors','Manufacturer','Other'],
         default:'Pharmacy'
+    },
+    refreshToken:{
+        type:String
     }
 
 

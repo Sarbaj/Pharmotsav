@@ -1,5 +1,7 @@
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
+import {Buyer} from '../models/buyer.model.js'
+import {ApiError} from './ApiError.js'
 
 //function to cheak if password is correct or not
 const isPasswordCorrect=async function(password) {
@@ -32,8 +34,28 @@ const generateRefreshToken = async function () {
     )
 }
 
+//normalize location
+
+function normalizedLocationfunc(location){
+    const normalizedLocation={
+        address:location.address || '',
+        city:location.city || '',
+        state:location.state || '',
+        country:location.country || '',
+        pincode:location.pincode || '',
+        formattedAddress:location.formattedAddress || location.address || '',
+        coordinates:location.coordinates || {lat:null,lng:null},
+        source:location.source || 'manual'
+    }
+    return normalizedLocation
+}
+
+
+
+
 export {
     isPasswordCorrect,
     generateAccessToken,
-    generateRefreshToken
+    generateRefreshToken,
+    normalizedLocationfunc
 }

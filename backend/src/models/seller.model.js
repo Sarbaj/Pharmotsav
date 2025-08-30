@@ -1,6 +1,7 @@
 import mongoose,{Schema} from "mongoose";
-import { PASSWORD_BCRYPT_ROUNDS } from "../costants";
-import { isPasswordCorrect,generateAccessToken,generateRefreshToken } from "../utils/userCommonMethods";
+import bcrypt from 'bcrypt'
+import { PASSWORD_BCRYPT_ROUNDS } from "../costants.js";
+import { isPasswordCorrect,generateAccessToken,generateRefreshToken } from "../utils/userCommonMethods.js";
 
 const sellerSchema = new Schema({
     firstName:{
@@ -34,7 +35,64 @@ const sellerSchema = new Schema({
         type:String,
         enum:['Pharmacy','Hospital','Agent','Distributors','Manufacturer','Other'],
         default:'Pharmacy'
-    }
+    },
+    CompanyName:{
+        type:String,
+        required:true
+    },
+    location: {
+        address: { 
+            type: String     // Street / Building
+        },   
+        city: { 
+            type: String 
+        },
+        state: { 
+            type: String 
+        },
+        country: { 
+            type: String 
+        },
+        pincode: {
+             type: String 
+            },
+
+        formattedAddress: {
+             type: String    // Full address from Google Maps
+            }, 
+        coordinates: {
+            lat: {
+                 type: Number 
+                },
+            lng: {
+                 type: Number 
+                }
+        },
+
+        source: { 
+            type: String, 
+            enum: ["manual", "google"], 
+            default: "manual" 
+        }
+  },
+  licenseNumber:{
+    type:String,
+    unique:true
+  },
+  gstNumber:{
+    type:String,
+    unique:true
+    },
+
+  status:{
+    type:String,
+    enum:['pending','approved','rejected'],
+    default:'pending'
+  },
+  refreshToken:{
+    type:String
+  }
+
 },{timestamps:true})
 
 
