@@ -280,10 +280,10 @@ const getCurrentSeller=asyncHandler(async(req,res)=>{
 const getSellerAllProducts = asyncHandler(async(req,res)=>{
     const sellerId = new mongoose.Types.ObjectId( req.seller?._id)
 
-    const products = await SellerProduct.aggregate([
+    const products = await Seller.aggregate([
         {
             $match:{
-                seller:sellerId
+                _id:sellerId
             }
         },
         {
