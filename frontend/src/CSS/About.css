@@ -1,202 +1,253 @@
-.about-section {
-  background: linear-gradient(to bottom, #e8f9f1, #f0faff);
-  padding: 60px 20px;
-  color: #013237;
-  font-family: "uppercasefont";
-  animation: fadeIn 1s ease-in;
+.about_main {
+  padding: 4rem 0rem;
+  width: 100vw;
+  min-height: 100vh;
 }
-
-.about-header {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.about-header h1 {
-  font-size: 3rem;
-  color: #004d40;
-}
-
-.about-header h1 span {
-  color: #009688;
-}
-
-.about-header p {
-  font-size: 1.2rem;
-  margin-top: 10px;
-  color: #555;
-}
-
-.about-details {
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
-  max-width: 900px;
-  overflow: hidden;
-  margin: auto;
-}
-
-.about-box {
-  display: flex;
-  height: 15rem;
-
-  align-items: center;
-  gap: 30px;
-
-  background-color: white;
-  border-radius: 15px;
-  padding: 20px;
-  box-shadow: 0 6px 16px rgba(0, 128, 128, 0.15);
-  transition: transform 0.3s ease;
-}
-
-.about-box:hover {
-  transform: scale(1.01);
-}
-
-.about-box img {
-  width: 250px;
-  height: 180px;
-  border-radius: 10px;
-  object-fit: cover;
-}
-
-.about-box.reverse {
-  flex-direction: row-reverse;
-}
-
-.text-content h2 {
-  color: #00796b;
-  margin-bottom: 10px;
-}
-
-.text-content p,
-.text-content ul {
-  color: #444;
-  font-size: 1rem;
-}
-
-.text-content ul {
-  list-style: none;
-  padding: 0;
-}
-
-.text-content ul li {
-  margin-bottom: 6px;
-  position: relative;
-  padding-left: 20px;
-}
-
-.text-content ul li::before {
-  content: "✔";
-  position: absolute;
-  left: 0;
-  color: #009688;
-}
-
-.team-title {
-  text-align: center;
-  margin: 60px 0 20px;
-  font-size: 2.5rem;
-  color: #004d40;
-}
-
-.team-container {
+.page1 {
+  width: 100vw;
+  height: 100vh;
   display: flex;
   justify-content: center;
-  gap: 40px;
-  flex-wrap: wrap;
+  align-items: center;
+  flex-direction: column;
+  overflow: visible;
 }
-
-.team-card {
-  background: #ffffff;
-  padding: 20px;
-  border-radius: 15px;
+.page1 h1 {
+  width: 65vw;
+  min-height: 10rem;
+  font-size: 3rem;
   text-align: center;
-  box-shadow: 0 4px 14px rgba(0, 150, 136, 0.1);
-  width: 220px;
-  transition: all 0.3s ease-in-out;
+  display: flex;
+  justify-content: center;
+  font-family: uppercasefont;
+  font-weight: 800;
+  color: #000;
+  position: relative;
 }
-
-.team-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 8px 22px rgba(0, 150, 136, 0.2);
-}
-
-.team-card img {
-  width: 100%;
-  height: 200px;
-  border-radius: 12px;
+.page1 video {
+  width: 60rem;
+  height: 28rem;
   object-fit: cover;
-  margin-bottom: 15px;
+  position: relative;
+  top: 5rem; /* starting point */
+  border-radius: 10px;
 }
+.page2 {
+  position: relative;
 
-.team-card h3 {
-  margin: 10px 0 5px;
-  color: #00796b;
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-
-.team-card p {
-  color: #555;
+.page2 .page2container {
+  position: relative;
+  width: 80vw;
+  height: 75vh;
+  box-shadow: 0 20px 22px rgba(0, 0, 0, 0.211); /* gentle shadow */
+  overflow: visible;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-
-.join-cta {
+.page2 .page2container h1 {
+  overflow: visible;
+  font-size: 3rem;
+  font-family: uppercasefont;
+}
+.page2 .page2container .teamdiv {
+  width: 100%;
+  height: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0rem 2rem;
+}
+.teamcard {
+  width: 45%;
+  height: 80%;
+  box-shadow: 0 20px 22px rgba(0, 0, 0, 0.132);
+  border-radius: 10px;
+  font-family: uppercasefont;
+  font-size: small;
   text-align: center;
-  margin-top: 60px;
-  padding: 40px 20px;
-  background-color: #e0f2f1;
-  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  row-gap: 0.5rem;
 }
-
-.join-cta h2 {
-  color: #004d40;
-  margin-bottom: 10px;
+.teamcard h2 {
+  font-size: 1.5rem;
 }
-
-.join-cta p {
-  margin-bottom: 20px;
-  color: #333;
-}
-
-.join-cta button {
-  background: #009688;
-  color: white;
-  border: none;
-  padding: 12px 30px;
-  border-radius: 25px;
+.teamcard p {
+  width: 80%;
+  height: 70%;
   font-size: 1rem;
+  text-align: justify;
+
+  overflow: visible;
+}
+.page2 .page2container .infodiv {
+  width: 100%;
+  height: 50%;
+  background: #000000;
+  color: rgba(255, 255, 255, 0.848);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0rem 2rem;
+  font-family: uppercasefont;
+}
+.infodiv p {
+  width: 70%;
+  text-align: justify;
+  padding: 1rem;
+  overflow: visible;
+}
+.infodiv .divbtn {
+  width: 20rem;
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0rem 1rem;
+}
+.infodiv .divbtn button {
+  font-family: uppercasefont;
+  padding: 12px 30px;
+  border-radius: 8px;
+  border: none;
   cursor: pointer;
-  transition: 0.3s ease;
+}
+.coverblack {
+  background: #000000;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: -0rem;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.coverblack h1 {
+  color: white;
 }
 
-.join-cta button:hover {
-  background: #00796b;
-}
-
-/* Animation */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(60px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Responsive */
+/* For medium screens (tablets, 768px and below) */
 @media (max-width: 768px) {
-  .about-box {
-    flex-direction: column;
+  .about_main {
+    padding: 2rem 1rem;
+  }
+
+  .page1 h1 {
+    width: 90vw;
+    font-size: 2rem;
+    min-height: auto;
+    padding: 0 1rem;
+  }
+
+  .page1 video {
+    width: 90vw;
+    height: auto;
+    top: 3rem;
+  }
+
+  .page2 .page2container {
+    width: 90vw;
+    height: auto;
+    padding: 1rem 0;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
+  }
+
+  .page2 .page2container h1 {
+    font-size: 2rem;
+    padding: 0 1rem;
     text-align: center;
   }
 
-  .about-box.reverse {
+  .page2 .page2container .teamdiv {
     flex-direction: column;
+    height: auto;
+    gap: 1rem 0;
   }
 
-  .team-container {
-    flex-direction: column;
-    align-items: center;
+  .teamcard {
+    width: 100%;
+    height: auto;
+    padding: 1rem 0;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .teamcard p {
+    width: 90%;
+    font-size: 0.9rem;
+  }
+
+  .page2 .page2container .infodiv {
+    width: 100%;
+    height: auto;
+    padding: 1rem 0;
+    border-radius: 8px;
+  }
+
+  .infodiv p {
+    width: 95%;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .infodiv .divbtn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .infodiv .divbtn button {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px 20px;
+    font-size: 1rem;
+  }
+}
+
+/* For small screens (mobile phones, 480px and below) */
+@media (max-width: 480px) {
+  .page1 h1 {
+    font-size: 1.5rem;
+  }
+
+  .page1 video {
+    width: 100vw;
+    height: auto;
+    top: 2rem;
+    border-radius: 6px;
+  }
+
+  .page2 .page2container {
+    width: 95vw;
+  }
+
+  .page2 .page2container h1 {
+    font-size: 1.5rem;
+    padding: 0 0.5rem;
+  }
+
+  .teamcard h2 {
+    font-size: 1.25rem;
+  }
+
+  .teamcard p {
+    width: 80%;
+    font-size: 0.85rem;
+  }
+
+  .infodiv p {
+    width: 80%;
+    font-size: 0.95rem;
   }
 }

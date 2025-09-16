@@ -36,34 +36,37 @@ function Buyer() {
 
   return (
     <>
-    <div>
-      <div className="Buyer_first_section">
-        <div className="Buyer_first_content">
+      <div className="superdiv">
+        <div className="Buyer_first_section">
+          <div className="Buyer_first_content">
             <div className="Buyer_first_title">
               <h1>Buying Pharmaceutical and Healthcare Products Made Easy</h1>
             </div>
             <p>Browse, Inquire & Secure Your Deals Seamlessly.</p>
             <button className="Buyer_button_start">Get started</button>
-        </div>
-        <div className="Buyer_first_image">
-          <img src="https://media.istockphoto.com/id/1281242223/photo/a-white-dove-sits-on-the-first-snow.webp?a=1&b=1&s=612x612&w=0&k=20&c=6hTkF29p5av6YMGoqEXkn7Q4HAoRh29uKW1K_c1Ix0c=" alt="" />
-        </div>
-      </div>
-      <h2 className="buyer_guid_title">Buyers's Guide</h2>
-      <div className="Buyer_all_card">
-        {data.map((data, ind) => {
-          return (
-            <Card
-              key={ind}
-              image={data.imageurl}
-              title={data.title}
-              content={data.content}
-              reverse={ind % 2 !== 0}
+          </div>
+          <div className="Buyer_first_image">
+            <img
+              src="https://media.istockphoto.com/id/1281242223/photo/a-white-dove-sits-on-the-first-snow.webp?a=1&b=1&s=612x612&w=0&k=20&c=6hTkF29p5av6YMGoqEXkn7Q4HAoRh29uKW1K_c1Ix0c="
+              alt=""
             />
-          );
-        })}
+          </div>
+        </div>
+        <h2 className="buyer_guid_title">Buyers's Guide</h2>
+        <div className="Buyer_all_card">
+          {data.map((data, ind) => {
+            return (
+              <Card
+                key={ind}
+                image={data.imageurl}
+                title={data.title}
+                content={data.content}
+                reverse={ind % 2 !== 0}
+              />
+            );
+          })}
+        </div>
       </div>
-    </div>
     </>
   );
 }

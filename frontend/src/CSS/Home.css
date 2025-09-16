@@ -20,10 +20,12 @@ main {
   align-items: center;
 }
 main .container {
+  position: relative;
+  top: 2rem;
   width: 80vw;
   min-height: 60vh;
   display: flex;
-  justify-content: space-around;
+  justify-content: start;
   align-items: center;
 }
 main .container .div1 {
@@ -37,10 +39,11 @@ main .container .div1 {
   overflow-x: visible;
 }
 main .container .div1 h1 {
+  width: 80rem;
   font-family: "Poppins", sans-serif;
   font-weight: 600;
   font-style: normal;
-  font-size: 3rem;
+  font-size: 4rem;
   line-height: 3.5rem;
   overflow-x: visible;
 }
@@ -53,7 +56,7 @@ main .container .div1 .btns {
   width: 20rem;
   height: 3rem;
   display: flex;
-  gap: 0rem 1rem;
+  gap: 1rem 1rem;
 }
 main .container .div1 .btns button {
   color: white;
@@ -69,13 +72,6 @@ main .container .div1 .btns button {
 }
 main .container .div1 .btns button:hover {
   color: #14db9a;
-}
-
-main .container img {
-  width: 50%;
-  height: 28rem;
-  object-fit: contain;
-  border-radius: 5px;
 }
 
 @media (max-width: 768px) {

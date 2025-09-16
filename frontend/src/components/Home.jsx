@@ -4,6 +4,7 @@ import img1 from "../IMGS/main1.png";
 import Product from "./Product";
 
 import Footer from "./Footer";
+import About from "./About";
 const Home = () => {
   return (
     <>
@@ -25,10 +26,9 @@ const Home = () => {
               <button>Start Selling</button>
             </div>
           </div>
-
-          <img src={img1} alt="" />
         </div>
       </main>
+      <About />
       <Product />
     </>
   );

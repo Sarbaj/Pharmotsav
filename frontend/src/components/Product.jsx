@@ -1,51 +1,91 @@
-import React from "react";
+import React, { useState } from "react";
 import "../CSS/Product.css"; // Link to external CSS file
-
-
-//error ave he
-
-// const categories = ["Active Pharmaceutical Ingredients", "Excipients",    "Biological Raw materials",  "Herbal Products",  "Packaging Materials",  "Additctives and Reagents","intermadiates","solvents" ,""]
-const featuredProducts = [
-  {
-    productname: "Paracetamol API",
-    description: "High purity pharmaceutical grade",
-    minquntity: "1 kg",
-    category: "Active Pharmaceutical Ingredients",
-    image: "paracetamol.jpg",
-    price: "$12/kg"
-
-
-  },
-  {
-    name: "Microcrystalline Cellulose",
-    description: "Premium excipient for tablets",
-    price: "$12/kg",
-  },
-  {
-    name: "Ibuprofen API",
-    description: "USP/EP grade available",
-    price: "$38/kg",
-  },
-  {
-    name: "Paracetamol API",
-    description: "High purity pharmaceutical grade",
-    price: "$45/kg",
-  },
-  {
-    name: "Microcrystalline Cellulose",
-    description: "Premium excipient for tablets",
-    price: "$12/kg",
-  },
-  {
-    name: "Ibuprofen API",
-    description: "USP/EP grade available",
-    price: "$38/kg",
-  },
-];
-
 const Product = () => {
+  const [allproduct, Setallproduct] = useState([
+    {
+      name: "Paracetamol API",
+      description: "High purity pharmaceutical grade",
+      category: "Active Pharmaceutical Ingredients",
+      image: "paracetamol.jpg",
+    },
+    {
+      name: "Microcrystalline Cellulose",
+      description: "Premium excipient for tablets",
+      category: "Herbal Products",
+    },
+    {
+      name: "Ibuprofen API",
+      description: "USP/EP grade available",
+      category: "Active Pharmaceutical Ingredients",
+    },
+    {
+      name: "Paracetamol API 01",
+      description: "High purity pharmaceutical grade",
+      category: "Herbal Products",
+    },
+    {
+      name: "Microcrystalline Cellulose 01",
+      description: "Premium excipient for tablets",
+      category: "Active Pharmaceutical Ingredients",
+    },
+    ,
+    {
+      name: "Ibuprofen API 01",
+      description: "USP/EP grade available",
+      category: "Active Pharmaceutical Ingredients",
+    },
+    {
+      name: "Paracetamol API 02",
+      description: "High purity pharmaceutical grade",
+      category: "Herbal Products",
+    },
+    {
+      name: "Microcrystalline Cellulose 02",
+      description: "Premium excipient for tablets",
+      category: "Active Pharmaceutical Ingredients",
+    },
+  ]);
+  const [featuredProducts, SetfeaturedProducts] = useState(allproduct);
+
+  const categories = [
+    "Active Pharmaceutical Ingredients",
+    "Excipients",
+    "Biological Raw materials",
+    "Herbal Products",
+    "Packaging Materials",
+    "Additctives and Reagents",
+    "intermadiates",
+    "solvents",
+    "",
+  ];
+  const [searchTerm, setSearchTerm] = useState("");
+
+  console.log(featuredProducts);
+  const GenProduct = (ctg) => {
+    const Filterproduct = allproduct.filter(
+      (product) => product.category == ctg
+    );
+    console.log(Filterproduct);
+
+    SetfeaturedProducts(Filterproduct);
+  };
+  const SearcjItem = (data) => {
+    if (data == "") {
+      SetfeaturedProducts(allproduct);
+      return;
+    }
+    setSearchTerm(data);
+    console.log(data);
+
+    const filteredProducts = allproduct.filter((product) =>
+      product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    console.log("searched", filteredProducts);
+    SetfeaturedProducts(filteredProducts);
+  };
+
   return (
-    <div className="container">
+    <div className="containers">
       <h1 className="title">Find What You Need</h1>
       <p className="subtitle">
         Search from thousands of pharmaceutical products
@@ -55,50 +95,38 @@ const Product = () => {
           type="text"
           placeholder="Search for APIs, chemicals, reagents..."
           className="search-input"
+          onChange={(e) => SearcjItem(e.target.value)}
         />
-        <button className="search-button" aria-label="Search">
-          🔍
-        </button>
       </div>
       <div className="content">
-        <aside className="sidebar">
+        <div className="sidebar">
           <h2 className="categories-title">Categories</h2>
-
-          //make sure items.map is array
-          {/* {Object.entries(categories).map(([category, items]) => (
-            <div key={category} className="category-group">
-              <h3 className="category-name">{category}</h3>
+          {categories.map((category, i) => (
+            <div key={i} className="category-group">
               <ul className="category-list">
-                {items.map((item) => (
-                  <li key={item} className="category-item">
-                    {item}
-                  </li>
-                ))}
+                <li
+                  key={i}
+                  className="category-item"
+                  onClick={() => GenProduct(category)}
+                >
+                  {category}
+                </li>
               </ul>
             </div>
-          ))} */}
-        </aside>
-        <main className="main-content">
-          <div className="products-header">
-            <h2>Featured Products</h2>
-            <select className="sort-select" aria-label="Sort by relevance">
-              <option value="relevance">Sort by: Relevance</option>
-              <option value="price-asc">Price: Low to High</option>
-              <option value="price-desc">Price: High to Low</option>
-            </select>
-          </div>
-          <div className="products-grid">
-            {featuredProducts.map(({ name, description, price }) => (
+          ))}
+        </div>
+        <mains className="mains-content">
+          {featuredProducts.length > 0 &&
+            featuredProducts.map(({ name, description, category }) => (
               <div key={name} className="product-card">
                 <div className="product-image">Product Image</div>
                 <h3 className="product-name">{name}</h3>
                 <p className="product-description">{description}</p>
-                <p className="product-price">{price}</p>
+                <p className="product-price">{category}</p>
                 <button className="inquire-button">Inquire</button>
               </div>
             ))}
-          </div>
-        </main>
+        </mains>
       </div>
     </div>
   );
