@@ -11,7 +11,7 @@ import {
     getCurrentSeller,
     getSellerAllProducts
 } from '../controllers/seller.controller.js'
-import { changeBuyerForgotedPassword } from '../controllers/buyer.controller.js'
+
 
 const sellerRouter = Router()
 

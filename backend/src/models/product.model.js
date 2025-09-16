@@ -35,7 +35,7 @@ const productSchema = new Schema({
     ],
     productHash:{
         type:String,
-        required:true
+       
     }
 
 },{timestamps:true})

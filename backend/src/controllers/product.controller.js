@@ -12,6 +12,14 @@ const addProduct = asyncHandler(async(req,res)=>{
     if(!productName || !category){
         throw new ApiError(401,'productname and category are required...')
     }
+    let parsedSpecification = [];
+    if (specification) {
+      try {
+        parsedSpecification = JSON.parse(specification);
+      } catch (err) {
+        throw new ApiError(400, "Invalid specification format. Must be JSON.");
+      }
+    }
     //get productImage
     let productImageLocalPath
     if(req.files && Array.isArray(req.files.productImage) && req.files.productImage.length > 0){
@@ -34,7 +42,7 @@ const addProduct = asyncHandler(async(req,res)=>{
         productName,
         description:description || '',
         category,
-        specification,
+        specification:parsedSpecification,
         productImage:productImageCloud?.url || ''
     })
 
@@ -107,20 +115,131 @@ const updateProduct = asyncHandler(async(req,res)=>{
             .json(new ApiResponce(200,'Product updated successfully...',newProduct))
 })
 
-//get product
-const getProduct = asyncHandler(async(req,res)=>{
+//update product image
+const updateProductImage = asyncHandler(async(req,res)=>{
     const {productId} = req.body
     if(!productId){
         throw new ApiError(401,'product id not provided...')
     }
-    const product = await Product.findById(productId)
+    //get productImage
+    let productImageLocalPath
+    if(req.files && Array.isArray(req.files.productImage) && req.files.productImage.length > 0){
+         productImageLocalPath=req.files.productImage[0].path
+    }
 
+    if(!productImageLocalPath){
+        throw new ApiError(401,'local image not found')
+    }
+
+    //upload photo  to cloudinary
+    const productImageCloud=await uploadOnCloudinary(productImageLocalPath)
+
+    if(!productImageCloud){
+        throw new ApiError(500,'product image file uploading faield on cloudinary')
+    }
+
+    const sellerId = req.seller?._id
+
+    const product = await Product.findById(productId)
     if(!product){
-        throw new ApiError(500,'product not found')
+        throw new ApiError(404,'Product not found...')
+    }
+
+    if(product.sellerId.toString() !== sellerId.toString()){
+        throw new ApiError(403,'You are not authorized to delete this product')
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(productId,{
+        productImage:productImageCloud?.url || ''
+    })
+
+    if(!updatedProduct){
+        throw new ApiError(500,'cant update the product image')
     }
     return res.status(200)
-              .json(new ApiResponce(200,'Product successfully fetched..',product))
+            .json(new ApiResponce(200,'Product image updated successfully...',updatedProduct))
 })
+
+// get single product with full category & seller
+const getProduct = asyncHandler(async (req, res) => {
+  const { productId } = req.body;
+
+  if (!productId) {
+    throw new ApiError(401, "Product ID not provided...");
+  }
+
+  const product = await Product.findById(productId)
+    .populate("category") // full category
+    .populate("sellerId"); // full seller info
+
+  if (!product) {
+    throw new ApiError(404, "Product not found");
+  }
+
+  return res.status(200).json(
+    new ApiResponce(200, "Product successfully fetched..", product)
+  );
+});
+
+
+// get all products with limited fields
+const getAllProductsSimple = asyncHandler(async (req, res) => {
+  const products = await Product.find({}, "_id productName productImage")
+    .populate("sellerId", "firstName lastName location.city");
+
+  if (!products || products.length === 0) {
+    throw new ApiError(404, "No products found");
+  }
+
+  // transform data → flatten seller info
+  const formattedProducts = products.map((p) => ({
+    _id: p._id,
+    productName: p.productName,
+    productImage: p.productImage,
+    sellerName: `${p.sellerId.firstName} ${p.sellerId.lastName}`,
+    sellerCity: p.sellerId.location?.city || null
+  }));
+
+  return res.status(200).json(
+    new ApiResponce(200, "Products successfully fetched", formattedProducts)
+  );
+});
+
+//get products by category
+const getProductsByCategory = asyncHandler(async (req, res) => {
+  const { categoryId } = req.body; // take categoryId from  bobdy
+
+  const products = await Product.find(
+    { category: categoryId }, // filter by category
+    "_id productName productImage"
+  ).populate("sellerId", "firstName lastName location.city");
+
+  if (!products || products.length === 0) {
+    throw new ApiError(404, "No products found in this category");
+  }
+
+  // transform data → flatten seller info
+  const formattedProducts = products.map((p) => ({
+    _id: p._id,
+    productName: p.productName,
+    productImage: p.productImage,
+    sellerName: `${p.sellerId.firstName} ${p.sellerId.lastName}`,
+    sellerCity: p.sellerId.location?.city || null,
+  }));
+
+  return res.status(200).json(
+    new ApiResponce(200, "Products successfully fetched", formattedProducts)
+  );
+});
+
+
+
 export{
-    addProduct
+    addProduct,
+    removeProduct,
+    updateProduct,
+    updateProductImage,
+    getProduct,
+    getAllProductsSimple,
+    getProductsByCategory
 }
