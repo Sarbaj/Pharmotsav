@@ -1,0 +1,79 @@
+.card_container {
+  width: 50%;
+  height: 15rem;
+  background-color: #f9f9f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  margin: 2rem 0;
+  padding: 2rem;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  border: 2px solid #ffbf00;
+  font-family: uppercasefont;
+  overflow-x: visible;
+}
+
+.card_container.reverse {
+  flex-direction: row-reverse;
+}
+
+.image_container {
+  flex: 1;
+  text-align: center;
+}
+
+.card_image {
+  width: 100%;
+  object-fit: cover;
+  max-width: 300px;
+  height: 15rem;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.card_content_container {
+  flex: 2;
+}
+
+.card_title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #1f1f1f;
+  margin-bottom: 1rem;
+}
+
+.card_content {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #333;
+}
+
+@media (max-width: 750px) {
+  .card_container {
+    flex-direction: column !important;
+    width: 95%;
+    padding: 1.5rem 1rem;
+    gap: 1rem;
+  }
+  .card_container.reverse {
+    flex-direction: column-reverse !important;
+  }
+  .image_container,
+  .card_content_container {
+    flex: 1 1 100%;
+    width: 100%;
+    text-align: center;
+    padding: 0;
+  }
+  .card_image {
+    max-width: 85vw;
+  }
+  .card_title {
+    font-size: 1.4rem;
+  }
+  .card_content {
+    font-size: 0.95rem;
+  }
+}
