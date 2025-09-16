@@ -31,7 +31,7 @@ const buyerSchema=new Schema({
         type:String,
         required:true
     },
-    natureOfBuisness:{
+    natureOfBusiness:{
         type:String,
         enum:['Pharmacy','Hospital','Agent','Distributors','Manufacturer','Other'],
         default:'Pharmacy'

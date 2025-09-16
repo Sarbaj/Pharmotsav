@@ -1,0 +1,213 @@
+@import url("https://fonts.googleapis.com/css?family=Montserrat:400,800");
+
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-family: "Montserrat", sans-serif;
+  padding: 4rem 0;
+  background: #f6f5f7;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.login-container {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25),
+              0 10px 10px rgba(0, 0, 0, 0.22);
+  position: relative;
+  overflow: hidden;
+  width: 768px;
+  max-width: 100%;
+  min-height: 480px;
+}
+
+/* Forms */
+.login-form-container {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  transition: all 0.6s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-buyer-container {
+  left: 0;
+  width: 50%;
+  z-index: 2;
+}
+
+.login-container.right-panel-active .login-buyer-container {
+  transform: translateX(100%);
+}
+
+.login-seller-container {
+  left: 0;
+  width: 50%;
+  opacity: 0;
+  z-index: 1;
+}
+
+.login-container.right-panel-active .login-seller-container {
+  transform: translateX(100%);
+  opacity: 1;
+  z-index: 5;
+  animation: login-show 0.6s;
+}
+
+@keyframes login-show {
+  0%, 49.99% { opacity: 0; z-index: 1; }
+  50%, 100% { opacity: 1; z-index: 5; }
+}
+
+.login-form {
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 50px;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+}
+
+.login-title { 
+  font-weight: bold; 
+  margin: 0; 
+  font-size: 1.6rem; 
+  margin-bottom: 0.5rem;
+}
+.login-subtitle { 
+  font-size: 12px; 
+  margin-bottom: 1rem; 
+  color: #666;
+}
+.login-input {
+  background-color: #eee;
+  border: none;
+  padding: 12px 15px;
+  margin: 8px 0;
+  width: 100%;
+  border-radius: 5px;
+  font-family: "Montserrat", sans-serif;
+}
+.login-btn {
+  border-radius: 20px;
+  border: 1px solid #1a73e8;
+  background-color: #1a73e8;
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 12px 45px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: transform 80ms ease-in, background 0.3s ease;
+  cursor: pointer;
+  margin-top: 1rem;
+  font-family: "Montserrat", sans-serif;
+}
+.login-btn:hover { background-color: #1558b0; }
+.login-btn:active { transform: scale(0.95); }
+.login-btn.ghost { 
+  background-color: transparent; 
+  border-color: #fff; 
+  margin-top: 1rem;
+}
+
+/* Overlay */
+.login-overlay-container {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  transition: transform 0.6s ease-in-out;
+  z-index: 100;
+}
+
+.login-container.right-panel-active .login-overlay-container {
+  transform: translateX(-100%);
+}
+
+.login-overlay {
+  background: linear-gradient(to right, #1a73e8, #4285f4);
+  color: #fff;
+  position: relative;
+  left: -100%;
+  height: 100%;
+  width: 200%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.6s ease-in-out;
+}
+
+.login-container.right-panel-active .login-overlay {
+  transform: translateX(50%);
+}
+
+.login-overlay-panel {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 40px;
+  text-align: center;
+  top: 0;
+  height: 100%;
+  width: 50%;
+  transform: translateX(0);
+  transition: transform 0.6s ease-in-out;
+}
+
+.login-overlay-left { 
+  left: 0;
+  transform: translateX(-20%); 
+}
+.login-container.right-panel-active .login-overlay-left { 
+  transform: translateX(0); 
+}
+
+.login-overlay-right { 
+  right: 0;
+  transform: translateX(0); 
+}
+.login-container.right-panel-active .login-overlay-right { 
+  transform: translateX(20%); 
+}
+
+.login-overlay-title { 
+  font-weight: bold; 
+  font-size: 1.5rem; 
+  margin-bottom: 1rem;
+}
+.login-overlay-text { 
+  font-size: 0.9rem; 
+  margin: 15px 0; 
+  line-height: 1.5;
+}
+
+.login-error { 
+  color: red; 
+  font-size: 0.85rem; 
+  margin-top: 5px; 
+  min-height: 20px;
+}
+.login-register-link { 
+  margin-top: 20px; 
+  font-size: 0.85rem; 
+  color: #333;
+}
+.login-register-link a { 
+  color: #1a73e8; 
+  text-decoration: none; 
+  font-weight: bold;
+}
+

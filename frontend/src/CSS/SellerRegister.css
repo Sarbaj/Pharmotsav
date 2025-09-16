@@ -1,0 +1,222 @@
+/* Main container */
+.seller-register-container {
+  display: flex;
+  max-width: 64rem; /* ~1024px */
+  margin: 2rem auto;
+  margin-top: 6rem;
+  background: #fff;
+  border-radius: 0.8rem;
+  overflow: hidden;
+  box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+  flex-wrap: wrap; /* prevents overflow */
+}
+
+/* Left section (image + text) */
+.seller-register-left {
+  flex: 1;
+  background: #e8f5e9; /* light green tone */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  word-wrap: break-word;
+}
+
+.seller-register-left img {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 1.5rem;
+}
+
+.seller-register-left h2 {
+  font-size: 1.6rem;
+  color: #28a745;
+  margin-bottom: 0.5rem;
+}
+
+.seller-register-left p {
+  font-size: 1rem;
+  color: #444;
+  max-width: 20rem;
+  word-wrap: break-word;
+  line-height: 1.4;
+}
+
+/* Right section (form) */
+.seller-register-right {
+  flex: 1;
+  padding: 2rem;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Progress bar */
+.progress-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  position: relative;
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+
+.progress-step {
+  text-align: center;
+  flex: 1;
+  position: relative;
+  min-width: 0; /* prevent overflow */
+}
+
+.circle {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 0.15rem solid #bbb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  font-size: 1rem;
+  font-weight: bold;
+  background: #f9f9f9;
+  transition: all 0.3s ease-in-out;
+}
+
+.circle.active {
+  background: #28a745;
+  border-color: #28a745;
+  color: #fff;
+}
+
+.progress-step p {
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+  word-wrap: break-word;
+}
+
+.line {
+  height: 0.15rem;
+  background: #ccc;
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+  right: -50%;
+  z-index: -1;
+}
+
+.line.filled {
+  background: #28a745;
+}
+
+/* Form */
+.seller-register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.seller-register-form label {
+  display: flex;
+  flex-direction: column;
+  font-size: 1rem;
+  color: #333;
+  gap: 0.3rem;
+}
+
+.seller-register-form input,
+.seller-register-form select {
+  padding: 0.7rem 0.9rem;
+  border: 0.1rem solid #ccc;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  transition: border 0.2s;
+  width: 100%;
+  max-width: 100%;
+}
+
+.seller-register-form input:focus,
+.seller-register-form select:focus {
+  border-color: #28a745;
+  outline: none;
+}
+
+/* Buttons */
+.submit-btns,
+.seller-register-form button {
+  padding: 0.8rem 1.2rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: #28a745;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 0.6rem;
+  transition: background 0.3s ease;
+}
+
+.submit-btns:hover,
+.seller-register-form button:hover {
+  background: #1e7e34;
+}
+
+/* Location button */
+.seller-register-form button[type="button"] {
+  background: #007bff;
+  font-size: 0.9rem;
+}
+
+.seller-register-form button[type="button"]:hover {
+  background: #0056b3;
+}
+
+/* Error */
+.seller-register-form p {
+  font-size: 0.9rem;
+  margin: 0;
+  color: red;
+  word-wrap: break-word;
+}
+
+/* Responsive: Mobile top-to-bottom */
+@media (max-width: 48rem) {
+  .seller-register-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .seller-register-left {
+    padding: 1.5rem;
+    order: 1;
+  }
+
+  .seller-register-left img {
+    max-width: 80%;
+  }
+
+  .seller-register-right {
+    padding: 1.5rem;
+    order: 2;
+  }
+
+  /* Progress bar vertical on small screens */
+  .progress-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .progress-step {
+    text-align: left;
+    width: 100%;
+  }
+
+  .line {
+    display: none;
+  }
+}

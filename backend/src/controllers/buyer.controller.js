@@ -28,7 +28,7 @@ const genarateRefreshToken_genarateAccessToken_for_buyer=async(userid)=>{
 
 //register buyer
 const registerBuyer = asyncHandler(async (req, res) => {
-    const { firstName, lastName, email, mobileNumber, password, country, natureOfBuisness } = req.body;
+    const { firstName, lastName, email, mobileNumber, password, country, natureOfBusiness } = req.body;
 
     //cheak if field are provided
     if (!firstName || !lastName || !email || !mobileNumber || !password || !country) {
@@ -52,7 +52,7 @@ const registerBuyer = asyncHandler(async (req, res) => {
         password,
         mobileNumber,
         country,
-        natureOfBuisness
+        natureOfBusiness
     })
 
     //see if buyer is created or not

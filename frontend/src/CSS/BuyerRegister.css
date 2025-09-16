@@ -1,13 +1,11 @@
 .register-wrapper {
   display: flex;
   width: 70vw;
-  margin: 6rem auto;
+  margin: 2rem auto;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.632);
   border-radius: 8px;
   overflow: hidden;
-
-  height: 80vh; /* Container height */
-  /* fallback minimum */
+  height: 80vh;
   font-family: uppercasefont;
   font-weight: 300;
 }
@@ -25,18 +23,19 @@
 }
 
 .form-container {
+  flex: 1;
   padding: 2rem 3rem;
   height: 90%;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  overflow-y: auto; /* Prevents stretching on big errors */
 }
 
 .form-container h2 {
   color: #222;
   font-weight: 700;
   margin-bottom: 1.5rem;
-  overflow-x: visible;
 }
 
 .register-form {
@@ -46,13 +45,22 @@
   justify-content: space-between;
 }
 
+/* Error text */
+.register-form p {
+  min-height: 1.2rem;       /* Reserve space */
+  margin: 0.5rem 0 0;
+  font-size: 0.9rem;
+  color: red;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
 .form-columns {
   display: flex;
   gap: 2rem;
   flex: 1;
-
   overflow-y: auto;
-  padding-right: 10px; /* Prevent layout shift from scrollbar */
+  padding-right: 0.6rem; /* ~10px */
 }
 
 .form-column {
@@ -60,11 +68,9 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  overflow-x: visible;
 }
 
 .register-form label {
-  overflow-x: visible;
   font-weight: 600;
   color: #333;
   display: flex;
@@ -74,10 +80,10 @@
 .register-form input,
 .register-form select {
   width: 100%;
-  padding: 0.3rem 0.7rem;
-  margin-top: 0.2rem;
-  border-radius: 4px;
-  border: 1px solid #ccc;
+  padding: 0.4rem 0.8rem;
+  margin-top: 0.3rem;
+  border-radius: 0.25rem;
+  border: 0.06rem solid #ccc; /* 1px ~ 0.06rem */
   font-size: 1rem;
   box-sizing: border-box;
 }
@@ -85,35 +91,34 @@
 .submit-btns {
   font-family: uppercasefont;
   margin-top: 1rem;
-  padding: 8px;
+  padding: 0.5rem;
   font-size: 1.1rem;
   font-weight: 600;
   border: none;
-  border-radius: 6px;
+  border-radius: 0.4rem;
   background-color: #007bff;
   color: white;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-.submit-btn:hover {
+.submit-btns:hover {
   background-color: #0056b3;
 }
 
 /* Responsive */
-
-@media (max-width: 900px) {
+@media (max-width: 56.25rem) { /* 900px */
   .register-wrapper {
     flex-direction: column;
     height: auto;
   }
 
   .image-container {
-    height: 200px;
+    height: 12.5rem; /* 200px */
   }
 
   .form-container {
-    padding: 1.5rem 1.5rem 3rem 1.5rem;
+    padding: 1.5rem;
     height: auto;
   }
 

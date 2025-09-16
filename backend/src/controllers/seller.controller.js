@@ -31,7 +31,7 @@ const genarateRefreshToken_genarateAccessToken_for_seller=async(userid)=>{
 //register seller
 const registerSeller = asyncHandler(async(req,res)=>{
 
-    const {firstName,lastName,email,mobileNumber,password,country,natureOfBuisness,CompanyName,licenseNumber,gstNumber,location} = req.body
+    const {firstName,lastName,email,mobileNumber,password,country,natureOfBusiness,CompanyName,licenseNumber,gstNumber,location} = req.body
 
     if(!firstName || !lastName || !email || !mobileNumber || !country || !password || !location || !CompanyName || !licenseNumber || !gstNumber){
         throw new ApiError(401,'All fields are required')
@@ -57,7 +57,7 @@ const registerSeller = asyncHandler(async(req,res)=>{
         email,
         mobileNumber,
         country,
-        natureOfBuisness,
+        natureOfBusiness,
         password,
         CompanyName,
         licenseNumber,
