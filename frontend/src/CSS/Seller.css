@@ -18,7 +18,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 3rem 5rem;
+  padding: 10rem 5rem;
   background: linear-gradient(to bottom, #e6f7f9, #ffffff);
 }
 
@@ -55,7 +55,7 @@
 }
 
 .Seller_button_start:hover {
-  background-color:#026d58;
+  background-color: #026d58;
   transform: scale(1.05);
 }
 

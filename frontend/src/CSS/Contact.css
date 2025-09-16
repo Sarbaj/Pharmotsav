@@ -1,6 +1,13 @@
 .contact-section {
-  padding: 3rem 1rem;
-  background: #f9f9f9;
+  margin-top: 6rem;
+
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
   color: #111;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -25,6 +32,7 @@
 }
 
 .contact-content {
+  width: 70vw;
   display: flex;
   gap: 3rem;
   max-width: 900px;
