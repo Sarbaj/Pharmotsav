@@ -1,4 +1,4 @@
-import { Category } from "../models/category.model";
+import { Category } from "../models/category.model.js";
 import {asyncHandler} from '../utils/asyncHandler.js';
 import {ApiError} from '../utils/ApiError.js';
 import {ApiResponce} from '../utils/ApiResponce.js';
@@ -43,8 +43,26 @@ const removeCategoryController = asyncHandler(async(req,res,next)=>{
     return res.status(200).json(new ApiResponce(200,"category deleted!!",{}))
 })
 
+//update category
+const updateCategoryController=asyncHandler(async(req,res,next)=>{
+    const {categoryId,categoryName,description}=req.body
+    if(!categoryId) throw new ApiError(400,'Category id is required')
+
+    const category=await Category.findById(categoryId)
+    if(!category) throw new ApiError(404,'Category not found')
+    //check if category name is being updated and if it is already taken
+    if(categoryName && categoryName!==category.categoryName){
+        const existingCategory=await Category.findOne({categoryName})
+        if(existingCategory) throw new ApiError(400,'Category name is already taken')
+        category.categoryName=categoryName
+    }
+    if(description) category.description=description
+    await category.save()
+    res.status(200).json(new ApiResponce(200,'Category updated successfully',category))
+})
+
 export {
     createCategoryController,
     getAllCategoriesController,
-    removeCategoryController
+    updateCategoryController
 }

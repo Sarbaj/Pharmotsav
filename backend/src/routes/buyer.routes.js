@@ -29,7 +29,7 @@ buyerRouter.route('/update-buyer-profile').patch(verifyJwtBuyer,updateBuyerProfi
 
 //secure for members only
 buyerRouter.route('/all-buyers').get(verifyJwtMember,getAllBuyers)
-buyerRouter.route('/remove-buyer').delete(verifyJwtMember,removeBuyer)
+buyerRouter.route('/remove-buyer').post(verifyJwtMember,removeBuyer)
 buyerRouter.route('/get-buyer').post(verifyJwtMember,getBuyer)
 
 

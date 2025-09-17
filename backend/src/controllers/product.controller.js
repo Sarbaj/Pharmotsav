@@ -156,7 +156,7 @@ const updateProductImage = asyncHandler(async(req,res)=>{
         throw new ApiError(500,'cant update the product image')
     }
     return res.status(200)
-            .json(new ApiResponce(200,'Product image updated successfully...',updatedProduct))
+            .json(new ApiResponce(200,'Product image updated successfully...',{product:updatedProduct}))
 })
 
 // get single product with full category & seller

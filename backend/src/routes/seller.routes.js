@@ -33,10 +33,10 @@ sellerRouter.route('/update-seller-profile').patch(verifyJwtSeller,updateSellerP
 sellerRouter.route('/my-products').get(verifyJwtSeller,getSellerAllProducts)
 
 //secure for member
-sellerRouter.route('/approve-seller/:id').post(verifyJwtMember,approveSellerStatus)
-sellerRouter.route('/reject-seller/:id').post(verifyJwtMember,rejectSellerStatus)
+sellerRouter.route('/approve-seller').post(verifyJwtMember,approveSellerStatus)
+sellerRouter.route('/reject-seller').post(verifyJwtMember,rejectSellerStatus)
 sellerRouter.route('/get-all-sellers').get(verifyJwtMember,getAllSellers)
-sellerRouter.route('/remove-seller/:id').post(verifyJwtMember,removeSeller)
+sellerRouter.route('/remove-seller').post(verifyJwtMember,removeSeller)
 sellerRouter.route('/get-seller').post(verifyJwtMember,getSeller)
 
 

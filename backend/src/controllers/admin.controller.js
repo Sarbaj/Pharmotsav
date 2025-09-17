@@ -1,4 +1,4 @@
-import { Admin } from "../models/admin.model";
+import { Admin } from "../models/admin.model.js";
 import jwt from 'jsonwebtoken'
 import {asyncHandler} from '../utils/asyncHandler.js';
 import {ApiError} from '../utils/ApiError.js';
@@ -30,7 +30,11 @@ const memberRegisterController=asyncHandler(async(req,res,next)=>{
 
     //cheak if admin already exist with the email
     const existingAdmin=await Admin.findOne({email})
-    if(existingAdmin) throw new ApiError(400,'member already exist with this email')
+    if(existingAdmin){
+        console.log(existingAdmin);
+        throw new ApiError(400,'Admin already exist with this email')
+    }
+        
 
     //create new admin
     const newAdmin=await Admin.create({
@@ -41,7 +45,8 @@ const memberRegisterController=asyncHandler(async(req,res,next)=>{
     })
 
     //send responce
-    ApiResponce(res,201,true,'member registered successfully',{admin:newAdmin})
+    return res.status(201).json(new ApiResponce(201,'member registered successfully',{admin:newAdmin})
+    )
 
 })
 
@@ -91,7 +96,7 @@ const adminLogoutController=asyncHandler(async(req,res,next)=>{
     return res.status(200)
         .clearCookie("accessToken",options)
         .clearCookie("refreshToken",options)
-        .json(new ApiResponce(200,{},'admin LoggedOut'))
+        .json(new ApiResponce(200,'admin LoggedOut',{}))
 })
 
 //member logout controller
@@ -114,7 +119,7 @@ const memberLogoutController = asyncHandler(async(req,res,next)=>{
     return res.status(200)
         .clearCookie("accessToken",options)
         .clearCookie("refreshToken",options)
-        .json(new ApiResponce(200,{},'member LoggedOut'))
+        .json(new ApiResponce(200,'member LoggedOut',{}))
 })
 
 //remove member controller
@@ -129,16 +134,19 @@ const removeMemberController=asyncHandler(async(req,res,next)=>{
     if(!member) throw new ApiError(404,'Member not found with this id')
     if(member.role!=='member') throw new ApiError(400,'You can not remove admin')
 
-    await Admin.findByIdAndDelete(memberId)
+    const deleted = await Admin.findByIdAndDelete(memberId)
+    if(!deleted) throw new ApiError(500,'Something went wrong while removing member')
 
     //send responce
-    return res.status(200).json(new ApiResponce(200,{},'Member removed successfully'))
+    return res.status(200).json(new ApiResponce(200,'Member removed successfully',{}))
 })
 
 //get all members controller
 const getAllMembersController=asyncHandler(async(req,res,next)=>{
     const members=await Admin.find({role:'member'}).select('-password -refreshToken')
-    return res.status(200).json(new ApiResponce(200,{members},'All members fetched successfully'))
+    if(!members) {throw new ApiError(404,'No members found')}
+    return res.status(200)
+              .json(new ApiResponce(200,'All members fetched successfully',{members}))
 })
 export {
     memberRegisterController,

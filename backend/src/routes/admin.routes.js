@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { verifyJwtAdmin,verifyJwtMember } from "../middlewares/auth.middleware";
+import { verifyJwtAdmin,verifyJwtMember } from "../middlewares/auth.middleware.js";
 import { memberRegisterController,
     adminLoginController,
     adminLogoutController,
     removeMemberController,
     getAllMembersController,
-    memberLogoutController } from "../controllers/admin.controller";
+    memberLogoutController } from "../controllers/admin.controller.js";
 
 const adminRouter = Router()
 
@@ -14,8 +14,8 @@ adminRouter.route("/login-admin").post(adminLoginController)
 
 adminRouter.route("/add-member").post(verifyJwtAdmin,memberRegisterController)
 adminRouter.route("/remove-member").post(verifyJwtAdmin,removeMemberController)
-adminRouter.route("/logout-admin").post(verifyJwtAdmin,adminLogoutController)
-adminRouter.route("/logout-member").post(verifyJwtMember,memberLogoutController)
+adminRouter.route("/logout-admin").get(verifyJwtAdmin,adminLogoutController)
+adminRouter.route("/logout-member").get(verifyJwtMember,memberLogoutController)
 adminRouter.route("/get-all-members").get(verifyJwtAdmin,getAllMembersController)
 
 export default adminRouter
