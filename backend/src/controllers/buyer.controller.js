@@ -256,6 +256,44 @@ const getCurrentBuyer=asyncHandler(async(req,res)=>{
     return res.status(200).json(new ApiResponce(200,'Current buyer fetched successfully',buyer))
 })
 
+//get all buyers
+const getAllBuyers=asyncHandler(async(req,res)=>{
+
+    const buyers=await Buyer.find().select('-password -refreshToken')
+
+    return res.status(200).json(new ApiResponce(200,'All buyers fetched successfully',buyers))
+})
+
+//remove buyer
+const removeBuyer=asyncHandler(async(req,res)=>{
+
+    const buyerId=req.body
+    if(!buyerId){
+        throw new ApiError(400,'buyerId is required')
+    }
+    const buyer=await Buyer.findByIdAndDelete(buyerId)
+
+    if(!buyer){
+        throw new ApiError(404,'User not found')
+    }
+    return res.status(200).json(new ApiResponce(200,'Buyer removed successfully',{}))
+})
+
+//get buyer
+const getBuyer=asyncHandler(async(req,res)=>{
+
+    const buyerId=req.body
+    if(!buyerId){
+        throw new ApiError(400,'buyerId is required')
+    }
+    const buyer=await Buyer.findById(buyerId).select('-password -refreshToken')
+
+    if(!buyer){
+        throw new ApiError(404,'User not found')
+    }
+    return res.status(200).json(new ApiResponce(200,'Buyer fetched successfully',buyer))
+})
+
 
 export {
     registerBuyer,
@@ -265,6 +303,9 @@ export {
     changeBuyerCurrentPassword,
     changeBuyerForgotedPassword,
     updateBuyerProfile,
-    getCurrentBuyer
+    getCurrentBuyer,
+    getAllBuyers,
+    removeBuyer,
+    getBuyer
 }
     

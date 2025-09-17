@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { verifyJwtSeller } from '../middlewares/auth.middleware.js'
+import { verifyJwtSeller,verifyJwtMember } from '../middlewares/auth.middleware.js'
 import {
     registerSeller,
     loginSeller,
@@ -9,7 +9,12 @@ import {
     changeSellerForgotedPassword,
     updateSellerProfile,
     getCurrentSeller,
-    getSellerAllProducts
+    getSellerAllProducts,
+    approveSellerStatus,
+    rejectSellerStatus,
+    getAllSellers,
+    removeSeller,
+    getSeller
 } from '../controllers/seller.controller.js'
 
 
@@ -26,6 +31,13 @@ sellerRouter.route('/change-forgoted-password-seller').post(verifyJwtSeller,chan
 sellerRouter.route('/current-seller').get(verifyJwtSeller,getCurrentSeller)
 sellerRouter.route('/update-seller-profile').patch(verifyJwtSeller,updateSellerProfile)
 sellerRouter.route('/my-products').get(verifyJwtSeller,getSellerAllProducts)
+
+//secure for member
+sellerRouter.route('/approve-seller/:id').post(verifyJwtMember,approveSellerStatus)
+sellerRouter.route('/reject-seller/:id').post(verifyJwtMember,rejectSellerStatus)
+sellerRouter.route('/get-all-sellers').get(verifyJwtMember,getAllSellers)
+sellerRouter.route('/remove-seller/:id').post(verifyJwtMember,removeSeller)
+sellerRouter.route('/get-seller').post(verifyJwtMember,getSeller)
 
 
 export default sellerRouter
