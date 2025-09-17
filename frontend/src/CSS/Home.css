@@ -3,6 +3,7 @@
   font-family: "logos";
   src: url(../FONT/QldNNTtLsx4E__B0XQmWaXx0xKVu.woff2) format("woff");
 }
+
 @font-face {
   font-family: "uppercasefont";
   src: url(../FONT/JTUSjIg1_i6t8kCHKm459WlhyyTh89Y.woff2) format("woff");
@@ -14,12 +15,19 @@
 }
 main {
   width: 100vw;
+  margin-top: 5rem;
+  background-image: url(../assets/back.png);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   height: 90vh;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 main .container {
+ 
+
   position: relative;
   top: 2rem;
   width: 80vw;

@@ -41,7 +41,7 @@ const Login = () => {
         localStorage.setItem("refreshToken", data.data.refreshToken);
         localStorage.setItem("user", JSON.stringify(user));
         localStorage.setItem("role", role);
-
+        console.log("user: ",user);
         alert(`${role} login successful`);
         navigate(`/${role}-profile`);
       } else {
@@ -141,7 +141,7 @@ const Login = () => {
             <div className="login-overlay-panel login-overlay-right">
               <h1 className="login-overlay-title">Hello Seller!</h1>
               <p className="login-overlay-text">
-                Want to sell your products? <br/>Switch to Seller Login
+                Want to sell your products? Switch to Seller Login
               </p>
               <button
                 className="login-btn ghost"

@@ -168,7 +168,7 @@
 }
 
 .login-overlay-left { 
-  left: 0;
+  left: -2.4rem;
   transform: translateX(-20%); 
 }
 .login-container.right-panel-active .login-overlay-left { 
@@ -176,7 +176,7 @@
 }
 
 .login-overlay-right { 
-  right: 0;
+  right: -2.4rem;
   transform: translateX(0); 
 }
 .login-container.right-panel-active .login-overlay-right { 

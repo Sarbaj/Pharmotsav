@@ -10,6 +10,8 @@ import Footer from "./components/Footer.jsx";
 import Header from "./components/Header/Header.jsx";
 import Buyer from "./components/BuyerSeller/Buyer.jsx";
 import Seller from "./components/BuyerSeller/Seller.jsx";
+import BuyerProfile from "./components/BuyerProfile.jsx";
+import SellerProfile from "./components/SellerProfile.jsx";
 import About from "./components/About.jsx";
 const App = () => {
   return (
@@ -25,6 +27,8 @@ const App = () => {
         <Route path="about" element={<About />} />
         <Route path="/sellerregister" element={<SellerRegister />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/buyer-profile" element={<BuyerProfile />} />
+        <Route path="/seller-profile" element={<SellerProfile />} />
         {/* <Route path="products" element={<Products />}/> */}
       </Routes>
       <Footer />
