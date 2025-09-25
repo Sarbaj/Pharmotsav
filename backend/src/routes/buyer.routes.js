@@ -11,13 +11,15 @@ import {
     getCurrentBuyer,
     getAllBuyers,
     removeBuyer,
-    getBuyer
+    getBuyer,
+    getLoginAfterRefresh
 } from '../controllers/buyer.controller.js'
 
 const buyerRouter = Router()
 
 buyerRouter.route('/register-buyer').post(registerBuyer)
 buyerRouter.route('/login-buyer').post(loginBuyer)
+buyerRouter.route('/login-after-refresh').post(getLoginAfterRefresh)
 
 //secure routes
 buyerRouter.route('/logout-buyer').post(verifyJwtBuyer,logoutBuyer)

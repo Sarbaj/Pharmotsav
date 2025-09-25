@@ -175,6 +175,37 @@ const refreshAccessTokenBuyer=asyncHandler(async(req,res)=>{
    }
 })
 
+//get login after refresh
+const getLoginAfterRefresh=asyncHandler(async(req,res)=>{
+    const incomingRefreshToken=req.cookies?.refreshToken || req.body?.refreshToken
+    if(!incomingRefreshToken){
+        throw new ApiError(401,'no incoming refreshToken')
+    }
+   try {
+
+     //decode data from it
+    const data= jwt.verify(incomingRefreshToken,process.env.REFRESH_TOKEN_SECRET)
+
+     //use id to fetch the buyer
+     const buyer=await Buyer.findById(data?._id)
+ 
+     if(!buyer){
+         throw new ApiError(401,'invalid refreshToken')
+     }
+ 
+     //cheak if the buyer have same refreshToken or not
+
+     if(incomingRefreshToken !== buyer?.refreshToken){
+         throw new ApiError(401,'refreshToken dosent match')
+     }
+
+    const savebuyer= await Buyer.findById(buyer._id).select('-password -refreshToken')
+    return res.status(200).json(new ApiResponce(200,'Buyer fetched successfully',savebuyer))
+    } catch (error) {
+        throw new ApiError(500,error?.message||'Invalid refreshToken')
+    }
+})
+
 //change buyer  Password
 const changeBuyerCurrentPassword=asyncHandler(async(req,res)=>{
     const {oldPassword,newPassword}=req.body
@@ -306,6 +337,7 @@ export {
     getCurrentBuyer,
     getAllBuyers,
     removeBuyer,
-    getBuyer
+    getBuyer,
+    getLoginAfterRefresh
 }
     
