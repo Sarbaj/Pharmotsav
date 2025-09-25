@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
+import ProfileDashboard from "./ProfileDashboard";
 
 function BuyerProfile() {
   return (
-    <div>BuyerProfile</div>
-  )
+    <div>
+      <ProfileDashboard />
+    </div>
+  );
 }
 
-export default BuyerProfile
+export default BuyerProfile;

@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../CSS/Login.css";
-
+import { useDispatch, useSelector } from "react-redux";
+import { addBasicInfo } from "./REDUX/UserSlice";
+import { login } from "./REDUX/UserSlice";
 const Login = () => {
   const [role, setRole] = useState("buyer");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -41,7 +44,9 @@ const Login = () => {
         localStorage.setItem("refreshToken", data.data.refreshToken);
         localStorage.setItem("user", JSON.stringify(user));
         localStorage.setItem("role", role);
-        console.log("user: ",user);
+        console.log("user: ", user);
+        dispatch(addBasicInfo(user));
+        dispatch(login());
         alert(`${role} login successful`);
         navigate(`/${role}-profile`);
       } else {
@@ -85,8 +90,7 @@ const Login = () => {
               Login
             </button>
             <p className="login-register-link">
-              Not registered?{" "}
-              <Link to="/buyerregister">Register as Buyer</Link>
+              Not registered? <Link to="/buyerregister">Register as Buyer</Link>
             </p>
           </form>
         </div>

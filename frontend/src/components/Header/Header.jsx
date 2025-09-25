@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
 import "../../CSS/Header.css"; // Assuming you have a CSS file for styling
 import logo from "../../IMGS/logo.png";
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isLogin, setIsLogin] = useState(true); // Simulate login state
+  const [isLogin, setIsLogin] = useState(true);
+  const { UserInfo } = useSelector((state) => state.user);
   useEffect(() => {
-    setIsLogin(true); // Simulate user login for demonstration
+    //
   });
 
   return (
