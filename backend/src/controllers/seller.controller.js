@@ -5,7 +5,7 @@ import {asyncHandler} from '../utils/asyncHandler.js';
 import {ApiError} from '../utils/ApiError.js';
 import {ApiResponce} from '../utils/ApiResponce.js';
 import mongoose from 'mongoose';
-import {SellerProduct} from '../models/sellerProduct.model.js'
+import { Product } from '../models/product.model.js';
 
 
 //genarate a tokens for seller
@@ -31,7 +31,7 @@ const genarateRefreshToken_genarateAccessToken_for_seller=async(userid)=>{
 //register seller
 const registerSeller = asyncHandler(async(req,res)=>{
 
-    const {firstName,lastName,email,mobileNumber,password,country,natureOfBuisness,CompanyName,licenseNumber,gstNumber,location} = req.body
+    const {firstName,lastName,email,mobileNumber,password,country,natureOfBusiness,CompanyName,licenseNumber,gstNumber,location} = req.body
 
     if(!firstName || !lastName || !email || !mobileNumber || !country || !password || !location || !CompanyName || !licenseNumber || !gstNumber){
         throw new ApiError(401,'All fields are required')
@@ -57,7 +57,7 @@ const registerSeller = asyncHandler(async(req,res)=>{
         email,
         mobileNumber,
         country,
-        natureOfBuisness,
+        natureOfBusiness,
         password,
         CompanyName,
         licenseNumber,
@@ -311,6 +311,84 @@ const getSellerAllProducts = asyncHandler(async(req,res)=>{
 
 })
 
+//approve seller status
+const approveSellerStatus = asyncHandler(async(req,res)=>{
+    const {sellerId}=req.body
+    if(!sellerId){
+        throw new ApiError(401,'sellerId dosent provided')
+    }
+    const seller = await Seller.findById(sellerId).select('-password -refreshToken')
+
+    if(!seller){
+        throw new ApiError(401,"seller not found...")
+    }
+    const updatedSeller = await Seller.findByIdAndUpdate(sellerId,{
+        status:'approved'
+    },{
+        new:true
+    }).select('-password -refreshToken')
+    return res.status(200).json(new ApiResponce(200,'seller status changed successfully',updatedSeller))
+})
+
+//reject seller status
+const rejectSellerStatus = asyncHandler(async(req,res)=>{
+    const {sellerId}=req.body
+    if(!sellerId){
+        throw new ApiError(401,'sellerId dosent provided')
+    }
+    const seller = await Seller.findById(sellerId).select('-password -refreshToken')
+
+    if(!seller){
+        throw new ApiError(401,"seller not found...")
+    }
+    const updatedSeller = await Seller.findByIdAndUpdate(sellerId,{
+        status:'rejected'
+    },{
+        new:true
+    }).select('-password -refreshToken')
+    return res.status(200).json(new ApiResponce(200,'seller status changed successfully',updatedSeller))
+})
+
+//get all sellers (for admin)
+const getAllSellers= asyncHandler(async(req,res)=>{
+    const sellers= await Seller.find().select('-password -refreshToken').sort({createdAt:-1})
+    return res.status(200).json(new ApiResponce(200,'All sellers fetched successfully',sellers))
+})
+
+//remove-seller
+const removeSeller = asyncHandler(async(req,res,next)=>{
+    const {sellerId}=req.body
+    if(!sellerId){
+        throw new ApiError(400,"sellerId dosent provided")
+    }
+    const seller = await Seller.findById(sellerId)
+    if(!seller){
+        throw new ApiError(400,'seller not found')
+    }
+    const deleted= await Seller.findByIdAndDelete(seller._id)
+    if(!deleted){
+        throw new ApiError(500,"server error seller not deleted??")
+    }
+    //delete all products of this seller
+    await Product.deleteMany({sellerId: seller._id})
+
+
+    return res.status(200).json(new ApiResponce(200,"seller deleted!!",{}))
+})
+
+//get seller
+const getSeller = asyncHandler(async(req,res,next)=>{
+    const {sellerId}=req.body
+    if(!sellerId){
+        throw new ApiError(400,"sellerId dosent provided")
+    }
+    const seller = await Seller.findById(sellerId).select('-password -refreshToken')
+    if(!seller){
+        throw new ApiError(400,'seller not found')
+    }
+    return res.status(200).json(new ApiResponce(200,"seller fetched!!",seller))
+})
+
 export{
     registerSeller,
     loginSeller,
@@ -320,5 +398,10 @@ export{
     changeSellerForgotedPassword,
     updateSellerProfile,
     getCurrentSeller,
-    getSellerAllProducts
+    getSellerAllProducts,
+    approveSellerStatus,
+    rejectSellerStatus,
+    getAllSellers,
+    removeSeller,
+    getSeller
 }

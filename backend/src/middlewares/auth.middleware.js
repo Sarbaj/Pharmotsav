@@ -2,7 +2,9 @@ import jwt from 'jsonwebtoken'
 import { ApiError } from '../utils/ApiError.js'
 import { asyncHandler } from '../utils/asyncHandler.js'
 import { Buyer } from '../models/buyer.model.js'
+import {Admin} from '../models/admin.model.js'
 import {Seller} from '../models/seller.model.js'
+
 
 //verify buyer
 export const verifyJwtBuyer = asyncHandler( async(req,res,next)=>{
@@ -43,6 +45,54 @@ export const verifyJwtSeller = asyncHandler( async(req,res,next)=>{
             throw new ApiError(401,'wrong jwt')
         }
         req.seller=seller
+        next()
+    } catch (error) {
+        throw new ApiError(500,error?.message || 'invalid Token')
+    }
+})
+
+//verify admin
+export const verifyJwtAdmin = asyncHandler( async(req,res,next)=>{
+
+    try {
+        const Token= req.cookies?.accessToken || req.header("Authorization")?.replace('Bearer ','')
+        if(!Token){
+            throw new ApiError(401, 'unathorized request')
+        }
+        const data= await jwt.verify(Token, process.env.ACCESS_TOKEN_SECRET)
+    
+        const admin= await Admin.findById(data?._id).select('-password -refreshToken')
+        if(!admin){
+            throw new ApiError(401,'wrong jwt')
+        }
+        if(admin.role !== 'admin'){
+            throw new ApiError(403,'forbidden request')
+        }
+        req.admin=admin
+        next()
+    } catch (error) {
+        throw new ApiError(500,error?.message || 'invalid Token')
+    }
+})
+
+//verify member
+export const verifyJwtMember = asyncHandler( async(req,res,next)=>{
+
+    try {
+        const Token= req.cookies?.accessToken || req.header("Authorization")?.replace('Bearer ','')
+        if(!Token){
+            throw new ApiError(401, 'unathorized request')
+        }
+        const data= await jwt.verify(Token, process.env.ACCESS_TOKEN_SECRET)
+    
+        const admin= await Admin.findById(data?._id).select('-password -refreshToken')
+        if(!admin){
+            throw new ApiError(401,'wrong jwt')
+        }
+        if(admin.role !== 'member'){
+            throw new ApiError(403,'forbidden request')
+        }
+        req.member=admin
         next()
     } catch (error) {
         throw new ApiError(500,error?.message || 'invalid Token')

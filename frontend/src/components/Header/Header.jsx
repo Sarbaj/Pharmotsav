@@ -49,7 +49,7 @@ export default function Header() {
         <div className="action-buttons">
           {isLogin ? (
             <NavLink
-              to="/register"
+              to="/login"
               style={{
                 textDecoration: "none",
                 color: "#ffffffff",

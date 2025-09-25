@@ -5,7 +5,6 @@ import {ApiResponce} from '../utils/ApiResponce.js';
 import {uploadOnCloudinary} from '../utils/cloudinary.js'
 
 
-
 //add product
 const addProduct = asyncHandler(async(req,res)=>{
     const {productName,description,category,specification} = req.body
@@ -49,7 +48,7 @@ const addProduct = asyncHandler(async(req,res)=>{
     if(!product){
         throw new ApiError(500,'something went wrong while creating product')
     }
-
+    
     return res.status(200)
               .json(new ApiResponce(200,'product created successfully',product))
 
@@ -157,7 +156,7 @@ const updateProductImage = asyncHandler(async(req,res)=>{
         throw new ApiError(500,'cant update the product image')
     }
     return res.status(200)
-            .json(new ApiResponce(200,'Product image updated successfully...',updatedProduct))
+            .json(new ApiResponce(200,'Product image updated successfully...',{product:updatedProduct}))
 })
 
 // get single product with full category & seller

@@ -2,10 +2,18 @@ import React from "react";
 import "../CSS/Home.css";
 import img1 from "../IMGS/main1.png";
 import Product from "./Product";
-
+import { useNavigate } from "react-router-dom";
 import Footer from "./Footer";
+
 import About from "./About";
 const Home = () => {
+  const navigate = useNavigate();
+  const handleSelling = ()=>{
+    navigate("/sellerregister");
+  } 
+  const handleBuying = ()=>{
+    navigate("/buyerregister");
+  }
   return (
     <>
       <main>
@@ -22,8 +30,8 @@ const Home = () => {
               confidence.
             </p>
             <div className="btns">
-              <button>Start Buying</button>
-              <button>Start Selling</button>
+              <button onClick={handleBuying}>Start Buying</button>
+              <button onClick={handleSelling}>Start Selling</button>
             </div>
           </div>
         </div>

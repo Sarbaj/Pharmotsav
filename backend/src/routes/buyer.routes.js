@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { verifyJwtBuyer } from '../middlewares/auth.middleware.js'
+import { verifyJwtBuyer,verifyJwtMember } from '../middlewares/auth.middleware.js'
 import {
     registerBuyer,
     loginBuyer,
@@ -8,7 +8,10 @@ import {
     changeBuyerCurrentPassword,
     changeBuyerForgotedPassword,
     updateBuyerProfile,
-    getCurrentBuyer
+    getCurrentBuyer,
+    getAllBuyers,
+    removeBuyer,
+    getBuyer
 } from '../controllers/buyer.controller.js'
 
 const buyerRouter = Router()
@@ -23,6 +26,11 @@ buyerRouter.route('/change-password-buyer').post(verifyJwtBuyer,changeBuyerCurre
 buyerRouter.route('/change-forgoted-password-buyer').post(verifyJwtBuyer,changeBuyerForgotedPassword)
 buyerRouter.route('/current-buyer').get(verifyJwtBuyer,getCurrentBuyer)
 buyerRouter.route('/update-buyer-profile').patch(verifyJwtBuyer,updateBuyerProfile)
+
+//secure for members only
+buyerRouter.route('/all-buyers').get(verifyJwtMember,getAllBuyers)
+buyerRouter.route('/remove-buyer').post(verifyJwtMember,removeBuyer)
+buyerRouter.route('/get-buyer').post(verifyJwtMember,getBuyer)
 
 
 export default buyerRouter
