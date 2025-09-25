@@ -10,13 +10,14 @@ import Header from "./components/Header/Header.jsx";
 import Buyer from "./components/BuyerSeller/Buyer.jsx";
 import Seller from "./components/BuyerSeller/Seller.jsx";
 import About from "./components/About.jsx";
+import ProfileDashboard from "./components/ProfileDashboard.jsx";
 const App = () => {
   return (
     <>
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/register" element={<BuyerRegister />} />
+        <Route path="/register" element={<Buyer />} />
         <Route path="/products" element={<Product />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/buyer" element={<Buyer />} />
