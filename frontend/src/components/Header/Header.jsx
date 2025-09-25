@@ -1,16 +1,81 @@
 import { useState, useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import "../../CSS/Header.css"; // Assuming you have a CSS file for styling
+import { addBasicInfo } from "../REDUX/UserSlice";
+import { useDispatch } from "react-redux";
 import logo from "../../IMGS/logo.png";
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(false);
+  const [role, setRole] = useState("");
   const { UserInfo } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   useEffect(() => {
-    //
-  });
+    if (UserInfo && UserInfo.length > 0) {
+      setIsLogin(true);
+      console.log(UserInfo[0].messege);
+    }
+  }, [UserInfo]);
+  useEffect(() => {
+    const verifyToken = async () => {
+      try {
+        const token = localStorage.getItem("refreshToken");
+        console.log(token);
 
+        if (!token) return;
+
+        const response = await fetch(
+          "http://localhost:4000/api/v1/buyers/login-after-refresh",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ refreshToken: token }),
+          }
+        );
+
+        if (!response.ok) return;
+
+        const data = await response.json();
+        dispatch(addBasicInfo(data));
+        console.log(data);
+        if (data.message == "Buyer fetched successfully") {
+          setRole("1");
+        }
+      } catch (error) {
+        console.log("error verifying token");
+      }
+    };
+    verifyToken();
+  }, []);
+  const HadleLogout = () => {
+    alert("Logout");
+    localStorage.removeItem("refreshToken");
+    navigate(`/login`);
+    setIsLogin(false);
+    // const verifyToken = async () => {
+    //   try {
+    //     const response = await fetch(
+    //       "http://localhost:4000/api/v1/buyers/logout-buyer",
+    //       {
+    //         method: "POST",
+    //         headers: { "Content-Type": "application/json" },
+    //         body: JSON.stringify({}),
+    //       }
+    //     );
+
+    //     if (!response.ok) return;
+
+    //     const data = await response.json();
+
+    //     console.log(data);
+    //   } catch (error) {
+    //     console.log("error Logout");
+    //   }
+    // };
+    // verifyToken();
+  };
   return (
     <header className="header">
       <div className="header-container">
@@ -49,7 +114,7 @@ export default function Header() {
 
         {/* Action Buttons (Right Side) */}
         <div className="action-buttons">
-          {isLogin ? (
+          {!isLogin ? (
             <NavLink
               to="/login"
               style={{
@@ -72,22 +137,38 @@ export default function Header() {
               role="img"
               aria-label="User Icon"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor" // to inherit text color or CSS color
-                width="28"
-                height="28"
-                aria-hidden="true"
+              <Link to={role == 1 ? "buyer-profile" : "seller-profile"}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor" // to inherit text color or CSS color
+                  width="28"
+                  height="28"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.75 7.5a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 19.5a8.25 8.25 0 0115 0"
+                  />
+                </svg>
+              </Link>
+              <button
+                style={{
+                  textDecoration: "none",
+                  color: "#ffffffff",
+                  padding: "10px 19px",
+                  background: "black",
+                  fontFamily: "uppercasefont",
+                  borderRadius: "5px",
+                  fontSize: "small",
+                }}
+                onClick={() => HadleLogout()}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15.75 7.5a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 19.5a8.25 8.25 0 0115 0"
-                />
-              </svg>
+                Logout
+              </button>
             </div>
           )}
         </div>

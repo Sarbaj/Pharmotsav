@@ -1,17 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../CSS/ProfileDashboard.css";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 export default function ProfileDashboard() {
   const [isCompanyModalOpen, setIsCompanyModalOpen] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [userdata, setUSerdata] = useState(null);
 
+  const { UserInfo } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    if (UserInfo && UserInfo.length > 0) {
+      setUSerdata(UserInfo);
+      console.log(UserInfo[0].data);
+    }
+  }, [UserInfo]);
   return (
     <div className="profile-dashboard">
       <section className="pd-header">
         <div className="pd-user">
           <div className="pd-user-meta">
-            <h2 className="pd-name">Virpal Sinh</h2>
-            <p className="pd-role">Acme Pharma Pvt. Ltd.</p>
+            <h2 className="pd-name">
+              {userdata != null
+                ? userdata[0].data.firstName + " " + userdata[0].data.lastName
+                : "Loading"}
+            </h2>
+            <p className="pd-role">
+              {userdata != null ? UserInfo[0].data.natureOfBuisness : "Loading"}
+            </p>
             <div className="pd-tags">
               <span className="pd-tag">Verified</span>
               <span className="pd-tag pd-tag--accent">Business</span>
@@ -19,7 +36,10 @@ export default function ProfileDashboard() {
           </div>
           <div className="pd-avatar-section">
             <div className="pd-avatar" aria-hidden="true">
-              JD
+              {userdata != null
+                ? userdata[0].data.firstName.charAt(0) +
+                  userdata[0].data.lastName.charAt(0)
+                : ""}
             </div>
             <div className="pd-avatar-actions">
               <label className="pd-btn pd-btn--ghost" htmlFor="avatarUpload">
@@ -43,48 +63,32 @@ export default function ProfileDashboard() {
 
         <div className="pd-section">
           <h4 className="pd-section-title">Company Details</h4>
-          <div className="pd-detail">
-            <label>Company Name</label>
-            <p>Acme Pharma Pvt. Ltd.</p>
-          </div>
+
           <div className="pd-row">
             <div className="pd-detail">
-              <label>Company Email</label>
-              <p>contact@acmepharma.com</p>
+              <label>Buyer Email</label>
+              <p>{userdata != null ? userdata[0].data.email : "Loading"}</p>
             </div>
             <div className="pd-detail">
               <label>Phone</label>
-              <p>+91 98765 43210</p>
+              <p>
+                {userdata != null ? userdata[0].data.mobileNumber : "Loading"}
+              </p>
             </div>
           </div>
           <div className="pd-detail">
-            <label>Address</label>
-            <p>221B Baker Street</p>
+            <label>Nature Of Buisness</label>
+            <p>
+              {userdata != null ? userdata[0].data.natureOfBuisness : "Loading"}
+            </p>
           </div>
           <div className="pd-row">
             <div className="pd-detail">
-              <label>City</label>
-              <p>Mumbai</p>
-            </div>
-            <div className="pd-detail">
-              <label>State</label>
-              <p>Maharashtra</p>
+              <label>Country</label>
+              <p>{userdata != null ? userdata[0].data.country : "Loading"}</p>
             </div>
           </div>
-          <div className="pd-row">
-            <div className="pd-detail">
-              <label>Postal Code</label>
-              <p>400001</p>
-            </div>
-            <div className="pd-detail">
-              <label>GST Number</label>
-              <p>27ABCDE1234F1Z5</p>
-            </div>
-          </div>
-          <div className="pd-detail">
-            <label>Website</label>
-            <p>https://acmepharma.com</p>
-          </div>
+
           <div className="pd-actions-inline pd-actions-wrap">
             <button
               className="pd-btn pd-btn--primary"

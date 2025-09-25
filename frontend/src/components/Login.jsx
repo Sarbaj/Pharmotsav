@@ -50,6 +50,7 @@ const Login = () => {
         alert(`${role} login successful`);
         navigate(`/${role}-profile`);
       } else {
+        console.log(data.message);
         setError(data.message || "Login failed");
       }
     } catch (err) {
