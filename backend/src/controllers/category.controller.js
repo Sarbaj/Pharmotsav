@@ -26,22 +26,7 @@ const getAllCategoriesController=asyncHandler(async(req,res,next)=>{
     res.status(200).json(new ApiResponce(200,'All categories fetched successfully',categories))
 })
 
-//remove category
-const removeCategoryController = asyncHandler(async(req,res,next)=>{
-    const {categoryId}=req.body
-    if(!categoryId){
-        throw new ApiError(400,"categoryId dosent provided")
-    }
-    const category = await Category.findById(categoryId)
-    if(!category){
-        throw new ApiError(400,'category not found')
-    }
-    const deleted= await Category.findByIdAndDelete(category._id)
-    if(!deleted){
-        throw new ApiError(500,"server error category not deleted??")
-    }
-    return res.status(200).json(new ApiResponce(200,"category deleted!!",{}))
-})
+
 
 //update category
 const updateCategoryController=asyncHandler(async(req,res,next)=>{
