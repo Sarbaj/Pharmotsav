@@ -13,12 +13,14 @@ import Seller from "./components/BuyerSeller/Seller.jsx";
 import BuyerProfile from "./components/BuyerProfile.jsx";
 import SellerProfile from "./components/SellerProfile.jsx";
 import About from "./components/About.jsx";
+import ProfileDashboard from "./components/ProfileDashboard.jsx";
 const App = () => {
   return (
     <>
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/register" element={<BuyerRegister />} />
         <Route path="/buyerregister" element={<BuyerRegister />} />
         <Route path="/products" element={<Product />} />
         <Route path="/contact" element={<Contact />} />
