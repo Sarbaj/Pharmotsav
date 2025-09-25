@@ -13,8 +13,9 @@ import Seller from "./components/BuyerSeller/Seller.jsx";
 import BuyerProfile from "./components/BuyerProfile.jsx";
 import SellerProfile from "./components/SellerProfile.jsx";
 import About from "./components/About.jsx";
-import ProfileDashboard from "./components/ProfileDashboard.jsx";
 const App = () => {
+
+
   return (
     <>
       <Header />

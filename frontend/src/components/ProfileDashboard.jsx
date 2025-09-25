@@ -10,37 +10,38 @@ export default function ProfileDashboard() {
 
   const { UserInfo } = useSelector((state) => state.user);
 
-  useEffect(() => {
-    if (UserInfo && UserInfo.length > 0) {
-      setUSerdata(UserInfo);
-      console.log(UserInfo[0].data);
-    }
-  }, [UserInfo]);
+ useEffect(() => {
+  if (UserInfo) {
+    setUSerdata(UserInfo);
+    console.log("UserInfo:", UserInfo); // Check structure in devtools
+  }
+}, [UserInfo]);
+
   return (
     <div className="profile-dashboard">
       <section className="pd-header">
         <div className="pd-user">
           <div className="pd-user-meta">
             <h2 className="pd-name">
-              {userdata != null
-                ? userdata[0].data.firstName + " " + userdata[0].data.lastName
-                : "Loading"}
+              {userdata ? userdata.firstName : "Loading"}
+
             </h2>
-            <p className="pd-role">
-              {userdata != null ? UserInfo[0].data.natureOfBuisness : "Loading"}
+           <p className="pd-role">
+             {userdata ? userdata.natureOfBuisness : "Loading"}
             </p>
+
             <div className="pd-tags">
               <span className="pd-tag">Verified</span>
               <span className="pd-tag pd-tag--accent">Business</span>
             </div>
           </div>
           <div className="pd-avatar-section">
-            <div className="pd-avatar" aria-hidden="true">
-              {userdata != null
-                ? userdata[0].data.firstName.charAt(0) +
-                  userdata[0].data.lastName.charAt(0)
-                : ""}
-            </div>
+                  <div className="pd-avatar" aria-hidden="true">
+                    {userdata?.firstName && userdata?.lastName
+                      ? userdata.firstName.charAt(0) + userdata.lastName.charAt(0)
+                      : ""}
+          </div>
+
             <div className="pd-avatar-actions">
               <label className="pd-btn pd-btn--ghost" htmlFor="avatarUpload">
                 Upload
@@ -67,25 +68,26 @@ export default function ProfileDashboard() {
           <div className="pd-row">
             <div className="pd-detail">
               <label>Buyer Email</label>
-              <p>{userdata != null ? userdata[0].data.email : "Loading"}</p>
+              <p>{userdata?.email || "Loading"}</p>
+
             </div>
             <div className="pd-detail">
               <label>Phone</label>
               <p>
-                {userdata != null ? userdata[0].data.mobileNumber : "Loading"}
+                {userdata?.mobileNumber || "Loading"}
               </p>
             </div>
           </div>
           <div className="pd-detail">
             <label>Nature Of Buisness</label>
             <p>
-              {userdata != null ? userdata[0].data.natureOfBuisness : "Loading"}
+              {userdata?.natureOfBuisness || "Loading"}
             </p>
           </div>
           <div className="pd-row">
             <div className="pd-detail">
               <label>Country</label>
-              <p>{userdata != null ? userdata[0].data.country : "Loading"}</p>
+              <p>{userdata?.country || "Loading"}</p>
             </div>
           </div>
 

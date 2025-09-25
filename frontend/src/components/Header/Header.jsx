@@ -38,7 +38,7 @@ export default function Header() {
         if (!response.ok) return;
 
         const data = await response.json();
-        dispatch(addBasicInfo(data));
+        dispatch(addBasicInfo(data.data));
         console.log(data);
         if (data.message == "Buyer fetched successfully") {
           setRole("1");

@@ -3,7 +3,7 @@ const userSlice = createSlice({
   name: "user",
   initialState: {
     isLogin: false,
-    UserInfo: [],
+    UserInfo: null
   },
   reducers: {
     // Auth
@@ -15,7 +15,7 @@ const userSlice = createSlice({
     },
 
     addBasicInfo: (state, action) => {
-      state.UserInfo = [action.payload]; // storing user as array with 1 object
+      state.UserInfo = action.payload; // storing user as array with 1 object
     },
   },
 });

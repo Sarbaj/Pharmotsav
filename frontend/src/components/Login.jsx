@@ -45,7 +45,8 @@ const Login = () => {
         localStorage.setItem("user", JSON.stringify(user));
         localStorage.setItem("role", role);
         console.log("user: ", user);
-        dispatch(addBasicInfo(user));
+        dispatch(addBasicInfo(user)); // user must be a flat object
+
         dispatch(login());
         alert(`${role} login successful`);
         navigate(`/${role}-profile`);
