@@ -1,70 +1,153 @@
-import React, { useState } from "react";
-import Card from "../Content_Cards/Card";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import "../../CSS/Buyer.css";
 
 function Buyer() {
-  const [data, setdata] = useState([
+  const navigate = useNavigate();
+
+  const handleSignUp = () => {
+    navigate("/buyerregister");
+  };
+
+  const buyerSteps = [
     {
-      imageurl:
-        "https://images.unsplash.com/photo-1483935254693-d16df5d8741a?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fHdoaXRlc2FoZGV8ZW58MHx8MHx8fDA%3D",
-      title: "Card 1 Rendered",
-      content:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi sapiente deleniti illo optio qui eaque, tenetur consectetur, dicta cumque accusamus quis dolore possimus eum vel.",
+      step: "01",
+      title: "Registration",
+      description:
+        "Begin your journey by registering on our platform. Sign up to unlock a world of possibilities tailored to your needs and preferences.",
+      icon: "📝",
     },
     {
-      imageurl:
-        "https://images.unsplash.com/photo-1528750164675-112c3f715fd9?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fHdoaXRlc2FoZGV8ZW58MHx8MHx8fDA%3D",
-      title: "Card 2 Rendered",
-      content:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi sapiente deleniti illo optio qui eaque, tenetur consectetur, dicta cumque accusamus quis dolore possimus eum vel.",
+      step: "02",
+      title: "Product Exploration",
+      description:
+        "Browse through our extensive collection of products to discover the perfect match for your requirements. Explore various categories or utilize our search feature for efficient navigation.",
+      icon: "🔍",
     },
     {
-      imageurl:
-        "https://images.unsplash.com/photo-1508784411316-02b8cd4d3a3a?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fHdoaXRlc2FoZGV8ZW58MHx8MHx8fDA%3D",
-      title: "Card 3 Rendered",
-      content:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi sapiente deleniti illo optio qui eaque, tenetur consectetur, dicta cumque accusamus quis dolore possimus eum vel.",
+      step: "03",
+      title: "Query Submission",
+      description:
+        "Found a product you're interested in? Simply complete our customized query form, designed specifically to connect you with the most compatible seller. Your inquiry will promptly reach the sellers offering that particular product.",
+      icon: "📋",
     },
     {
-      imageurl:
-        "https://images.unsplash.com/photo-1584928585752-4a7e7acbb08b?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8d2hpdGVzYWhkZXxlbnwwfHwwfHx8MA%3D%3D",
-      title: "Card 4 Rendered",
-      content:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi sapiente deleniti illo optio qui eaque, tenetur consectetur, dicta cumque accusamus quis dolore possimus eum vel.",
+      step: "04",
+      title: "Communication with Sellers",
+      description:
+        "Once you've reviewed the quotations, communicate directly with the sellers to discuss further details, negotiate terms, or seek clarification.",
+      icon: "💬",
     },
-  ]);
+  ];
 
   return (
     <>
-      <div className="superdiv">
-        <div className="Buyer_first_section">
-          <div className="Buyer_first_content">
-            <div className="Buyer_first_title">
-              <h1>Buying Pharmaceutical and Healthcare Products Made Easy</h1>
+      <div className="buyer-container">
+        {/* Hero Section */}
+        <div className="buyer-hero">
+          <div className="hero-content">
+            <div className="hero-text">
+              <h1>What can buyers do on SaathSource?</h1>
+              <p className="hero-subtitle">
+                Get in touch with verified sellers. Save valuable time, money
+                and effort discovering verified suppliers on SaathSource. Share
+                your requirements with us and we'll connect you with the best
+                supplier directly.
+              </p>
+              <button className="cta-button" onClick={handleSignUp}>
+                Sign up for Free
+              </button>
             </div>
-            <p>Browse, Inquire & Secure Your Deals Seamlessly.</p>
-            <button className="Buyer_button_start">Get started</button>
-          </div>
-          <div className="Buyer_first_image">
-            <img
-              src="https://media.istockphoto.com/id/1281242223/photo/a-white-dove-sits-on-the-first-snow.webp?a=1&b=1&s=612x612&w=0&k=20&c=6hTkF29p5av6YMGoqEXkn7Q4HAoRh29uKW1K_c1Ix0c="
-              alt=""
-            />
+            <div className="hero-image">
+              <div className="hero-graphic">
+                <div className="floating-card card-1">
+                  <span className="card-icon">💊</span>
+                  <span className="card-text">Pharmaceuticals</span>
+                </div>
+                <div className="floating-card card-2">
+                  <span className="card-icon">🏥</span>
+                  <span className="card-text">Healthcare</span>
+                </div>
+                <div className="floating-card card-3">
+                  <span className="card-icon">🔬</span>
+                  <span className="card-text">Medical Equipment</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <h2 className="buyer_guid_title">Buyers's Guide</h2>
-        <div className="Buyer_all_card">
-          {data.map((data, ind) => {
-            return (
-              <Card
-                key={ind}
-                image={data.imageurl}
-                title={data.title}
-                content={data.content}
-                reverse={ind % 2 !== 0}
-              />
-            );
-          })}
+
+        {/* Process Section */}
+        <div className="process-section">
+          <div className="section-header">
+            <h2>Search, Discover and Procure Products</h2>
+            <p className="section-subtitle">
+              Connecting with the Right Suppliers
+            </p>
+          </div>
+
+          <div className="steps-container">
+            {buyerSteps.map((step, index) => (
+              <div
+                key={index}
+                className={`step-card ${
+                  index % 2 === 0 ? "left-align" : "right-align"
+                }`}
+              >
+                <div className="step-number">{step.step}</div>
+                <div className="step-content">
+                  <div className="step-icon">{step.icon}</div>
+                  <h3>{step.title}</h3>
+                  <p>{step.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Benefits Section */}
+        <div className="benefits-section">
+          <div className="benefits-content">
+            <h2>Why Choose SaathSource?</h2>
+            <div className="benefits-grid">
+              <div className="benefit-item">
+                <div className="benefit-icon">⚡</div>
+                <h3>Save Time</h3>
+                <p>
+                  Quick access to verified suppliers without endless searching
+                </p>
+              </div>
+              <div className="benefit-item">
+                <div className="benefit-icon">💰</div>
+                <h3>Save Money</h3>
+                <p>Multiple sellers available, More quantity - more discount</p>
+              </div>
+              <div className="benefit-item">
+                <div className="benefit-icon">🛡️</div>
+                <h3>Verified Suppliers</h3>
+                <p>All sellers are verified and trusted partners</p>
+              </div>
+              <div className="benefit-item">
+                <div className="benefit-icon">📞</div>
+                <h3>Direct Communication</h3>
+                <p>Connect directly with suppliers for better negotiations</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* CTA Section */}
+        <div className="cta-section">
+          <div className="cta-content">
+            <h2>Ready to Start Your Journey?</h2>
+            <p>
+              Join thousands of buyers who trust SaathSource for their
+              pharmaceutical and healthcare needs.
+            </p>
+            <button className="cta-button large" onClick={handleSignUp}>
+              Get Started Today
+            </button>
+          </div>
         </div>
       </div>
     </>

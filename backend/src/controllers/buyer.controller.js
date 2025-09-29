@@ -387,6 +387,25 @@ const getBuyer = asyncHandler(async (req, res) => {
     .json(new ApiResponce(200, "Buyer fetched successfully", buyer));
 });
 
+//get buyer details by ID (for public access)
+const getBuyerDetails = asyncHandler(async (req, res, next) => {
+  const { buyerId } = req.params;
+  if (!buyerId) {
+    throw new ApiError(400, "Buyer ID is required");
+  }
+
+  const buyer = await Buyer.findById(buyerId).select("-password -refreshToken");
+  if (!buyer) {
+    throw new ApiError(404, "Buyer not found");
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponce(200, "Buyer details fetched successfully", { buyer })
+    );
+});
+
 export {
   registerBuyer,
   loginBuyer,
@@ -400,4 +419,5 @@ export {
   removeBuyer,
   getBuyer,
   getLoginAfterRefresh,
+  getBuyerDetails,
 };

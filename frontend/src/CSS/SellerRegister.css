@@ -183,11 +183,44 @@
   word-wrap: break-word;
 }
 
-/* Responsive: Mobile top-to-bottom */
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .seller-register-container {
+    max-width: 90%;
+    margin: 1.5rem auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .seller-register-container {
+    max-width: 95%;
+    margin: 1rem auto;
+    margin-top: 4rem;
+  }
+
+  .seller-register-left {
+    padding: 1.5rem;
+  }
+
+  .seller-register-right {
+    padding: 1.5rem;
+  }
+
+  .seller-register-left h2 {
+    font-size: 1.5rem;
+  }
+
+  .seller-register-left p {
+    font-size: 0.9rem;
+  }
+}
+
+/* Mobile top-to-bottom */
 @media (max-width: 48rem) {
   .seller-register-container {
     flex-direction: column;
     align-items: stretch;
+    margin-top: 3rem;
   }
 
   .seller-register-left {
@@ -218,5 +251,193 @@
 
   .line {
     display: none;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .form-group input,
+  .form-group select {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  .btn {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .seller-register-container {
+    margin: 0.5rem;
+    margin-top: 2rem;
+    border-radius: 15px;
+    animation: slideInUp 0.8s ease-out;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  }
+
+  .seller-register-left {
+    padding: 1rem;
+    animation: slideInLeft 0.8s ease-out 0.2s both;
+  }
+
+  .seller-register-right {
+    padding: 1rem;
+    animation: slideInRight 0.8s ease-out 0.4s both;
+  }
+
+  .seller-register-left h2 {
+    font-size: 1.3rem;
+    animation: slideInDown 0.6s ease-out 0.6s both;
+  }
+
+  .seller-register-left p {
+    font-size: 0.8rem;
+    animation: fadeIn 0.6s ease-out 0.8s both;
+  }
+
+  .seller-register-left img {
+    animation: bounceIn 1s ease-out 0.5s both;
+  }
+
+  .form-group input,
+  .form-group select {
+    padding: 10px 12px;
+    font-size: 13px;
+    border-radius: 8px;
+    border: 2px solid #e1e5e9;
+    transition: all 0.3s ease;
+    animation: slideInUp 0.6s ease-out 0.8s both;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .btn {
+    padding: 10px 18px;
+    font-size: 13px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    transition: all 0.3s ease;
+    animation: slideInUp 0.6s ease-out 1s both;
+  }
+
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+  }
+
+  .btn:active {
+    transform: translateY(0);
+  }
+
+  .progress-step {
+    font-size: 0.8rem;
+    animation: fadeIn 0.6s ease-out 0.7s both;
+  }
+
+  .progress-container {
+    animation: slideInUp 0.6s ease-out 0.5s both;
+  }
+
+  /* Mobile-specific animations */
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes bounceIn {
+    0% {
+      opacity: 0;
+      transform: scale(0.3);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+    70% {
+      transform: scale(0.9);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+@media (max-width: 360px) {
+  .seller-register-container {
+    margin: 0.25rem;
+    margin-top: 1rem;
+  }
+
+  .seller-register-left,
+  .seller-register-right {
+    padding: 0.8rem;
+  }
+
+  .form-group input,
+  .form-group select {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+
+  .btn {
+    padding: 6px 12px;
+    font-size: 12px;
   }
 }

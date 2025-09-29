@@ -6,16 +6,323 @@ import { useNavigate } from "react-router-dom";
 export default function ProfileDashboard() {
   const [isCompanyModalOpen, setIsCompanyModalOpen] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [isProductModalOpen, setIsProductModalOpen] = useState(false);
+  const [isSellerModalOpen, setIsSellerModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedSeller, setSelectedSeller] = useState(null);
+  const [sellerLoading, setSellerLoading] = useState(false);
   const [userdata, setUSerdata] = useState(null);
+  const [inquiries, setInquiries] = useState([]);
+  const [inquiriesLoading, setInquiriesLoading] = useState(true);
 
   const { UserInfo } = useSelector((state) => state.user);
 
- useEffect(() => {
-  if (UserInfo) {
-    setUSerdata(UserInfo);
-    console.log("UserInfo:", UserInfo); // Check structure in devtools
-  }
-}, [UserInfo]);
+  // Fetch inquiries from API
+  const fetchInquiries = async () => {
+    try {
+      setInquiriesLoading(true);
+      const buyerId =
+        UserInfo?._id || JSON.parse(localStorage.getItem("user"))?._id;
+
+      if (!buyerId) {
+        console.log("No buyer ID found");
+        setInquiries([]);
+        return;
+      }
+
+      const response = await fetch(
+        `http://localhost:4000/api/v1/inquiries/buyer`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success && data.data.inquiries) {
+        // Transform API data to match frontend format
+        const transformedInquiries = [];
+        data.data.inquiries.forEach((inquiry) => {
+          inquiry.products.forEach((product) => {
+            // Create specifications object from the specification array
+            const specifications = {};
+            if (
+              product.productId.specification &&
+              Array.isArray(product.productId.specification)
+            ) {
+              product.productId.specification.forEach((spec) => {
+                specifications[spec.key] = spec.value;
+              });
+            }
+
+            transformedInquiries.push({
+              id: product.productId._id,
+              productName: product.productName,
+              sellerName:
+                inquiry.sellerId.firstName + " " + inquiry.sellerId.lastName,
+              sellerId: inquiry.sellerId._id,
+              date: new Date(product.inquiryDate).toISOString().split("T")[0],
+              status: product.status,
+              productDetails: {
+                description:
+                  product.productId.description ||
+                  `High-quality ${product.productName} from verified supplier`,
+                category:
+                  product.productId.category?.name ||
+                  product.productId.category?.categoryName ||
+                  product.productId.category?.title ||
+                  "General",
+                purity:
+                  specifications.Purity ||
+                  specifications.purity ||
+                  "Contact for details",
+                molecularWeight:
+                  specifications["Molecular Weight"] ||
+                  specifications.molecularWeight ||
+                  "Contact for details",
+                casNumber:
+                  specifications["CAS Number"] ||
+                  specifications.casNumber ||
+                  "Contact for details",
+                storage:
+                  specifications.Storage ||
+                  specifications.storage ||
+                  "Contact for details",
+                packaging:
+                  specifications.Packaging ||
+                  specifications.packaging ||
+                  "Contact for details",
+                price:
+                  specifications.Price ||
+                  specifications.price ||
+                  "Contact for Price",
+                minimumOrder:
+                  specifications["Minimum Order"] ||
+                  specifications.minimumOrder ||
+                  "Contact Supplier",
+                availability:
+                  specifications.Availability ||
+                  specifications.availability ||
+                  "Contact for availability",
+                particleSize:
+                  specifications["Particle Size"] ||
+                  specifications.particleSize,
+                // Add any other specifications that might be present
+                ...specifications,
+              },
+            });
+          });
+        });
+
+        setInquiries(transformedInquiries);
+      } else {
+        setInquiries([]);
+      }
+    } catch (error) {
+      console.error("Error fetching inquiries:", error);
+      setInquiries([]);
+    } finally {
+      setInquiriesLoading(false);
+    }
+  };
+
+  // Sample inquiry data - fallback
+  const [sampleInquiries] = useState([
+    {
+      id: 1,
+      productName: "Paracetamol API",
+      sellerName: "MediChem Labs",
+      date: "2025-09-26",
+      productDetails: {
+        description:
+          "High purity Paracetamol Active Pharmaceutical Ingredient (API) suitable for pharmaceutical manufacturing. Meets USP/BP/EP standards.",
+        category: "Analgesic API",
+        purity: "99.5% min",
+        molecularWeight: "151.16 g/mol",
+        casNumber: "103-90-2",
+        storage: "Store in cool, dry place",
+        packaging: "25kg HDPE drums",
+        price: "₹2,500/kg",
+        minimumOrder: "100kg",
+        availability: "In Stock",
+      },
+    },
+    {
+      id: 2,
+      productName: "Microcrystalline Cellulose",
+      sellerName: "MediChem Labs",
+      date: "2024-01-12",
+      productDetails: {
+        description:
+          "Premium grade Microcrystalline Cellulose (MCC) for tablet and capsule manufacturing. Excellent compressibility and flow properties.",
+        category: "Excipient",
+        purity: "99.0% min",
+        particleSize: "50-100 μm",
+        casNumber: "9004-34-6",
+        storage: "Store in dry conditions",
+        packaging: "25kg multi-wall bags",
+        price: "₹1,200/kg",
+        minimumOrder: "50kg",
+        availability: "In Stock",
+      },
+    },
+    {
+      id: 3,
+      productName: "Ibuprofen API",
+      sellerName: "MediChem Labs",
+      date: "2024-01-10",
+      productDetails: {
+        description:
+          "Pharmaceutical grade Ibuprofen API for anti-inflammatory drug manufacturing. Complies with international pharmacopoeia standards.",
+        category: "NSAID API",
+        purity: "99.8% min",
+        molecularWeight: "206.29 g/mol",
+        casNumber: "15687-27-1",
+        storage: "Store below 25°C",
+        packaging: "25kg HDPE drums",
+        price: "₹3,200/kg",
+        minimumOrder: "25kg",
+        availability: "In Stock",
+      },
+    },
+    {
+      id: 4,
+      productName: "Titanium Dioxide",
+      sellerName: "PharmaExcipients",
+      date: "2024-01-08",
+      productDetails: {
+        description:
+          "Food and pharmaceutical grade Titanium Dioxide for use as a white pigment in pharmaceutical formulations and food products.",
+        category: "Pigment/Excipient",
+        purity: "99.0% min",
+        particleSize: "0.2-0.3 μm",
+        casNumber: "13463-67-7",
+        storage: "Store in dry place",
+        packaging: "25kg HDPE bags",
+        price: "₹800/kg",
+        minimumOrder: "200kg",
+        availability: "In Stock",
+      },
+    },
+    {
+      id: 5,
+      productName: "Sodium Starch Glycolate",
+      sellerName: "PharmaExcipients",
+      date: "2024-01-05",
+      productDetails: {
+        description:
+          "Super disintegrant for pharmaceutical tablets. Provides excellent disintegration properties and improved drug release.",
+        category: "Super Disintegrant",
+        purity: "99.0% min",
+        particleSize: "100-200 μm",
+        casNumber: "9063-38-1",
+        storage: "Store in cool, dry place",
+        packaging: "25kg multi-wall bags",
+        price: "₹1,500/kg",
+        minimumOrder: "50kg",
+        availability: "In Stock",
+      },
+    },
+  ]);
+
+  const [dateFilter, setDateFilter] = useState("all");
+  const [filteredInquiries, setFilteredInquiries] = useState(inquiries);
+
+  // Group inquiries by seller
+  const groupInquiriesBySeller = (inquiriesList) => {
+    const grouped = {};
+    inquiriesList.forEach((inquiry) => {
+      if (!grouped[inquiry.sellerName]) {
+        grouped[inquiry.sellerName] = [];
+      }
+      grouped[inquiry.sellerName].push(inquiry);
+    });
+    return grouped;
+  };
+
+  // Handle product click to open popup
+  const handleProductClick = (inquiry) => {
+    setSelectedProduct(inquiry);
+    setIsProductModalOpen(true);
+  };
+
+  // Close product popup
+  const closeProductModal = () => {
+    setIsProductModalOpen(false);
+    setSelectedProduct(null);
+  };
+
+  // Handle seller details click
+  const handleSellerClick = async (sellerInquiries) => {
+    try {
+      setSellerLoading(true);
+      // Get seller ID from the first inquiry (all inquiries in this group have same seller)
+      const sellerId = sellerInquiries[0].sellerId;
+
+      const response = await fetch(
+        `http://localhost:4000/api/v1/sellers/details/${sellerId}`
+      );
+
+      const data = await response.json();
+
+      if (data.success && data.data.seller) {
+        setSelectedSeller(data.data.seller);
+        setIsSellerModalOpen(true);
+      } else {
+        alert("Failed to fetch seller details");
+      }
+    } catch (error) {
+      console.error("Error fetching seller details:", error);
+      alert("Failed to fetch seller details");
+    } finally {
+      setSellerLoading(false);
+    }
+  };
+
+  // Close seller popup
+  const closeSellerModal = () => {
+    setIsSellerModalOpen(false);
+    setSelectedSeller(null);
+  };
+
+  // Filter inquiries based on date
+  useEffect(() => {
+    if (dateFilter === "all") {
+      setFilteredInquiries(inquiries);
+    } else {
+      const filtered = inquiries.filter((inquiry) => {
+        const inquiryDate = new Date(inquiry.date);
+        const now = new Date();
+
+        switch (dateFilter) {
+          case "today":
+            return inquiryDate.toDateString() === now.toDateString();
+          case "week":
+            const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            return inquiryDate >= weekAgo;
+          case "month":
+            const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+            return inquiryDate >= monthAgo;
+          default:
+            return true;
+        }
+      });
+      setFilteredInquiries(filtered);
+    }
+  }, [dateFilter, inquiries]);
+
+  useEffect(() => {
+    if (UserInfo) {
+      setUSerdata(UserInfo);
+      console.log("UserInfo:", UserInfo); // Check structure in devtools
+    }
+  }, [UserInfo]);
+
+  useEffect(() => {
+    fetchInquiries();
+  }, [UserInfo]);
 
   return (
     <div className="profile-dashboard">
@@ -24,10 +331,9 @@ export default function ProfileDashboard() {
           <div className="pd-user-meta">
             <h2 className="pd-name">
               {userdata ? userdata.firstName : "Loading"}
-
             </h2>
-           <p className="pd-role">
-             {userdata ? userdata.natureOfBuisness : "Loading"}
+            <p className="pd-role">
+              {userdata ? userdata.natureOfBuisness : "Loading"}
             </p>
 
             <div className="pd-tags">
@@ -35,87 +341,109 @@ export default function ProfileDashboard() {
               <span className="pd-tag pd-tag--accent">Business</span>
             </div>
           </div>
-          <div className="pd-avatar-section">
-                  <div className="pd-avatar" aria-hidden="true">
-                    {userdata?.firstName && userdata?.lastName
-                      ? userdata.firstName.charAt(0) + userdata.lastName.charAt(0)
-                      : ""}
-          </div>
 
-            <div className="pd-avatar-actions">
-              <label className="pd-btn pd-btn--ghost" htmlFor="avatarUpload">
-                Upload
-              </label>
-              <input
-                id="avatarUpload"
-                type="file"
-                accept="image/*"
-                className="pd-file"
-              />
-              <button className="pd-btn">Remove</button>
+          {/* Company Details Section */}
+          <div className="pd-company-details">
+            <h3 className="pd-company-title">Company Information</h3>
+            <div className="pd-company-grid">
+              <div className="pd-company-item">
+                <label>Company Name</label>
+                <p>{userdata?.companyName || "Not provided"}</p>
+              </div>
+              <div className="pd-company-item">
+                <label>Email</label>
+                <p>{userdata?.email || "Not provided"}</p>
+              </div>
+              <div className="pd-company-item">
+                <label>Phone</label>
+                <p>{userdata?.mobileNumber || "Not provided"}</p>
+              </div>
+              <div className="pd-company-item">
+                <label>Country</label>
+                <p>{userdata?.country || "Not provided"}</p>
+              </div>
+              <div className="pd-company-item">
+                <label>Address</label>
+                <p>{userdata?.address || "Not provided"}</p>
+              </div>
+              <div className="pd-company-item">
+                <label>Website</label>
+                <p>{userdata?.website || "Not provided"}</p>
+              </div>
             </div>
           </div>
         </div>
         <div className="pd-actions">{/* actions reserved */}</div>
       </section>
 
-      <div className="pd-card pd-card--single">
-        <h3 className="pd-card-title">Account</h3>
-
-        <div className="pd-section">
-          <h4 className="pd-section-title">Company Details</h4>
-
-          <div className="pd-row">
-            <div className="pd-detail">
-              <label>Buyer Email</label>
-              <p>{userdata?.email || "Loading"}</p>
-
+      {/* Inquiries Section - Integrated into first card */}
+      <div className="pd-inquiries-section">
+        <div className="pd-inquiries-header">
+          <h3 className="pd-inquiries-title">Recent Inquiries</h3>
+          <div className="pd-inquiries-controls">
+            <div className="pd-total-inquiries">
+              <span className="pd-total-number">
+                {filteredInquiries.length}
+              </span>
+              <span className="pd-total-label">Inquiries</span>
             </div>
-            <div className="pd-detail">
-              <label>Phone</label>
-              <p>
-                {userdata?.mobileNumber || "Loading"}
-              </p>
+            <div className="pd-date-filter">
+              <label htmlFor="dateFilter">Filter by:</label>
+              <select
+                id="dateFilter"
+                value={dateFilter}
+                onChange={(e) => setDateFilter(e.target.value)}
+                className="pd-filter-select"
+              >
+                <option value="all">All Time</option>
+                <option value="today">Today</option>
+                <option value="week">This Week</option>
+                <option value="month">This Month</option>
+              </select>
             </div>
-          </div>
-          <div className="pd-detail">
-            <label>Nature Of Buisness</label>
-            <p>
-              {userdata?.natureOfBuisness || "Loading"}
-            </p>
-          </div>
-          <div className="pd-row">
-            <div className="pd-detail">
-              <label>Country</label>
-              <p>{userdata?.country || "Loading"}</p>
-            </div>
-          </div>
-
-          <div className="pd-actions-inline pd-actions-wrap">
-            <button
-              className="pd-btn pd-btn--primary"
-              onClick={() => setIsCompanyModalOpen(true)}
-            >
-              Update Company Details
-            </button>
           </div>
         </div>
 
-        <div className="pd-divider" />
-
-        <div className="pd-section">
-          <h4 className="pd-section-title">Security</h4>
-          <p className="pd-muted">
-            For account security, use a strong password.
-          </p>
-          <div className="pd-actions-inline pd-actions-wrap">
-            <button
-              className="pd-btn pd-btn--primary"
-              onClick={() => setIsPasswordModalOpen(true)}
-            >
-              Change Password
-            </button>
-          </div>
+        <div className="pd-inquiries-list">
+          {Object.entries(groupInquiriesBySeller(filteredInquiries)).map(
+            ([sellerName, sellerInquiries]) => (
+              <div key={sellerName} className="pd-seller-group">
+                <div className="pd-seller-header">
+                  <div className="pd-seller-info">
+                    <h4 className="pd-seller-name">{sellerName}</h4>
+                    <span className="pd-product-count">
+                      {sellerInquiries.length} product(s)
+                    </span>
+                  </div>
+                  <button
+                    className="pd-seller-details-btn"
+                    onClick={() => handleSellerClick(sellerInquiries)}
+                    disabled={sellerLoading}
+                  >
+                    {sellerLoading ? "Loading..." : "See Seller Details"}
+                  </button>
+                </div>
+                <div className="pd-seller-products">
+                  {sellerInquiries.map((inquiry) => (
+                    <div
+                      key={inquiry.id}
+                      className="pd-inquiry-item pd-clickable"
+                      onClick={() => handleProductClick(inquiry)}
+                    >
+                      <div className="pd-inquiry-content">
+                        <h5 className="pd-product-name">
+                          {inquiry.productName}
+                        </h5>
+                        <p className="pd-inquiry-date">
+                          {new Date(inquiry.date).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )
+          )}
         </div>
       </div>
 
@@ -241,6 +569,254 @@ export default function ProfileDashboard() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Product Info Modal */}
+      {isProductModalOpen && selectedProduct && (
+        <div
+          className="pd-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="productModalTitle"
+        >
+          <div className="pd-dialog pd-product-dialog">
+            <div className="pd-dialog-head">
+              <h3 id="productModalTitle">Product Information</h3>
+              <button
+                className="pd-icon-btn"
+                onClick={closeProductModal}
+                aria-label="Close"
+              >
+                ×
+              </button>
+            </div>
+            <div className="pd-product-content">
+              <div className="pd-product-header">
+                <h4 className="pd-product-title">
+                  {selectedProduct.productName}
+                </h4>
+                <p className="pd-product-seller">
+                  Seller: {selectedProduct.sellerName}
+                </p>
+                <p className="pd-product-date">
+                  Inquiry Date:{" "}
+                  {new Date(selectedProduct.date).toLocaleDateString()}
+                </p>
+              </div>
+
+              <div className="pd-product-details">
+                <div className="pd-detail-section">
+                  <h5 className="pd-section-title">Description</h5>
+                  <p className="pd-description">
+                    {selectedProduct.productDetails.description}
+                  </p>
+                </div>
+
+                <div className="pd-detail-grid">
+                  <div className="pd-detail-item">
+                    <label>Category</label>
+                    <p>{selectedProduct.productDetails.category}</p>
+                  </div>
+                  {Object.entries(selectedProduct.productDetails)
+                    .filter(
+                      ([key, value]) =>
+                        key !== "description" &&
+                        key !== "category" &&
+                        value &&
+                        value !== "Contact for details" &&
+                        value !== "Contact for Price" &&
+                        value !== "Contact Supplier" &&
+                        value !== "Contact for availability"
+                    )
+                    .slice(0, 4)
+                    .map(([key, value]) => (
+                      <div key={key} className="pd-detail-item">
+                        <label>
+                          {key.charAt(0).toUpperCase() +
+                            key.slice(1).replace(/([A-Z])/g, " $1")}
+                        </label>
+                        <p>{value}</p>
+                      </div>
+                    ))}
+                </div>
+
+                {Object.entries(selectedProduct.productDetails).filter(
+                  ([key, value]) =>
+                    key !== "description" &&
+                    key !== "category" &&
+                    value &&
+                    value !== "Contact for details" &&
+                    value !== "Contact for Price" &&
+                    value !== "Contact Supplier" &&
+                    value !== "Contact for availability"
+                ).length > 4 && (
+                  <div className="pd-detail-grid">
+                    {Object.entries(selectedProduct.productDetails)
+                      .filter(
+                        ([key, value]) =>
+                          key !== "description" &&
+                          key !== "category" &&
+                          value &&
+                          value !== "Contact for details" &&
+                          value !== "Contact for Price" &&
+                          value !== "Contact Supplier" &&
+                          value !== "Contact for availability"
+                      )
+                      .slice(4)
+                      .map(([key, value]) => (
+                        <div key={key} className="pd-detail-item">
+                          <label>
+                            {key.charAt(0).toUpperCase() +
+                              key.slice(1).replace(/([A-Z])/g, " $1")}
+                          </label>
+                          <p>{value}</p>
+                        </div>
+                      ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="pd-product-actions">
+                <button
+                  className="pd-btn pd-btn--primary"
+                  onClick={() => {
+                    // Add to cart or contact seller functionality
+                    console.log(
+                      "Contact seller for:",
+                      selectedProduct.productName
+                    );
+                  }}
+                >
+                  Contact Seller
+                </button>
+                <button
+                  className="pd-btn pd-btn--ghost"
+                  onClick={closeProductModal}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Seller Details Modal */}
+      {isSellerModalOpen && selectedSeller && (
+        <div
+          className="pd-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="sellerModalTitle"
+        >
+          <div className="pd-dialog pd-seller-dialog">
+            <div className="pd-dialog-head">
+              <h3 id="sellerModalTitle">Seller Information</h3>
+              <button
+                className="pd-icon-btn"
+                onClick={closeSellerModal}
+                aria-label="Close"
+              >
+                ×
+              </button>
+            </div>
+            <div className="pd-seller-content">
+              <div className="pd-seller-header-info">
+                <h4 className="pd-seller-name-title">
+                  {selectedSeller.firstName} {selectedSeller.lastName}
+                </h4>
+                {selectedSeller.CompanyName && (
+                  <p className="pd-company-name">
+                    {selectedSeller.CompanyName}
+                  </p>
+                )}
+              </div>
+
+              <div className="pd-seller-details">
+                <div className="pd-detail-row">
+                  <span className="pd-detail-label">Email:</span>
+                  <span className="pd-detail-value">
+                    {selectedSeller.email}
+                  </span>
+                </div>
+                <div className="pd-detail-row">
+                  <span className="pd-detail-label">Phone:</span>
+                  <span className="pd-detail-value">
+                    {selectedSeller.mobileNumber}
+                  </span>
+                </div>
+                <div className="pd-detail-row">
+                  <span className="pd-detail-label">Address:</span>
+                  <span className="pd-detail-value">
+                    {selectedSeller.location?.address || "Address not provided"}
+                  </span>
+                </div>
+                <div className="pd-detail-row">
+                  <span className="pd-detail-label">City:</span>
+                  <span className="pd-detail-value">
+                    {selectedSeller.location?.city || "City not provided"}
+                  </span>
+                </div>
+                <div className="pd-detail-row">
+                  <span className="pd-detail-label">State:</span>
+                  <span className="pd-detail-value">
+                    {selectedSeller.location?.state || "State not provided"}
+                  </span>
+                </div>
+                <div className="pd-detail-row">
+                  <span className="pd-detail-label">Pincode:</span>
+                  <span className="pd-detail-value">
+                    {selectedSeller.location?.pincode || "Pincode not provided"}
+                  </span>
+                </div>
+                {selectedSeller.natureOfBusiness && (
+                  <div className="pd-detail-row">
+                    <span className="pd-detail-label">Business:</span>
+                    <span className="pd-detail-value">
+                      {selectedSeller.natureOfBusiness}
+                    </span>
+                  </div>
+                )}
+                {selectedSeller.licenseNumber && (
+                  <div className="pd-detail-row">
+                    <span className="pd-detail-label">License:</span>
+                    <span className="pd-detail-value">
+                      {selectedSeller.licenseNumber}
+                    </span>
+                  </div>
+                )}
+                {selectedSeller.gstNumber && (
+                  <div className="pd-detail-row">
+                    <span className="pd-detail-label">GST:</span>
+                    <span className="pd-detail-value">
+                      {selectedSeller.gstNumber}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <div className="pd-seller-actions">
+                <button
+                  className="pd-btn pd-btn--primary"
+                  onClick={() => {
+                    // You can add contact functionality here
+                    alert(
+                      `Contacting ${selectedSeller.firstName} ${selectedSeller.lastName}`
+                    );
+                  }}
+                >
+                  Contact Seller
+                </button>
+                <button
+                  className="pd-btn pd-btn--ghost"
+                  onClick={closeSellerModal}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

@@ -48,7 +48,7 @@ const Login = () => {
         dispatch(addBasicInfo(user)); // user must be a flat object
 
         dispatch(login());
-        alert(`${role} login successful`);
+
         navigate(`/${role}-profile`);
       } else {
         console.log(data.message);

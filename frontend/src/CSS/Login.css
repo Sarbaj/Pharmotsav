@@ -15,8 +15,7 @@
 .login-container {
   background-color: #fff;
   border-radius: 10px;
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25),
-              0 10px 10px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   position: relative;
   overflow: hidden;
   width: 768px;
@@ -60,8 +59,16 @@
 }
 
 @keyframes login-show {
-  0%, 49.99% { opacity: 0; z-index: 1; }
-  50%, 100% { opacity: 1; z-index: 5; }
+  0%,
+  49.99% {
+    opacity: 0;
+    z-index: 1;
+  }
+  50%,
+  100% {
+    opacity: 1;
+    z-index: 5;
+  }
 }
 
 .login-form {
@@ -76,15 +83,15 @@
   text-align: center;
 }
 
-.login-title { 
-  font-weight: bold; 
-  margin: 0; 
-  font-size: 1.6rem; 
+.login-title {
+  font-weight: bold;
+  margin: 0;
+  font-size: 1.6rem;
   margin-bottom: 0.5rem;
 }
-.login-subtitle { 
-  font-size: 12px; 
-  margin-bottom: 1rem; 
+.login-subtitle {
+  font-size: 12px;
+  margin-bottom: 1rem;
   color: #666;
 }
 .login-input {
@@ -111,11 +118,15 @@
   margin-top: 1rem;
   font-family: "Montserrat", sans-serif;
 }
-.login-btn:hover { background-color: #1558b0; }
-.login-btn:active { transform: scale(0.95); }
-.login-btn.ghost { 
-  background-color: transparent; 
-  border-color: #fff; 
+.login-btn:hover {
+  background-color: #1558b0;
+}
+.login-btn:active {
+  transform: scale(0.95);
+}
+.login-btn.ghost {
+  background-color: transparent;
+  border-color: #fff;
   margin-top: 1rem;
 }
 
@@ -167,47 +178,203 @@
   transition: transform 0.6s ease-in-out;
 }
 
-.login-overlay-left { 
+.login-overlay-left {
   left: -2.4rem;
-  transform: translateX(-20%); 
+  transform: translateX(-20%);
 }
-.login-container.right-panel-active .login-overlay-left { 
-  transform: translateX(0); 
+.login-container.right-panel-active .login-overlay-left {
+  transform: translateX(0);
 }
 
-.login-overlay-right { 
+.login-overlay-right {
   right: -2.4rem;
-  transform: translateX(0); 
+  transform: translateX(0);
 }
-.login-container.right-panel-active .login-overlay-right { 
-  transform: translateX(20%); 
+.login-container.right-panel-active .login-overlay-right {
+  transform: translateX(20%);
 }
 
-.login-overlay-title { 
-  font-weight: bold; 
-  font-size: 1.5rem; 
+.login-overlay-title {
+  font-weight: bold;
+  font-size: 1.5rem;
   margin-bottom: 1rem;
 }
-.login-overlay-text { 
-  font-size: 0.9rem; 
-  margin: 15px 0; 
+.login-overlay-text {
+  font-size: 0.9rem;
+  margin: 15px 0;
   line-height: 1.5;
 }
 
-.login-error { 
-  color: red; 
-  font-size: 0.85rem; 
-  margin-top: 5px; 
+.login-error {
+  color: red;
+  font-size: 0.85rem;
+  margin-top: 5px;
   min-height: 20px;
 }
-.login-register-link { 
-  margin-top: 20px; 
-  font-size: 0.85rem; 
+.login-register-link {
+  margin-top: 20px;
+  font-size: 0.85rem;
   color: #333;
 }
-.login-register-link a { 
-  color: #1a73e8; 
-  text-decoration: none; 
+.login-register-link a {
+  color: #1a73e8;
+  text-decoration: none;
   font-weight: bold;
 }
 
+/* Responsive Design */
+@media (max-width: 768px) {
+  .login-container {
+    width: 90%;
+    max-width: 90%;
+    min-height: 400px;
+    animation: slideInUp 0.6s ease-out;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+  }
+
+  .login-buyer-container,
+  .login-seller-container {
+    width: 100%;
+    padding: 2rem 1.5rem;
+    animation: fadeIn 0.8s ease-out 0.2s both;
+  }
+
+  .login-form {
+    width: 100%;
+  }
+
+  .login-form input {
+    padding: 12px 15px;
+    font-size: 14px;
+    border-radius: 6px;
+    border: 2px solid #e1e5e9;
+    transition: all 0.3s ease;
+  }
+
+  .login-form input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    transform: translateY(-1px);
+  }
+
+  .login-form button {
+    padding: 12px 20px;
+    font-size: 14px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+  }
+
+  .login-form button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+  }
+}
+
+@media (max-width: 480px) {
+  .login-page {
+    padding: 2rem 0;
+    animation: fadeInUp 0.6s ease-out;
+  }
+
+  .login-container {
+    width: 95%;
+    max-width: 95%;
+    min-height: 350px;
+    animation: slideInUp 0.8s ease-out;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    border-radius: 15px;
+  }
+
+  .login-buyer-container,
+  .login-seller-container {
+    padding: 1.5rem 1rem;
+    animation: fadeIn 0.8s ease-out 0.2s both;
+  }
+
+  .login-form h1 {
+    font-size: 1.5rem;
+    animation: slideInDown 0.6s ease-out 0.4s both;
+  }
+
+  .login-form input {
+    padding: 12px 15px;
+    font-size: 13px;
+    border-radius: 8px;
+    border: 2px solid #e1e5e9;
+    transition: all 0.3s ease;
+    animation: slideInUp 0.6s ease-out 0.6s both;
+  }
+
+  .login-form input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .login-form button {
+    padding: 12px 20px;
+    font-size: 13px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    transition: all 0.3s ease;
+    animation: slideInUp 0.6s ease-out 0.8s both;
+  }
+
+  .login-form button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+  }
+
+  .login-form button:active {
+    transform: translateY(0);
+  }
+
+  .login-register-link {
+    font-size: 0.8rem;
+    animation: fadeIn 0.6s ease-out 1s both;
+  }
+
+  /* Mobile-specific animations */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
