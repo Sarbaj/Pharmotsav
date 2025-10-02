@@ -1,111 +1,111 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../CSS/Buyer.css";
+import buyerRegister from "../../assets/buyerRegister.png";
+import productexploration from "../../assets/productexploration.png";
+import querysubmission from "../../assets/querysubmission.png";
+import communication from "../../assets/com.png";
 
 function Buyer() {
   const navigate = useNavigate();
+  const stepsRef = useRef([]);
 
   const handleSignUp = () => {
     navigate("/buyerregister");
   };
 
   const buyerSteps = [
-    {
-      step: "01",
-      title: "Registration",
-      description:
-        "Begin your journey by registering on our platform. Sign up to unlock a world of possibilities tailored to your needs and preferences.",
-      icon: "📝",
-    },
-    {
-      step: "02",
-      title: "Product Exploration",
-      description:
-        "Browse through our extensive collection of products to discover the perfect match for your requirements. Explore various categories or utilize our search feature for efficient navigation.",
-      icon: "🔍",
-    },
-    {
-      step: "03",
-      title: "Query Submission",
-      description:
-        "Found a product you're interested in? Simply complete our customized query form, designed specifically to connect you with the most compatible seller. Your inquiry will promptly reach the sellers offering that particular product.",
-      icon: "📋",
-    },
-    {
-      step: "04",
-      title: "Communication with Sellers",
-      description:
-        "Once you've reviewed the quotations, communicate directly with the sellers to discuss further details, negotiate terms, or seek clarification.",
-      icon: "💬",
-    },
+    { step: "01", image: buyerRegister },
+    { step: "02", image: productexploration },
+    { step: "03", image: querysubmission },
+    { step: "04", image: communication },
   ];
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    stepsRef.current.forEach((el) => {
+      if (el) observer.observe(el);
+    });
+
+    return () => {
+      stepsRef.current.forEach((el) => {
+        if (el) observer.unobserve(el);
+      });
+    };
+  }, []);
+
   return (
-    <>
-      <div className="buyer-container">
-        {/* Hero Section */}
-        <div className="buyer-hero">
-          <div className="hero-content">
-            <div className="hero-text">
-              <h1>What can buyers do on SaathSource?</h1>
-              <p className="hero-subtitle">
-                Get in touch with verified sellers. Save valuable time, money
-                and effort discovering verified suppliers on SaathSource. Share
-                your requirements with us and we'll connect you with the best
-                supplier directly.
-              </p>
-              <button className="cta-button" onClick={handleSignUp}>
-                Sign up for Free
-              </button>
-            </div>
-            <div className="hero-image">
-              <div className="hero-graphic">
-                <div className="floating-card card-1">
-                  <span className="card-icon">💊</span>
-                  <span className="card-text">Pharmaceuticals</span>
-                </div>
-                <div className="floating-card card-2">
-                  <span className="card-icon">🏥</span>
-                  <span className="card-text">Healthcare</span>
-                </div>
-                <div className="floating-card card-3">
-                  <span className="card-icon">🔬</span>
-                  <span className="card-text">Medical Equipment</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Process Section */}
-        <div className="process-section">
-          <div className="section-header">
-            <h2>Search, Discover and Procure Products</h2>
-            <p className="section-subtitle">
-              Connecting with the Right Suppliers
+    <div className="buyer-container">
+      {/* Hero Section */}
+      <div className="buyer-hero">
+        <div className="hero-content">
+          <div className="hero-text">
+            <h1>What can buyers do on SaathSource?</h1>
+            <p className="hero-subtitle">
+              Get in touch with verified sellers. Save valuable time, money
+              and effort discovering verified suppliers on SaathSource. Share
+              your requirements with us and we'll connect you with the best
+              supplier directly.
             </p>
+            <button className="cta-button" onClick={handleSignUp}>
+              Sign up for Free
+            </button>
           </div>
-
-          <div className="steps-container">
-            {buyerSteps.map((step, index) => (
-              <div
-                key={index}
-                className={`step-card ${
-                  index % 2 === 0 ? "left-align" : "right-align"
-                }`}
-              >
-                <div className="step-number">{step.step}</div>
-                <div className="step-content">
-                  <div className="step-icon">{step.icon}</div>
-                  <h3>{step.title}</h3>
-                  <p>{step.description}</p>
-                </div>
+          <div className="hero-image">
+            <div className="hero-graphic">
+              <div className="floating-card card-1">
+                <span className="card-icon">💊</span>
+                <span className="card-text">Pharmaceuticals</span>
               </div>
-            ))}
+              <div className="floating-card card-2">
+                <span className="card-icon">🏥</span>
+                <span className="card-text">Healthcare</span>
+              </div>
+              <div className="floating-card card-3">
+                <span className="card-icon">🔬</span>
+                <span className="card-text">Medical Equipment</span>
+              </div>
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* Benefits Section */}
+      {/* Process Section */}
+      <div className="process-section">
+        <div className="section-header">
+          <h2>Search, Discover and Procure Products</h2>
+          <p className="section-subtitle">Connecting with the Right Suppliers</p>
+        </div>
+
+        <div className="steps-container">
+          {buyerSteps.map((step, index) => (
+            <div
+              key={index}
+              ref={(el) => (stepsRef.current[index] = el)}
+              className={`step-card ${
+                index % 2 === 0 ? "left-align" : "right-align"
+              }`}
+            >
+              <div className="step-number">{step.step}</div>
+              <div className="step-image">
+                <img src={step.image} alt={`Step ${step.step}`} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+       {/* Benefits Section */}
         <div className="benefits-section">
           <div className="benefits-content">
             <h2>Why Choose SaathSource?</h2>
@@ -149,8 +149,7 @@ function Buyer() {
             </button>
           </div>
         </div>
-      </div>
-    </>
+    </div>
   );
 }
 
