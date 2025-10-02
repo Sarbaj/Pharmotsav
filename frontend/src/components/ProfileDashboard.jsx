@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../CSS/ProfileDashboard.css";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import emailjs from "@emailjs/browser";
 
 export default function ProfileDashboard() {
   const [isCompanyModalOpen, setIsCompanyModalOpen] = useState(false);
@@ -13,7 +14,12 @@ export default function ProfileDashboard() {
   const [sellerLoading, setSellerLoading] = useState(false);
   const [userdata, setUSerdata] = useState(null);
   const [inquiries, setInquiries] = useState([]);
+  const [pendingInquiries, setPendingInquiries] = useState([]);
+  const [recentInquiries, setRecentInquiries] = useState([]);
   const [inquiriesLoading, setInquiriesLoading] = useState(true);
+  const [selectedInquiries, setSelectedInquiries] = useState([]);
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
+  const [currentSellerGroup, setCurrentSellerGroup] = useState(null);
 
   const { UserInfo } = useSelector((state) => state.user);
 
@@ -62,6 +68,7 @@ export default function ProfileDashboard() {
               productName: product.productName,
               sellerName:
                 inquiry.sellerId.firstName + " " + inquiry.sellerId.lastName,
+              sellerEmail: inquiry.sellerId.email,
               sellerId: inquiry.sellerId._id,
               date: new Date(product.inquiryDate).toISOString().split("T")[0],
               status: product.status,
@@ -116,13 +123,27 @@ export default function ProfileDashboard() {
           });
         });
 
+        // Separate pending and recent inquiries based on status
+        const pending = transformedInquiries.filter(
+          (inquiry) => inquiry.status === "pending"
+        );
+        const recent = transformedInquiries.filter(
+          (inquiry) => inquiry.status !== "pending"
+        );
+
         setInquiries(transformedInquiries);
+        setPendingInquiries(pending);
+        setRecentInquiries(recent);
       } else {
         setInquiries([]);
+        setPendingInquiries([]);
+        setRecentInquiries([]);
       }
     } catch (error) {
       console.error("Error fetching inquiries:", error);
       setInquiries([]);
+      setPendingInquiries([]);
+      setRecentInquiries([]);
     } finally {
       setInquiriesLoading(false);
     }
@@ -229,6 +250,8 @@ export default function ProfileDashboard() {
 
   const [dateFilter, setDateFilter] = useState("all");
   const [filteredInquiries, setFilteredInquiries] = useState(inquiries);
+  const [filteredPendingInquiries, setFilteredPendingInquiries] = useState([]);
+  const [filteredRecentInquiries, setFilteredRecentInquiries] = useState([]);
 
   // Group inquiries by seller
   const groupInquiriesBySeller = (inquiriesList) => {
@@ -287,31 +310,166 @@ export default function ProfileDashboard() {
     setSelectedSeller(null);
   };
 
+  // Handle inquiry selection
+  const handleInquirySelection = (inquiry, isSelected) => {
+    if (isSelected) {
+      setSelectedInquiries((prev) => [...prev, inquiry]);
+    } else {
+      setSelectedInquiries((prev) =>
+        prev.filter((item) => item.id !== inquiry.id)
+      );
+    }
+  };
+
+  // Handle send mail button click
+  const handleSendMail = (sellerInquiries) => {
+    const sellerPendingInquiries = sellerInquiries.filter((inquiry) =>
+      pendingInquiries.some((pending) => pending.id === inquiry.id)
+    );
+
+    if (sellerPendingInquiries.length === 0) {
+      alert("No pending inquiries found for this seller");
+      return;
+    }
+
+    setCurrentSellerGroup(sellerInquiries);
+    setSelectedInquiries([]);
+    setIsEmailModalOpen(true);
+  };
+
+  // Send email using EmailJS
+  const sendEmailToSeller = async () => {
+    if (selectedInquiries.length === 0) {
+      alert("Please select at least one inquiry to send");
+      return;
+    }
+
+    try {
+      const seller = currentSellerGroup[0];
+
+      // Generate a unique order ID for this inquiry
+      const orderId = `INQ-${Date.now()}-${Math.random()
+        .toString(36)
+        .substr(2, 9)}`;
+
+      // Format orders array for your EmailJS template
+      const orders = selectedInquiries.map((inquiry) => ({
+        name: inquiry.productName,
+        units: "1", // You can modify this if you want to allow quantity selection
+      }));
+
+      // Template parameters including seller details
+      const templateParams = {
+        order_id: orderId,
+        orders: orders, // Array of {name, units} objects for {{#orders}} loop
+        email:
+          seller.sellerEmail ||
+          selectedSeller?.email ||
+          "sarbajmalek3456@gmail.com",
+        // Buyer details (person making the inquiry)
+        buyer_name: userdata?.firstName + " " + userdata?.lastName || "Buyer",
+        buyer_email: userdata?.email || "buyer@example.com",
+        buyer_phone: userdata?.mobileNumber || "Contact for phone",
+        buyer_country: userdata?.country || "Country not provided",
+        // Seller details (recipient)
+        seller_name: seller.sellerName || "Seller",
+        seller_email:
+          seller.sellerEmail || selectedSeller?.email || "seller@example.com",
+      };
+
+      console.log("Sending email with params:", templateParams);
+      console.log("Orders array:", JSON.stringify(orders, null, 2));
+
+      // Send email using EmailJS with proper options format
+      const response = await emailjs.send(
+        "service_hjz2pqr", // Your EmailJS service ID
+        "template_hq7t1cb", // Your EmailJS template ID
+        templateParams,
+        {
+          publicKey: "ZpEEdREOAAWs3Qh0r", // Your EmailJS public key in options object
+        }
+      );
+
+      console.log("EmailJS response:", response);
+
+      // Move selected inquiries from pending to recent
+      const updatedPending = pendingInquiries.filter(
+        (inquiry) =>
+          !selectedInquiries.some((selected) => selected.id === inquiry.id)
+      );
+
+      const movedInquiries = selectedInquiries.map((inquiry) => ({
+        ...inquiry,
+        status: "responded",
+      }));
+
+      const updatedRecent = [...recentInquiries, ...movedInquiries];
+
+      setPendingInquiries(updatedPending);
+      setRecentInquiries(updatedRecent);
+      setSelectedInquiries([]);
+      setIsEmailModalOpen(false);
+      setCurrentSellerGroup(null);
+
+      alert("Email sent successfully! Inquiries moved to recent section.");
+    } catch (error) {
+      console.error("Error sending email:", error);
+      console.error("Error details:", error.response || error.message);
+
+      let errorMessage = "Failed to send email. ";
+      if (error.status === 422) {
+        errorMessage +=
+          "Template parameter error. Please check console for details.";
+      } else if (error.status === 400) {
+        errorMessage +=
+          "Invalid request. Please check your EmailJS configuration.";
+      } else {
+        errorMessage += "Please try again.";
+      }
+
+      alert(errorMessage);
+    }
+  };
+
+  // Close email modal
+  const closeEmailModal = () => {
+    setIsEmailModalOpen(false);
+    setSelectedInquiries([]);
+    setCurrentSellerGroup(null);
+  };
+
   // Filter inquiries based on date
   useEffect(() => {
-    if (dateFilter === "all") {
-      setFilteredInquiries(inquiries);
-    } else {
-      const filtered = inquiries.filter((inquiry) => {
-        const inquiryDate = new Date(inquiry.date);
-        const now = new Date();
+    const filterByDate = (inquiriesList) => {
+      if (dateFilter === "all") {
+        return inquiriesList;
+      } else {
+        return inquiriesList.filter((inquiry) => {
+          const inquiryDate = new Date(inquiry.date);
+          const now = new Date();
 
-        switch (dateFilter) {
-          case "today":
-            return inquiryDate.toDateString() === now.toDateString();
-          case "week":
-            const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-            return inquiryDate >= weekAgo;
-          case "month":
-            const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-            return inquiryDate >= monthAgo;
-          default:
-            return true;
-        }
-      });
-      setFilteredInquiries(filtered);
-    }
-  }, [dateFilter, inquiries]);
+          switch (dateFilter) {
+            case "today":
+              return inquiryDate.toDateString() === now.toDateString();
+            case "week":
+              const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+              return inquiryDate >= weekAgo;
+            case "month":
+              const monthAgo = new Date(
+                now.getTime() - 30 * 24 * 60 * 60 * 1000
+              );
+              return inquiryDate >= monthAgo;
+            default:
+              return true;
+          }
+        });
+      }
+    };
+
+    setFilteredInquiries(filterByDate(inquiries));
+    setFilteredPendingInquiries(filterByDate(pendingInquiries));
+    setFilteredRecentInquiries(filterByDate(recentInquiries));
+  }, [dateFilter, inquiries, pendingInquiries, recentInquiries]);
 
   useEffect(() => {
     if (UserInfo) {
@@ -347,10 +505,6 @@ export default function ProfileDashboard() {
             <h3 className="pd-company-title">Company Information</h3>
             <div className="pd-company-grid">
               <div className="pd-company-item">
-                <label>Company Name</label>
-                <p>{userdata?.companyName || "Not provided"}</p>
-              </div>
-              <div className="pd-company-item">
                 <label>Email</label>
                 <p>{userdata?.email || "Not provided"}</p>
               </div>
@@ -362,30 +516,22 @@ export default function ProfileDashboard() {
                 <label>Country</label>
                 <p>{userdata?.country || "Not provided"}</p>
               </div>
-              <div className="pd-company-item">
-                <label>Address</label>
-                <p>{userdata?.address || "Not provided"}</p>
-              </div>
-              <div className="pd-company-item">
-                <label>Website</label>
-                <p>{userdata?.website || "Not provided"}</p>
-              </div>
             </div>
           </div>
         </div>
         <div className="pd-actions">{/* actions reserved */}</div>
       </section>
 
-      {/* Inquiries Section - Integrated into first card */}
+      {/* Pending Inquiries Section */}
       <div className="pd-inquiries-section">
         <div className="pd-inquiries-header">
-          <h3 className="pd-inquiries-title">Recent Inquiries</h3>
+          <h3 className="pd-inquiries-title">Pending Inquiries</h3>
           <div className="pd-inquiries-controls">
             <div className="pd-total-inquiries">
               <span className="pd-total-number">
-                {filteredInquiries.length}
+                {filteredPendingInquiries.length}
               </span>
-              <span className="pd-total-label">Inquiries</span>
+              <span className="pd-total-label">Pending</span>
             </div>
             <div className="pd-date-filter">
               <label htmlFor="dateFilter">Filter by:</label>
@@ -405,7 +551,72 @@ export default function ProfileDashboard() {
         </div>
 
         <div className="pd-inquiries-list">
-          {Object.entries(groupInquiriesBySeller(filteredInquiries)).map(
+          {Object.entries(groupInquiriesBySeller(filteredPendingInquiries)).map(
+            ([sellerName, sellerInquiries]) => (
+              <div key={sellerName} className="pd-seller-group">
+                <div className="pd-seller-header">
+                  <div className="pd-seller-info">
+                    <h4 className="pd-seller-name">{sellerName}</h4>
+                    <span className="pd-product-count">
+                      {sellerInquiries.length} product(s)
+                    </span>
+                  </div>
+                  <div className="pd-seller-actions">
+                    <button
+                      className="pd-seller-details-btn"
+                      onClick={() => handleSellerClick(sellerInquiries)}
+                      disabled={sellerLoading}
+                    >
+                      {sellerLoading ? "Loading..." : "See Seller Details"}
+                    </button>
+                    <button
+                      className="pd-send-mail-btn"
+                      onClick={() => handleSendMail(sellerInquiries)}
+                    >
+                      Send Mail
+                    </button>
+                  </div>
+                </div>
+                <div className="pd-seller-products">
+                  {sellerInquiries.map((inquiry) => (
+                    <div
+                      key={inquiry.id}
+                      className="pd-inquiry-item pd-clickable"
+                      onClick={() => handleProductClick(inquiry)}
+                    >
+                      <div className="pd-inquiry-content">
+                        <h5 className="pd-product-name">
+                          {inquiry.productName}
+                        </h5>
+                        <p className="pd-inquiry-date">
+                          {new Date(inquiry.date).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )
+          )}
+        </div>
+      </div>
+
+      {/* Recent Inquiries Section */}
+      <div className="pd-inquiries-section">
+        <div className="pd-inquiries-header">
+          <h3 className="pd-inquiries-title">Recent Inquiries</h3>
+          <div className="pd-inquiries-controls">
+            <div className="pd-total-inquiries">
+              <span className="pd-total-number">
+                {filteredRecentInquiries.length}
+              </span>
+              <span className="pd-total-label">Recent</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="pd-inquiries-list">
+          {Object.entries(groupInquiriesBySeller(filteredRecentInquiries)).map(
             ([sellerName, sellerInquiries]) => (
               <div key={sellerName} className="pd-seller-group">
                 <div className="pd-seller-header">
@@ -466,10 +677,6 @@ export default function ProfileDashboard() {
               </button>
             </div>
             <form className="pd-form" onSubmit={(e) => e.preventDefault()}>
-              <label>
-                <span>Company Name</span>
-                <input type="text" defaultValue="Acme Pharma Pvt. Ltd." />
-              </label>
               <div className="pd-row">
                 <label>
                   <span>Company Email</span>
@@ -480,10 +687,6 @@ export default function ProfileDashboard() {
                   <input type="tel" defaultValue="+91 98765 43210" />
                 </label>
               </div>
-              <label>
-                <span>Address</span>
-                <input type="text" defaultValue="221B Baker Street" />
-              </label>
               <div className="pd-row">
                 <label>
                   <span>City</span>
@@ -504,10 +707,6 @@ export default function ProfileDashboard() {
                   <input type="text" defaultValue="27ABCDE1234F1Z5" />
                 </label>
               </div>
-              <label>
-                <span>Website</span>
-                <input type="url" defaultValue="https://acmepharma.com" />
-              </label>
               <div className="pd-actions-inline">
                 <button className="pd-btn pd-btn--primary" type="submit">
                   Save
@@ -814,6 +1013,85 @@ export default function ProfileDashboard() {
                   onClick={closeSellerModal}
                 >
                   Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Email Selection Modal */}
+      {isEmailModalOpen && currentSellerGroup && (
+        <div
+          className="pd-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="emailModalTitle"
+        >
+          <div className="pd-dialog pd-email-dialog">
+            <div className="pd-dialog-head">
+              <h3 id="emailModalTitle">Select Products to Send Email</h3>
+              <button
+                className="pd-icon-btn"
+                onClick={closeEmailModal}
+                aria-label="Close"
+              >
+                ×
+              </button>
+            </div>
+            <div className="pd-email-content">
+              <div className="pd-seller-info-header">
+                <h4>Sending to: {currentSellerGroup[0]?.sellerName}</h4>
+                <p>Select the products you want to inquire about:</p>
+              </div>
+
+              <div className="pd-product-selection">
+                {currentSellerGroup
+                  .filter((inquiry) =>
+                    pendingInquiries.some(
+                      (pending) => pending.id === inquiry.id
+                    )
+                  )
+                  .map((inquiry) => (
+                    <div key={inquiry.id} className="pd-selectable-inquiry">
+                      <label className="pd-checkbox-label">
+                        <input
+                          type="checkbox"
+                          checked={selectedInquiries.some(
+                            (selected) => selected.id === inquiry.id
+                          )}
+                          onChange={(e) =>
+                            handleInquirySelection(inquiry, e.target.checked)
+                          }
+                          className="pd-checkbox"
+                        />
+                        <div className="pd-inquiry-details">
+                          <h5 className="pd-product-name">
+                            {inquiry.productName}
+                          </h5>
+                          <p className="pd-inquiry-date">
+                            Inquiry Date:{" "}
+                            {new Date(inquiry.date).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </label>
+                    </div>
+                  ))}
+              </div>
+
+              <div className="pd-email-actions">
+                <button
+                  className="pd-btn pd-btn--primary"
+                  onClick={sendEmailToSeller}
+                  disabled={selectedInquiries.length === 0}
+                >
+                  Send Email ({selectedInquiries.length} selected)
+                </button>
+                <button
+                  className="pd-btn pd-btn--ghost"
+                  onClick={closeEmailModal}
+                >
+                  Cancel
                 </button>
               </div>
             </div>

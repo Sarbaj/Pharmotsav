@@ -57,3 +57,9 @@ inquirySchema.index({ sellerId: 1, status: 1 });
 
 export const Inquiry = mongoose.model("Inquiry", inquirySchema);
 
+
+
+
+
+
+

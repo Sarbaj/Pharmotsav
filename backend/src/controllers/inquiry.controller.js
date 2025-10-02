@@ -109,7 +109,10 @@ const getBuyerInquiries = asyncHandler(async (req, res) => {
   }
 
   const inquiries = await Inquiry.find({ buyerId })
-    .populate("sellerId", "firstName lastName email CompanyName")
+    .populate(
+      "sellerId",
+      "firstName lastName email CompanyName mobileNumber location natureOfBusiness licenseNumber gstNumber"
+    )
     .populate({
       path: "products.productId",
       select: "productName productImage description specification category",
