@@ -152,33 +152,10 @@
 }
 
 /* Process Section */
-.process-section {
-  padding: 6rem 2rem;
-  background: white;
-}
-
-.section-header {
-  text-align: center;
-  margin-bottom: 4rem;
-}
-
-.section-header h2 {
-  font-family: "Poppins", sans-serif;
-  font-size: 3rem;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin-bottom: 1rem;
-}
-
-.section-subtitle {
-  font-size: 1.2rem;
-  color: #666;
-  font-family: "uppercasefont";
-}
-
+/* Steps Section */
 .steps-container {
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 5rem auto;
   position: relative;
 }
 
@@ -199,14 +176,17 @@
   align-items: center;
   margin-bottom: 3rem;
   position: relative;
+  z-index: 1; /* Ensure proper stacking */
 }
 
 .step-card.left-align {
   flex-direction: row;
+  justify-content: flex-start;
 }
 
 .step-card.right-align {
   flex-direction: row-reverse;
+  justify-content: flex-start;
 }
 
 .step-number {
@@ -223,44 +203,104 @@
   justify-content: center;
   font-size: 1.2rem;
   font-weight: 700;
-  z-index: 2;
+  z-index: 10; /* Increased z-index */
   box-shadow: 0 4px 15px rgba(20, 219, 154, 0.3);
 }
 
-.step-content {
-  background: #f8fafc;
+.step-image {
+  background: #fff;
   border-radius: 20px;
-  padding: 2rem;
+  padding: 1.5rem;
   width: 45%;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid #e2e8f0; /* Thicker border for better visibility */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* Stronger shadow */
   transition: all 0.3s ease;
+  min-height: 300px;
+  overflow: hidden;
 }
 
-.step-content:hover {
+.step-image img {
+  max-width: 100%;
+  max-height: 280px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+  display: block;
+  /* Add fallback styling */
+  background-color: #f8f9fa; /* Light background if image fails */
+  border-radius: 10px;
+}
+
+
+
+.step-image:hover {
   transform: translateY(-5px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
-.step-icon {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
+.step-image:hover img {
+  transform: scale(1.05);
 }
 
-.step-content h3 {
-  font-family: "Poppins", sans-serif;
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin-bottom: 1rem;
+/* Responsive */
+@media (max-width: 768px) {
+  .steps-container::before {
+    display: none;
+  }
+
+  .step-card {
+    flex-direction: column !important;
+    background-color: #00b894;
+    text-align: center;
+    margin-bottom: 4rem; /* More space between steps */
+  }
+
+  .step-number {
+    position: relative;
+    left: auto;
+    transform: none;
+    margin-bottom: 1.5rem;
+    margin-top: 1rem;
+  }
+
+  .step-image {
+    width: 100%;
+    min-height: 250px; /* Adjusted for mobile */
+    margin: 0 auto;
+  }
+
+  .step-image img {
+    max-height: 200px; /* Smaller max-height for mobile */
+  }
 }
 
-.step-content p {
-  font-size: 1rem;
-  line-height: 1.6;
-  color: #666;
-  font-family: "uppercasefont";
+/* Responsive Steps */
+@media (max-width: 768px) {
+  .steps-container::before {
+    display: none;
+  }
+
+  .step-card {
+    flex-direction: column !important;
+    text-align: center;
+  }
+
+  .step-number {
+    position: relative;
+    left: auto;
+    transform: none;
+    margin-bottom: 1rem;
+  }
+
+  .step-image {
+    width: 100%;
+  }
 }
+
 
 /* Features Section */
 .features-section {

@@ -1,8 +1,42 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../../CSS/Seller.css";
+import "../../CSS/Buyer.css";
+import { useEffect, useRef } from "react";
 
+import sellerregister from "../../assets/seller-image.png";
+import productcatelog from "../../assets/productcatelog.png";
+import querysubmission from "../../assets/querysubmission.png";
+import respondeinquires from "../../assets/respondeinquires.png";
 function Seller() {
+
+const stepsRef = useRef([]);
+
+useEffect(() => {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+        }
+      });
+    },
+    { threshold: 0.3 }
+  );
+
+  stepsRef.current.forEach((el) => {
+    if (el) observer.observe(el);
+  });
+
+  return () => {
+    stepsRef.current.forEach((el) => {
+      if (el) observer.unobserve(el);
+    });
+  };
+}, []);
+
+
+
   const navigate = useNavigate();
 
   const handleSignUp = () => {
@@ -12,31 +46,19 @@ function Seller() {
   const sellerSteps = [
     {
       step: "01",
-      title: "Registration & Verification",
-      description:
-        "Create your seller account and complete the verification process. Upload necessary documents to establish trust and credibility with potential buyers.",
-      icon: "✅",
+      image: sellerregister,
     },
     {
       step: "02",
-      title: "Product Catalog Setup",
-      description:
-        "Build your comprehensive product catalog with detailed descriptions, specifications, pricing, and high-quality images. Organize products by categories for easy discovery.",
-      icon: "📦",
+      image: productcatelog,
     },
     {
       step: "03",
-      title: "Receive & Respond to Inquiries",
-      description:
-        "Get notified instantly when buyers show interest in your products. Respond to inquiries promptly with detailed quotations and product information.",
-      icon: "📨",
+      image: querysubmission,
     },
     {
       step: "04",
-      title: "Build Relationships & Close Deals",
-      description:
-        "Engage with buyers through our platform, negotiate terms, and build long-term business relationships. Track your sales performance and grow your business.",
-      icon: "🤝",
+      image: respondeinquires,
     },
   ];
 
@@ -131,32 +153,28 @@ function Seller() {
         </div>
 
         {/* Process Section */}
-        <div className="process-section">
-          <div className="section-header">
-            <h2>Start Selling in 4 Simple Steps</h2>
-            <p className="section-subtitle">
-              From Registration to Revenue Generation
-            </p>
-          </div>
-
-          <div className="steps-container">
-            {sellerSteps.map((step, index) => (
-              <div
-                key={index}
-                className={`step-card ${
-                  index % 2 === 0 ? "left-align" : "right-align"
-                }`}
-              >
-                <div className="step-number">{step.step}</div>
-                <div className="step-content">
-                  <div className="step-icon">{step.icon}</div>
-                  <h3>{step.title}</h3>
-                  <p>{step.description}</p>
-                </div>
+            <div className="process-section">
+              <div className="section-header">
+                <h2>Showcase, Manage and Respond</h2>
+                <p className="section-subtitle">Streamlined Selling Experience</p>
               </div>
-            ))}
-          </div>
-        </div>
+
+              <div className="steps-container">
+                {sellerSteps.map((step, index) => (
+                  <div
+                    key={index}
+                    ref={(el) => (stepsRef.current[index] = el)}
+                    className={`step-card ${index % 2 === 0 ? "left-align" : "right-align"}`}
+                  >
+                    <div className="step-number">{step.step}</div>
+                    <div className="step-image">
+                      <img src={step.image} alt={`Step ${step.step}`} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
 
         {/* Features Section */}
         <div className="features-section">
@@ -231,6 +249,7 @@ function Seller() {
             </button>
           </div>
         </div>
+
       </div>
     </>
   );

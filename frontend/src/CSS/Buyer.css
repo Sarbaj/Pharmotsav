@@ -226,40 +226,54 @@
   box-shadow: 0 4px 15px rgba(20, 219, 154, 0.3);
 }
 
-.step-content {
-  background: #f8fafc;
+.step-image {
+  background: #ffffff;
   border-radius: 20px;
-  padding: 2rem;
+  padding: 1.5rem;
   width: 45%;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
   border: 1px solid #e2e8f0;
   transition: all 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.step-content:hover {
+.step-image img {
+  max-width: 100%;
+  max-height: 350px;
+  object-fit: contain;
+  border-radius: 12px;
+  transition: transform 0.3s ease;
+}
+
+.step-image:hover {
   transform: translateY(-5px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
-.step-icon {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
+.step-image img:hover {
+  transform: scale(1.05);
+}
+/* Initial hidden state (all steps start from center line) */
+.step-card {
+  opacity: 0;
+  transform: translateX(0);
+  transition: all 0.8s ease-out;
 }
 
-.step-content h3 {
-  font-family: "Poppins", sans-serif;
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin-bottom: 1rem;
+/* When visible, slide left */
+.step-card.left-align.visible {
+  opacity: 1;
+  transform: translateX(-80px);
 }
 
-.step-content p {
-  font-size: 1rem;
-  line-height: 1.6;
-  color: #666;
-  font-family: "uppercasefont";
+/* When visible, slide right */
+.step-card.right-align.visible {
+  opacity: 1;
+  transform: translateX(80px);
 }
+
 
 /* Benefits Section */
 .benefits-section {
