@@ -390,25 +390,7 @@
     bottom: auto;
   }
 
-  .steps-container::before {
-    display: none;
-  }
-
-  .step-card {
-    flex-direction: column !important;
-    text-align: center;
-  }
-
-  .step-number {
-    position: relative;
-    left: auto;
-    transform: none;
-    margin-bottom: 1rem;
-  }
-
-  .step-content {
-    width: 100%;
-  }
+  
 
   .section-header h2,
   .benefits-content h2,
@@ -423,7 +405,6 @@
 
 @media (max-width: 480px) {
   .buyer-hero,
-  .process-section,
   .benefits-section,
   .cta-section {
     padding: 3rem 1rem;
@@ -433,11 +414,114 @@
     font-size: 2rem;
   }
 
-  .step-content {
-    padding: 1.5rem;
-  }
 
   .benefit-item {
     padding: 1.5rem;
+  }
+}
+/* Mobile Responsive Design with Animations */
+@media (max-width: 768px) {
+  .process-section {
+    padding: 3rem 1rem;
+  }
+
+  .section-header h2 {
+    font-size: 2rem;
+  }
+
+  .section-subtitle {
+    font-size: 1rem;
+  }
+
+  .steps-container::before {
+    display: none; /* Hide timeline for clean mobile view */
+  }
+
+  .step-card {
+    flex-direction: column !important;
+    align-items: center;
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+
+    /* animation start state */
+    opacity: 0;
+    transform: translateY(40px);
+    animation: fadeUp 0.8s ease forwards;
+  }
+
+  /* Each card animates with a delay */
+  .step-card:nth-child(1) { animation-delay: 0.2s; }
+  .step-card:nth-child(2) { animation-delay: 0.4s; }
+  .step-card:nth-child(3) { animation-delay: 0.6s; }
+  .step-card:nth-child(4) { animation-delay: 0.8s; }
+
+  .step-number {
+    margin-bottom: 1rem;
+    width: 55px;
+    height: 55px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #14db9a, #00b894);
+    color: white;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 10px rgba(20, 219, 154, 0.3);
+
+    /* number pop animation */
+    transform: scale(0.7);
+    animation: popIn 0.6s ease forwards;
+    animation-delay: 0.3s;
+  }
+
+  .step-image {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 12px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .step-image img {
+    max-height: 220px;
+    width: 100%;
+    border-radius: 10px;
+    transition: transform 0.4s ease;
+  }
+
+  .step-image:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  }
+
+  .step-image img:hover {
+    transform: scale(1.05);
+  }
+}
+
+/* Animations */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes popIn {
+  from {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
   }
 }
