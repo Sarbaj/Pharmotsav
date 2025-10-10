@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import "../../CSS/Seller.css";
 import "../../CSS/Buyer.css";
 import { useEffect, useRef } from "react";
@@ -9,37 +10,44 @@ import productcatelog from "../../assets/productcatelog.png";
 import querysubmission from "../../assets/querysubmission.png";
 import respondeinquires from "../../assets/respondeinquires.png";
 function Seller() {
+  const stepsRef = useRef([]);
 
-const stepsRef = useRef([]);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
 
-useEffect(() => {
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("visible");
-        }
-      });
-    },
-    { threshold: 0.3 }
-  );
-
-  stepsRef.current.forEach((el) => {
-    if (el) observer.observe(el);
-  });
-
-  return () => {
     stepsRef.current.forEach((el) => {
-      if (el) observer.unobserve(el);
+      if (el) observer.observe(el);
     });
-  };
-}, []);
 
-
+    return () => {
+      stepsRef.current.forEach((el) => {
+        if (el) observer.unobserve(el);
+      });
+    };
+  }, []);
 
   const navigate = useNavigate();
+  const { isLogin } = useSelector((state) => state.user);
 
   const handleSignUp = () => {
+    // Check if user is already logged in
+    const token = localStorage.getItem("token");
+    const isLoggedIn = isLogin || token;
+
+    if (isLoggedIn) {
+      alert("You are already logged in!");
+      return;
+    }
+
     navigate("/sellerregister");
   };
 
@@ -153,28 +161,29 @@ useEffect(() => {
         </div>
 
         {/* Process Section */}
-            <div className="process-section">
-              <div className="section-header">
-                <h2>Showcase, Manage and Respond</h2>
-                <p className="section-subtitle">Streamlined Selling Experience</p>
-              </div>
+        <div className="process-section">
+          <div className="section-header">
+            <h2>Showcase, Manage and Respond</h2>
+            <p className="section-subtitle">Streamlined Selling Experience</p>
+          </div>
 
-              <div className="steps-container">
-                {sellerSteps.map((step, index) => (
-                  <div
-                    key={index}
-                    ref={(el) => (stepsRef.current[index] = el)}
-                    className={`step-card ${index % 2 === 0 ? "left-align" : "right-align"}`}
-                  >
-                    <div className="step-number">{step.step}</div>
-                    <div className="step-image">
-                      <img src={step.image} alt={`Step ${step.step}`} />
-                    </div>
-                  </div>
-                ))}
+          <div className="steps-container">
+            {sellerSteps.map((step, index) => (
+              <div
+                key={index}
+                ref={(el) => (stepsRef.current[index] = el)}
+                className={`step-card ${
+                  index % 2 === 0 ? "left-align" : "right-align"
+                }`}
+              >
+                <div className="step-number">{step.step}</div>
+                <div className="step-image">
+                  <img src={step.image} alt={`Step ${step.step}`} />
+                </div>
               </div>
-            </div>
-
+            ))}
+          </div>
+        </div>
 
         {/* Features Section */}
         <div className="features-section">
@@ -249,7 +258,6 @@ useEffect(() => {
             </button>
           </div>
         </div>
-
       </div>
     </>
   );

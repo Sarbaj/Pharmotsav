@@ -235,8 +235,6 @@
   border-radius: 10px;
 }
 
-
-
 .step-image:hover {
   transform: translateY(-5px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
@@ -300,7 +298,6 @@
     width: 100%;
   }
 }
-
 
 /* Features Section */
 .features-section {
@@ -522,6 +519,7 @@
   .success-content h2,
   .cta-content h2 {
     font-size: 2.5rem;
+    overflow: visible;
   }
 }
 

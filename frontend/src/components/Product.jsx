@@ -113,6 +113,7 @@ const Product = () => {
           minOrder: "Contact Supplier",
           sellerCity: product.sellerCity,
           specification: product.specification || [],
+          createdAt: product.createdAt || product.date || new Date(),
         }));
 
         console.log("Transformed products by category:", transformedProducts);
@@ -176,6 +177,7 @@ const Product = () => {
           minOrder: "Contact Supplier",
           sellerCity: product.sellerCity,
           specification: product.specification || [],
+          createdAt: product.createdAt || product.date || new Date(),
         }));
 
         console.log("Transformed products:", transformedProducts);
@@ -228,10 +230,9 @@ const Product = () => {
       switch (sortBy) {
         case "name":
           return a.name.localeCompare(b.name);
-        case "price":
+        case "date":
           return (
-            parseFloat(a.price.replace(/[₹,]/g, "")) -
-            parseFloat(b.price.replace(/[₹,]/g, ""))
+            new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date)
           );
         default:
           return 0;
@@ -298,7 +299,7 @@ const Product = () => {
 
       const data = await response.json();
 
-      if (data.success) {
+      if (response.ok && data.success) {
         alert(`Inquiry added successfully for ${product.name}!`);
       } else {
         alert(data.message || "Failed to add inquiry");
@@ -387,7 +388,7 @@ const Product = () => {
               className="filter-select"
             >
               <option value="name">Name</option>
-              <option value="price">Price</option>
+              <option value="date">Date</option>
             </select>
           </div>
         </div>

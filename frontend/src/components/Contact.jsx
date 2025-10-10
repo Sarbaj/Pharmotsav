@@ -23,16 +23,35 @@ const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setSubmitStatus("");
 
-    // Simulate form submission
-    setTimeout(() => {
+    try {
+      const response = await fetch("http://localhost:4000/api/v1/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setSubmitStatus("success");
+        setFormData({ name: "", email: "", subject: "", message: "" });
+        // Reset status after 5 seconds
+        setTimeout(() => setSubmitStatus(""), 5000);
+      } else {
+        setSubmitStatus("error");
+        setTimeout(() => setSubmitStatus(""), 5000);
+      }
+    } catch (error) {
+      console.error("Error sending message:", error);
+      setSubmitStatus("error");
+      setTimeout(() => setSubmitStatus(""), 5000);
+    } finally {
       setIsSubmitting(false);
-      setSubmitStatus("success");
-      setFormData({ name: "", email: "", subject: "", message: "" });
-
-      // Reset status after 3 seconds
-      setTimeout(() => setSubmitStatus(""), 3000);
-    }, 2000);
+    }
   };
 
   return (
@@ -146,6 +165,12 @@ const Contact = () => {
               {submitStatus === "success" && (
                 <div className="success-message">
                   ✅ Message sent successfully! We'll get back to you soon.
+                </div>
+              )}
+
+              {submitStatus === "error" && (
+                <div className="error-message">
+                  ❌ Failed to send message. Please try again.
                 </div>
               )}
             </form>

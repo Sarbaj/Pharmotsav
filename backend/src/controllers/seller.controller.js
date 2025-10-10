@@ -1,4 +1,5 @@
 import { Seller } from "../models/seller.model.js";
+import { OTP } from "../models/otp.model.js";
 import jwt from "jsonwebtoken";
 import { normalizedLocationfunc } from "../utils/userCommonMethods.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -6,6 +7,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponce } from "../utils/ApiResponce.js";
 import mongoose from "mongoose";
 import { Product } from "../models/product.model.js";
+import { sendWelcomeSMS } from "../utils/smsService.js";
 
 //genarate a tokens for seller
 const genarateRefreshToken_genarateAccessToken_for_seller = async (userid) => {
@@ -57,6 +59,28 @@ const registerSeller = asyncHandler(async (req, res) => {
     throw new ApiError(401, "All fields are required");
   }
 
+  // Check if mobile number is verified via OTP
+  const otpRecord = await OTP.findOne({
+    mobileNumber,
+    isVerified: true,
+  });
+
+  if (!otpRecord) {
+    throw new ApiError(
+      400,
+      "Mobile number must be verified with OTP before registration"
+    );
+  }
+
+  // Check if OTP is still valid (not expired)
+  if (new Date() > otpRecord.otpExpiry) {
+    await OTP.findByIdAndDelete(otpRecord._id);
+    throw new ApiError(
+      400,
+      "OTP verification has expired. Please verify your mobile number again."
+    );
+  }
+
   const normalizedLocation = normalizedLocationfunc(location);
   if (!normalizedLocation) {
     throw new ApiError(
@@ -92,18 +116,35 @@ const registerSeller = asyncHandler(async (req, res) => {
     status: "pending",
   });
 
+  // Send welcome SMS
+  try {
+    await sendWelcomeSMS(mobileNumber, firstName);
+  } catch (error) {
+    console.error("Failed to send welcome SMS:", error);
+    // Don't fail registration if welcome SMS fails
+  }
+
+  // Clean up OTP record after successful registration
+  await OTP.findByIdAndDelete(otpRecord._id);
+
   //see if seller is created or not
   const newSeller = await Seller.findById(seller._id).select(
     "-password -refreshToken"
   );
   if (!newSeller) {
-    throw new ApiError(500, "Something went wrong while creating buyer");
+    throw new ApiError(500, "Something went wrong while creating seller");
   }
 
   //return responce
   return res
     .status(201)
-    .json(new ApiResponce(201, "sellere registerd successfully..", newSeller));
+    .json(
+      new ApiResponce(
+        201,
+        "Seller registered successfully and mobile number verified",
+        newSeller
+      )
+    );
 });
 
 //login seller

@@ -20,6 +20,7 @@ export default function ProfileDashboard() {
   const [selectedInquiries, setSelectedInquiries] = useState([]);
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const [currentSellerGroup, setCurrentSellerGroup] = useState(null);
+  const [expandedInquiries, setExpandedInquiries] = useState(new Set());
 
   const { UserInfo } = useSelector((state) => state.user);
 
@@ -30,117 +31,266 @@ export default function ProfileDashboard() {
       const buyerId =
         UserInfo?._id || JSON.parse(localStorage.getItem("user"))?._id;
 
+      console.log("UserInfo:", UserInfo);
+      console.log(
+        "LocalStorage user:",
+        JSON.parse(localStorage.getItem("user") || "null")
+      );
+      console.log("Buyer ID:", buyerId);
+
       if (!buyerId) {
         console.log("No buyer ID found");
         setInquiries([]);
+        setPendingInquiries([]);
+        setRecentInquiries([]);
         return;
       }
 
-      const response = await fetch(
+      const token = localStorage.getItem("token");
+      console.log("Token:", token);
+
+      if (!token) {
+        console.log("No token found");
+        setInquiries([]);
+        setPendingInquiries([]);
+        setRecentInquiries([]);
+        return;
+      }
+
+      // Fetch pending inquiries
+      const pendingResponse = await fetch(
         `http://localhost:4000/api/v1/inquiries/buyer`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
 
-      const data = await response.json();
+      console.log("Pending response status:", pendingResponse.status);
 
-      if (data.success && data.data.inquiries) {
-        // Transform API data to match frontend format
-        const transformedInquiries = [];
-        data.data.inquiries.forEach((inquiry) => {
-          inquiry.products.forEach((product) => {
-            // Create specifications object from the specification array
-            const specifications = {};
-            if (
-              product.productId.specification &&
-              Array.isArray(product.productId.specification)
-            ) {
-              product.productId.specification.forEach((spec) => {
-                specifications[spec.key] = spec.value;
-              });
-            }
+      // Fetch recent inquiries
+      const recentResponse = await fetch(
+        `http://localhost:4000/api/v1/inquiries/recent`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-            transformedInquiries.push({
-              id: product.productId._id,
-              productName: product.productName,
-              sellerName:
-                inquiry.sellerId.firstName + " " + inquiry.sellerId.lastName,
-              sellerEmail: inquiry.sellerId.email,
-              sellerId: inquiry.sellerId._id,
-              date: new Date(product.inquiryDate).toISOString().split("T")[0],
-              status: product.status,
-              productDetails: {
-                description:
-                  product.productId.description ||
-                  `High-quality ${product.productName} from verified supplier`,
-                category:
-                  product.productId.category?.name ||
-                  product.productId.category?.categoryName ||
-                  product.productId.category?.title ||
-                  "General",
-                purity:
-                  specifications.Purity ||
-                  specifications.purity ||
-                  "Contact for details",
-                molecularWeight:
-                  specifications["Molecular Weight"] ||
-                  specifications.molecularWeight ||
-                  "Contact for details",
-                casNumber:
-                  specifications["CAS Number"] ||
-                  specifications.casNumber ||
-                  "Contact for details",
-                storage:
-                  specifications.Storage ||
-                  specifications.storage ||
-                  "Contact for details",
-                packaging:
-                  specifications.Packaging ||
-                  specifications.packaging ||
-                  "Contact for details",
-                price:
-                  specifications.Price ||
-                  specifications.price ||
-                  "Contact for Price",
-                minimumOrder:
-                  specifications["Minimum Order"] ||
-                  specifications.minimumOrder ||
-                  "Contact Supplier",
-                availability:
-                  specifications.Availability ||
-                  specifications.availability ||
-                  "Contact for availability",
-                particleSize:
-                  specifications["Particle Size"] ||
-                  specifications.particleSize,
-                // Add any other specifications that might be present
-                ...specifications,
-              },
+      console.log("Recent response status:", recentResponse.status);
+
+      const pendingData = await pendingResponse.json();
+      const recentData = await recentResponse.json();
+
+      console.log("Pending inquiries response:", pendingData);
+      console.log("Recent inquiries response:", recentData);
+
+      // Additional debugging
+      if (pendingData.success && pendingData.data.inquiries) {
+        console.log(
+          "Number of pending inquiries:",
+          pendingData.data.inquiries.length
+        );
+        console.log("First pending inquiry:", pendingData.data.inquiries[0]);
+      }
+
+      if (recentData.success && recentData.data.inquiries) {
+        console.log(
+          "Number of recent inquiries:",
+          recentData.data.inquiries.length
+        );
+        console.log("First recent inquiry:", recentData.data.inquiries[0]);
+      }
+
+      if (!pendingResponse.ok) {
+        console.error(
+          "Pending inquiries API error:",
+          pendingResponse.status,
+          pendingResponse.statusText
+        );
+      }
+
+      if (!recentResponse.ok) {
+        console.error(
+          "Recent inquiries API error:",
+          recentResponse.status,
+          recentResponse.statusText
+        );
+      }
+
+      // Process pending inquiries
+      if (pendingData.success && pendingData.data.inquiries) {
+        const transformedPending = pendingData.data.inquiries.map((inquiry) => {
+          // Create specifications object from the specification array
+          const specifications = {};
+          if (
+            inquiry.productId.specification &&
+            Array.isArray(inquiry.productId.specification)
+          ) {
+            inquiry.productId.specification.forEach((spec) => {
+              specifications[spec.key] = spec.value;
             });
-          });
+          }
+
+          return {
+            id: inquiry.productId._id,
+            inquiryId: inquiry._id, // Store the actual inquiry ID for deletion
+            productName: inquiry.productName,
+            sellerName:
+              inquiry.sellerId.firstName + " " + inquiry.sellerId.lastName,
+            sellerEmail: inquiry.sellerId.email,
+            sellerId: inquiry.sellerId._id,
+            date: new Date(inquiry.createdAt || inquiry.inquiryDate)
+              .toISOString()
+              .split("T")[0],
+            status: inquiry.status,
+            productDetails: {
+              description:
+                inquiry.productId.description ||
+                `High-quality ${inquiry.productName} from verified supplier`,
+              category:
+                inquiry.productId.category?.name ||
+                inquiry.productId.category?.categoryName ||
+                inquiry.productId.category?.title ||
+                "General",
+              purity:
+                specifications.Purity ||
+                specifications.purity ||
+                "Contact for details",
+              molecularWeight:
+                specifications["Molecular Weight"] ||
+                specifications.molecularWeight ||
+                "Contact for details",
+              casNumber:
+                specifications["CAS Number"] ||
+                specifications.casNumber ||
+                "Contact for details",
+              storage:
+                specifications.Storage ||
+                specifications.storage ||
+                "Contact for details",
+              packaging:
+                specifications.Packaging ||
+                specifications.packaging ||
+                "Contact for details",
+              price:
+                specifications.Price ||
+                specifications.price ||
+                "Contact for Price",
+              minimumOrder:
+                specifications["Minimum Order"] ||
+                specifications.minimumOrder ||
+                "Contact Supplier",
+              availability:
+                specifications.Availability ||
+                specifications.availability ||
+                "Contact for availability",
+              particleSize:
+                specifications["Particle Size"] || specifications.particleSize,
+              ...specifications,
+            },
+          };
         });
 
-        // Separate pending and recent inquiries based on status
-        const pending = transformedInquiries.filter(
-          (inquiry) => inquiry.status === "pending"
+        console.log("Transformed pending inquiries:", transformedPending);
+        console.log(
+          "Setting pending inquiries count:",
+          transformedPending.length
         );
-        const recent = transformedInquiries.filter(
-          (inquiry) => inquiry.status !== "pending"
-        );
-
-        setInquiries(transformedInquiries);
-        setPendingInquiries(pending);
-        setRecentInquiries(recent);
+        setPendingInquiries(transformedPending);
       } else {
-        setInquiries([]);
+        console.log("No pending inquiries found or API error");
         setPendingInquiries([]);
+      }
+
+      // Process recent inquiries
+      if (recentData.success && recentData.data.inquiries) {
+        const transformedRecent = recentData.data.inquiries.map((inquiry) => {
+          const specifications = {};
+          if (
+            inquiry.productId.specification &&
+            Array.isArray(inquiry.productId.specification)
+          ) {
+            inquiry.productId.specification.forEach((spec) => {
+              specifications[spec.key] = spec.value;
+            });
+          }
+
+          return {
+            id: inquiry.productId._id,
+            inquiryId: inquiry._id,
+            productName: inquiry.productName,
+            sellerName:
+              inquiry.sellerId.firstName + " " + inquiry.sellerId.lastName,
+            sellerEmail: inquiry.sellerId.email,
+            sellerId: inquiry.sellerId._id,
+            date: new Date(inquiry.emailSentDate).toISOString().split("T")[0],
+            status: inquiry.status,
+            productDetails: {
+              description:
+                inquiry.productId.description ||
+                `High-quality ${inquiry.productName} from verified supplier`,
+              category:
+                inquiry.productId.category?.name ||
+                inquiry.productId.category?.categoryName ||
+                inquiry.productId.category?.title ||
+                "General",
+              purity:
+                specifications.Purity ||
+                specifications.purity ||
+                "Contact for details",
+              molecularWeight:
+                specifications["Molecular Weight"] ||
+                specifications.molecularWeight ||
+                "Contact for details",
+              casNumber:
+                specifications["CAS Number"] ||
+                specifications.casNumber ||
+                "Contact for details",
+              storage:
+                specifications.Storage ||
+                specifications.storage ||
+                "Contact for details",
+              packaging:
+                specifications.Packaging ||
+                specifications.packaging ||
+                "Contact for details",
+              price:
+                specifications.Price ||
+                specifications.price ||
+                "Contact for Price",
+              minimumOrder:
+                specifications["Minimum Order"] ||
+                specifications.minimumOrder ||
+                "Contact Supplier",
+              availability:
+                specifications.Availability ||
+                specifications.availability ||
+                "Contact for availability",
+              particleSize:
+                specifications["Particle Size"] || specifications.particleSize,
+              ...specifications,
+            },
+          };
+        });
+
+        console.log("Transformed recent inquiries:", transformedRecent);
+        console.log(
+          "Setting recent inquiries count:",
+          transformedRecent.length
+        );
+        setRecentInquiries(transformedRecent);
+      } else {
+        console.log("No recent inquiries found or API error");
         setRecentInquiries([]);
       }
+
+      // Note: setInquiries will be updated via useEffect when pendingInquiries and recentInquiries change
     } catch (error) {
       console.error("Error fetching inquiries:", error);
+      console.error("Error details:", error.message);
       setInquiries([]);
       setPendingInquiries([]);
       setRecentInquiries([]);
@@ -310,6 +460,26 @@ export default function ProfileDashboard() {
     setSelectedSeller(null);
   };
 
+  // Toggle inquiry dropdown
+  const toggleInquiryDropdown = (sellerName, sectionType) => {
+    const uniqueKey = `${sectionType}-${sellerName}`;
+    setExpandedInquiries((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(uniqueKey)) {
+        newSet.delete(uniqueKey);
+      } else {
+        newSet.add(uniqueKey);
+      }
+      return newSet;
+    });
+  };
+
+  // Check if inquiry is expanded
+  const isInquiryExpanded = (sellerName, sectionType) => {
+    const uniqueKey = `${sectionType}-${sellerName}`;
+    return expandedInquiries.has(uniqueKey);
+  };
+
   // Handle inquiry selection
   const handleInquirySelection = (inquiry, isSelected) => {
     if (isSelected) {
@@ -392,26 +562,51 @@ export default function ProfileDashboard() {
 
       console.log("EmailJS response:", response);
 
-      // Move selected inquiries from pending to recent
-      const updatedPending = pendingInquiries.filter(
-        (inquiry) =>
-          !selectedInquiries.some((selected) => selected.id === inquiry.id)
-      );
+      // Move selected inquiries from pending to recent via API
+      try {
+        const moveResponse = await fetch(
+          "http://localhost:4000/api/v1/inquiries/move-to-recent",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify({
+              inquiryIds: selectedInquiries.map((inquiry) => inquiry.inquiryId),
+              emailContent: `Email sent to ${currentSellerGroup[0].sellerName}`,
+            }),
+          }
+        );
 
-      const movedInquiries = selectedInquiries.map((inquiry) => ({
-        ...inquiry,
-        status: "responded",
-      }));
+        const moveData = await moveResponse.json();
 
-      const updatedRecent = [...recentInquiries, ...movedInquiries];
+        if (moveData.success) {
+          // Update local state
+          const updatedPending = pendingInquiries.filter(
+            (inquiry) =>
+              !selectedInquiries.some((selected) => selected.id === inquiry.id)
+          );
+          const movedInquiries = selectedInquiries.map((inquiry) => ({
+            ...inquiry,
+            status: "responded",
+          }));
+          const updatedRecent = [...recentInquiries, ...movedInquiries];
 
-      setPendingInquiries(updatedPending);
-      setRecentInquiries(updatedRecent);
-      setSelectedInquiries([]);
-      setIsEmailModalOpen(false);
-      setCurrentSellerGroup(null);
+          setPendingInquiries(updatedPending);
+          setRecentInquiries(updatedRecent);
+          setSelectedInquiries([]);
+          setIsEmailModalOpen(false);
+          setCurrentSellerGroup(null);
 
-      alert("Email sent successfully! Inquiries moved to recent section.");
+          alert("Email sent successfully! Inquiries moved to recent section.");
+        } else {
+          alert("Email sent but failed to move inquiries to recent section.");
+        }
+      } catch (moveError) {
+        console.error("Error moving inquiries to recent:", moveError);
+        alert("Email sent but failed to move inquiries to recent section.");
+      }
     } catch (error) {
       console.error("Error sending email:", error);
       console.error("Error details:", error.response || error.message);
@@ -436,6 +631,44 @@ export default function ProfileDashboard() {
     setIsEmailModalOpen(false);
     setSelectedInquiries([]);
     setCurrentSellerGroup(null);
+  };
+
+  // Delete inquiry function
+  const handleDeleteInquiry = async (productId, inquiryId) => {
+    if (!window.confirm("Are you sure you want to delete this inquiry?")) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:4000/api/v1/inquiries/delete/${inquiryId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Remove from pending inquiries
+        setPendingInquiries((prev) =>
+          prev.filter((inquiry) => inquiry.id !== productId)
+        );
+        // Also remove from all inquiries
+        setInquiries((prev) =>
+          prev.filter((inquiry) => inquiry.id !== productId)
+        );
+        alert("Inquiry deleted successfully!");
+      } else {
+        alert(data.message || "Failed to delete inquiry");
+      }
+    } catch (error) {
+      console.error("Error deleting inquiry:", error);
+      alert("Failed to delete inquiry. Please try again.");
+    }
   };
 
   // Filter inquiries based on date
@@ -481,6 +714,20 @@ export default function ProfileDashboard() {
   useEffect(() => {
     fetchInquiries();
   }, [UserInfo]);
+
+  // Combine pending and recent inquiries when they change
+  useEffect(() => {
+    const combinedInquiries = [...pendingInquiries, ...recentInquiries];
+    console.log(
+      "Combining inquiries - Pending:",
+      pendingInquiries.length,
+      "Recent:",
+      recentInquiries.length,
+      "Total:",
+      combinedInquiries.length
+    );
+    setInquiries(combinedInquiries);
+  }, [pendingInquiries, recentInquiries]);
 
   return (
     <div className="profile-dashboard">
@@ -554,47 +801,86 @@ export default function ProfileDashboard() {
           {Object.entries(groupInquiriesBySeller(filteredPendingInquiries)).map(
             ([sellerName, sellerInquiries]) => (
               <div key={sellerName} className="pd-seller-group">
-                <div className="pd-seller-header">
+                <div
+                  className="pd-seller-header pd-seller-header-clickable"
+                  onClick={() => toggleInquiryDropdown(sellerName, "pending")}
+                >
                   <div className="pd-seller-info">
-                    <h4 className="pd-seller-name">{sellerName}</h4>
+                    <div className="pd-seller-title-row">
+                      <h4 className="pd-seller-name">{sellerName}</h4>
+                      <div className="pd-inquiry-toggle">
+                        <span className="pd-toggle-icon">
+                          {isInquiryExpanded(sellerName, "pending") ? "▼" : "▶"}
+                        </span>
+                      </div>
+                    </div>
                     <span className="pd-product-count">
                       {sellerInquiries.length} product(s)
                     </span>
+                    <p className="pd-expand-hint">
+                      {isInquiryExpanded(sellerName, "pending")
+                        ? "Click to collapse"
+                        : "Click to expand products"}
+                    </p>
                   </div>
                   <div className="pd-seller-actions">
                     <button
                       className="pd-seller-details-btn"
-                      onClick={() => handleSellerClick(sellerInquiries)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSellerClick(sellerInquiries);
+                      }}
                       disabled={sellerLoading}
                     >
                       {sellerLoading ? "Loading..." : "See Seller Details"}
                     </button>
                     <button
                       className="pd-send-mail-btn"
-                      onClick={() => handleSendMail(sellerInquiries)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSendMail(sellerInquiries);
+                      }}
                     >
                       Send Mail
                     </button>
                   </div>
                 </div>
-                <div className="pd-seller-products">
-                  {sellerInquiries.map((inquiry) => (
-                    <div
-                      key={inquiry.id}
-                      className="pd-inquiry-item pd-clickable"
-                      onClick={() => handleProductClick(inquiry)}
-                    >
-                      <div className="pd-inquiry-content">
-                        <h5 className="pd-product-name">
-                          {inquiry.productName}
-                        </h5>
-                        <p className="pd-inquiry-date">
-                          {new Date(inquiry.date).toLocaleDateString()}
-                        </p>
-                      </div>
+                {isInquiryExpanded(sellerName, "pending") && (
+                  <div className="pd-inquiry-dropdown">
+                    <div className="pd-seller-products">
+                      {sellerInquiries.map((inquiry) => (
+                        <div key={inquiry.id} className="pd-inquiry-item">
+                          <div
+                            className="pd-inquiry-content pd-clickable"
+                            onClick={() => handleProductClick(inquiry)}
+                          >
+                            <h5 className="pd-product-name">
+                              {inquiry.productName}
+                            </h5>
+                            <p className="pd-inquiry-date">
+                              {new Date(inquiry.date).toLocaleDateString()}
+                            </p>
+                          </div>
+                          <div className="pd-inquiry-actions">
+                            <button
+                              className="pd-delete-btn"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteInquiry(
+                                  inquiry.id,
+                                  inquiry.inquiryId
+                                );
+                              }}
+                              title="Delete inquiry"
+                            >
+                              🗑️
+                            </button>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                )}
               </div>
             )
           )}
@@ -619,39 +905,61 @@ export default function ProfileDashboard() {
           {Object.entries(groupInquiriesBySeller(filteredRecentInquiries)).map(
             ([sellerName, sellerInquiries]) => (
               <div key={sellerName} className="pd-seller-group">
-                <div className="pd-seller-header">
+                <div
+                  className="pd-seller-header pd-seller-header-clickable"
+                  onClick={() => toggleInquiryDropdown(sellerName, "recent")}
+                >
                   <div className="pd-seller-info">
-                    <h4 className="pd-seller-name">{sellerName}</h4>
+                    <div className="pd-seller-title-row">
+                      <h4 className="pd-seller-name">{sellerName}</h4>
+                      <div className="pd-inquiry-toggle">
+                        <span className="pd-toggle-icon">
+                          {isInquiryExpanded(sellerName, "recent") ? "▼" : "▶"}
+                        </span>
+                      </div>
+                    </div>
                     <span className="pd-product-count">
                       {sellerInquiries.length} product(s)
                     </span>
+                    <p className="pd-expand-hint">
+                      {isInquiryExpanded(sellerName, "recent")
+                        ? "Click to collapse"
+                        : "Click to expand products"}
+                    </p>
                   </div>
                   <button
                     className="pd-seller-details-btn"
-                    onClick={() => handleSellerClick(sellerInquiries)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSellerClick(sellerInquiries);
+                    }}
                     disabled={sellerLoading}
                   >
                     {sellerLoading ? "Loading..." : "See Seller Details"}
                   </button>
                 </div>
-                <div className="pd-seller-products">
-                  {sellerInquiries.map((inquiry) => (
-                    <div
-                      key={inquiry.id}
-                      className="pd-inquiry-item pd-clickable"
-                      onClick={() => handleProductClick(inquiry)}
-                    >
-                      <div className="pd-inquiry-content">
-                        <h5 className="pd-product-name">
-                          {inquiry.productName}
-                        </h5>
-                        <p className="pd-inquiry-date">
-                          {new Date(inquiry.date).toLocaleDateString()}
-                        </p>
-                      </div>
+                {isInquiryExpanded(sellerName, "recent") && (
+                  <div className="pd-inquiry-dropdown">
+                    <div className="pd-seller-products">
+                      {sellerInquiries.map((inquiry) => (
+                        <div
+                          key={inquiry.id}
+                          className="pd-inquiry-item pd-clickable"
+                          onClick={() => handleProductClick(inquiry)}
+                        >
+                          <div className="pd-inquiry-content">
+                            <h5 className="pd-product-name">
+                              {inquiry.productName}
+                            </h5>
+                            <p className="pd-inquiry-date">
+                              {new Date(inquiry.date).toLocaleDateString()}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                )}
               </div>
             )
           )}

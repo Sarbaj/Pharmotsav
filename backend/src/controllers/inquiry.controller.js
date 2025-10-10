@@ -1,4 +1,5 @@
 import { Inquiry } from "../models/inquiry.model.js";
+import { RecentInquiry } from "../models/recentInquiry.model.js";
 import { Product } from "../models/product.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponce } from "../utils/ApiResponce.js";
@@ -24,55 +25,33 @@ const createOrUpdateInquiry = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Product not found");
   }
 
+  if (!product.sellerId) {
+    throw new ApiError(400, "Product has no associated seller");
+  }
+
   const sellerId = product.sellerId._id;
 
-  // Check if inquiry already exists for this buyer-seller combination
-  let inquiry = await Inquiry.findOne({ buyerId, sellerId });
+  // Check if inquiry already exists for this buyer-product combination
+  let inquiry = await Inquiry.findOne({ buyerId, productId });
 
   if (inquiry) {
-    // Check if product already exists in inquiry
-    const existingProduct = inquiry.products.find(
-      (p) => p.productId.toString() === productId
-    );
-
-    if (existingProduct) {
-      return res
-        .status(200)
-        .json(new ApiResponce(200, "Product already in inquiry", { inquiry }));
-    }
-
-    // Add new product to existing inquiry
-    inquiry.products.push({
-      productId,
-      productName: product.productName,
-      inquiryDate: new Date(),
-      status: "pending",
-    });
-
-    inquiry.totalProducts = inquiry.products.length;
-    await inquiry.save();
+    return res
+      .status(200)
+      .json(new ApiResponce(200, "Product already in inquiry", { inquiry }));
   } else {
-    // Create new inquiry
+    // Create new inquiry for this specific product
     inquiry = await Inquiry.create({
       buyerId,
       sellerId,
-      products: [
-        {
-          productId,
-          productName: product.productName,
-          inquiryDate: new Date(),
-          status: "pending",
-        },
-      ],
-      totalProducts: 1,
+      productId,
+      productName: product.productName,
+      status: "pending",
     });
   }
 
   return res
     .status(201)
-    .json(
-      new ApiResponce(201, "Inquiry created/updated successfully", { inquiry })
-    );
+    .json(new ApiResponce(201, "Inquiry created successfully", { inquiry }));
 });
 
 // Get inquiries for a specific seller
@@ -89,7 +68,7 @@ const getSellerInquiries = asyncHandler(async (req, res) => {
       "buyerId",
       "firstName lastName email mobileNumber country natureOfBusiness"
     )
-    .populate("products.productId", "productName productImage specification")
+    .populate("productId", "productName productImage specification")
     .sort({ createdAt: -1 });
 
   return res.status(200).json(
@@ -103,6 +82,10 @@ const getSellerInquiries = asyncHandler(async (req, res) => {
 const getBuyerInquiries = asyncHandler(async (req, res) => {
   const buyerId = req.member._id;
 
+  console.log("getBuyerInquiries - buyerId:", buyerId);
+  console.log("getBuyerInquiries - userType:", req.userType);
+  console.log("getBuyerInquiries - member:", req.member);
+
   // Ensure only buyers can view their inquiries
   if (req.userType !== "buyer") {
     throw new ApiError(403, "Only buyers can view their inquiries");
@@ -114,7 +97,7 @@ const getBuyerInquiries = asyncHandler(async (req, res) => {
       "firstName lastName email CompanyName mobileNumber location natureOfBusiness licenseNumber gstNumber"
     )
     .populate({
-      path: "products.productId",
+      path: "productId",
       select: "productName productImage description specification category",
       populate: {
         path: "category",
@@ -122,6 +105,9 @@ const getBuyerInquiries = asyncHandler(async (req, res) => {
       },
     })
     .sort({ createdAt: -1 });
+
+  console.log("Found inquiries:", inquiries.length);
+  console.log("Inquiries data:", inquiries);
 
   return res.status(200).json(
     new ApiResponce(200, "Buyer inquiries fetched successfully", {
@@ -167,38 +153,158 @@ const updateInquiryStatus = asyncHandler(async (req, res) => {
     );
 });
 
-// Remove product from inquiry
-const removeProductFromInquiry = asyncHandler(async (req, res) => {
-  const { inquiryId, productId } = req.params;
+// Delete entire inquiry
+const deleteInquiry = asyncHandler(async (req, res) => {
+  const { inquiryId } = req.params;
+  const buyerId = req.member._id;
 
-  if (!inquiryId || !productId) {
-    throw new ApiError(400, "Inquiry ID and Product ID are required");
+  if (!inquiryId) {
+    throw new ApiError(400, "Inquiry ID is required");
   }
 
+  // Ensure only buyers can delete their own inquiries
+  if (req.userType !== "buyer") {
+    throw new ApiError(403, "Only buyers can delete inquiries");
+  }
+
+  // Find the inquiry and verify ownership
   const inquiry = await Inquiry.findById(inquiryId);
   if (!inquiry) {
     throw new ApiError(404, "Inquiry not found");
   }
 
-  // Remove product from inquiry
-  inquiry.products = inquiry.products.filter(
-    (p) => p.productId.toString() !== productId
-  );
-  inquiry.totalProducts = inquiry.products.length;
-
-  // If no products left, delete the inquiry
-  if (inquiry.products.length === 0) {
-    await Inquiry.findByIdAndDelete(inquiryId);
-    return res
-      .status(200)
-      .json(new ApiResponce(200, "Inquiry deleted as no products remain", {}));
+  // Check if the buyer owns this inquiry
+  if (inquiry.buyerId.toString() !== buyerId.toString()) {
+    throw new ApiError(403, "You can only delete your own inquiries");
   }
 
-  await inquiry.save();
+  // Delete the inquiry
+  await Inquiry.findByIdAndDelete(inquiryId);
+
+  return res
+    .status(200)
+    .json(new ApiResponce(200, "Inquiry deleted successfully"));
+});
+
+// Move inquiries from pending to recent
+const moveInquiriesToRecent = asyncHandler(async (req, res) => {
+  const { inquiryIds, emailContent } = req.body;
+  const buyerId = req.member._id;
+
+  if (!inquiryIds || !Array.isArray(inquiryIds) || inquiryIds.length === 0) {
+    throw new ApiError(400, "Inquiry IDs are required");
+  }
+
+  // Ensure only buyers can move their own inquiries
+  if (req.userType !== "buyer") {
+    throw new ApiError(403, "Only buyers can move inquiries");
+  }
+
+  const movedInquiries = [];
+  const errors = [];
+
+  for (const inquiryId of inquiryIds) {
+    try {
+      // Find the inquiry and verify ownership
+      const inquiry = await Inquiry.findById(inquiryId);
+      if (!inquiry) {
+        errors.push(`Inquiry ${inquiryId} not found`);
+        continue;
+      }
+
+      // Check if the buyer owns this inquiry
+      if (inquiry.buyerId.toString() !== buyerId.toString()) {
+        errors.push(`You can only move your own inquiries`);
+        continue;
+      }
+
+      // Create recent inquiry record
+      const recentInquiry = await RecentInquiry.create({
+        buyerId: inquiry.buyerId,
+        sellerId: inquiry.sellerId,
+        productId: inquiry.productId,
+        productName: inquiry.productName,
+        inquiryDate: inquiry.inquiryDate,
+        emailSentDate: new Date(),
+        status: "responded",
+        emailContent: emailContent || "",
+      });
+
+      // Delete the original inquiry
+      await Inquiry.findByIdAndDelete(inquiryId);
+
+      movedInquiries.push(recentInquiry);
+    } catch (error) {
+      console.error(`Error moving inquiry ${inquiryId}:`, error);
+      errors.push(`Failed to move inquiry ${inquiryId}`);
+    }
+  }
 
   return res.status(200).json(
-    new ApiResponce(200, "Product removed from inquiry successfully", {
-      inquiry,
+    new ApiResponce(200, "Inquiries moved to recent successfully", {
+      movedCount: movedInquiries.length,
+      errors: errors.length > 0 ? errors : undefined,
+      movedInquiries,
+    })
+  );
+});
+
+// Get recent inquiries for buyer
+const getBuyerRecentInquiries = asyncHandler(async (req, res) => {
+  const buyerId = req.member._id;
+
+  // Ensure only buyers can view their recent inquiries
+  if (req.userType !== "buyer") {
+    throw new ApiError(403, "Only buyers can view their recent inquiries");
+  }
+
+  const recentInquiries = await RecentInquiry.find({ buyerId })
+    .populate(
+      "sellerId",
+      "firstName lastName email CompanyName mobileNumber location natureOfBusiness licenseNumber gstNumber"
+    )
+    .populate({
+      path: "productId",
+      select: "productName productImage description specification category",
+      populate: {
+        path: "category",
+        select: "name categoryName title",
+      },
+    })
+    .sort({ emailSentDate: -1 });
+
+  return res.status(200).json(
+    new ApiResponce(200, "Recent inquiries fetched successfully", {
+      inquiries: recentInquiries,
+    })
+  );
+});
+
+// Get recent inquiries for seller
+const getSellerRecentInquiries = asyncHandler(async (req, res) => {
+  const sellerId = req.member._id;
+  if (req.userType !== "seller") {
+    throw new ApiError(403, "Only sellers can view their recent inquiries");
+  }
+
+  const recentInquiries = await RecentInquiry.find({ sellerId })
+    .populate(
+      "buyerId",
+      "firstName lastName email mobileNumber country natureOfBusiness"
+    )
+    .populate({
+      path: "productId",
+      select: "productName productImage description specification category",
+      populate: {
+        path: "category",
+        select: "name categoryName title",
+      },
+    })
+    .sort({ emailSentDate: -1 });
+
+  return res.status(200).json(
+    new ApiResponce(200, "Recent inquiries fetched successfully", {
+      inquiries: recentInquiries,
     })
   );
 });
@@ -208,5 +314,8 @@ export {
   getSellerInquiries,
   getBuyerInquiries,
   updateInquiryStatus,
-  removeProductFromInquiry,
+  deleteInquiry,
+  moveInquiriesToRecent,
+  getBuyerRecentInquiries,
+  getSellerRecentInquiries,
 };

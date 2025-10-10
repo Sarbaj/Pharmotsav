@@ -1406,3 +1406,586 @@
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 0.75rem;
 }
+
+/* Inquiry Dropdown Styles */
+.sd-inquiry-header-clickable {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 8px;
+  padding: 16px;
+  margin: -16px;
+}
+
+.sd-inquiry-header-clickable:hover {
+  background: rgba(79, 70, 229, 0.05);
+  transform: translateY(-1px);
+}
+
+.sd-inquiry-title-row {
+  overflow: visible;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.sd-inquiry-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(79, 70, 229, 0.1);
+  transition: all 0.2s ease;
+}
+
+.sd-inquiry-header-clickable:hover .sd-inquiry-toggle {
+  background: rgba(79, 70, 229, 0.2);
+  transform: scale(1.1);
+}
+
+.sd-toggle-icon {
+  font-size: 14px;
+  color: var(--sd-accent);
+  font-weight: bold;
+  transition: transform 0.2s ease;
+}
+
+.sd-inquiry-dropdown {
+  margin-top: 16px;
+  padding: 16px;
+  background: rgba(248, 250, 252, 0.8);
+  border-radius: 8px;
+  border: 1px solid rgba(79, 70, 229, 0.1);
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Enhanced inquiry item styling */
+.sd-inquiry-item {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid var(--sd-border);
+  margin-bottom: 16px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.sd-inquiry-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.sd-inquiry-header {
+  padding: 20px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.sd-inquiry-buyer {
+  flex: 1;
+}
+
+.sd-buyer-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--sd-text);
+  margin: 0 0 8px 0;
+}
+
+.sd-buyer-info {
+  color: var(--sd-text-dim);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.sd-expand-hint {
+  color: var(--sd-accent);
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin: 4px 0 0 0;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.sd-inquiry-header-clickable:hover .sd-expand-hint {
+  opacity: 1;
+}
+
+.sd-inquiry-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Product items in dropdown */
+.sd-inquiry-dropdown .sd-product-item {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
+}
+
+.sd-inquiry-dropdown .sd-product-item:hover {
+  border-color: var(--sd-accent);
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.1);
+}
+
+.sd-inquiry-dropdown .sd-product-item:last-child {
+  margin-bottom: 0;
+}
+
+/* Status badges in dropdown */
+.sd-status-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.sd-status-pending {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.sd-status-responded {
+  background: #d1fae5;
+  color: #059669;
+}
+
+.sd-status-closed {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+/* Compact Profile Styles */
+.sd-profile-compact {
+  background: rgba(248, 250, 252, 0.8);
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 16px;
+  border: 1px solid rgba(79, 70, 229, 0.1);
+}
+
+.sd-profile-row {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.sd-profile-row:last-child {
+  margin-bottom: 0;
+}
+
+.sd-profile-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 120px;
+  flex: 1;
+}
+
+.sd-profile-item-full {
+  flex: 1;
+  min-width: 100%;
+}
+
+.sd-profile-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--sd-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sd-profile-value {
+  font-size: 0.875rem;
+  color: var(--sd-text);
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.sd-profile-status {
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  display: inline-block;
+  width: fit-content;
+}
+
+.sd-status-approved {
+  background: #d1fae5;
+  color: #059669;
+}
+
+.sd-status-pending {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.sd-status-rejected {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+/* Responsive adjustments for compact profile */
+@media (max-width: 768px) {
+  .sd-profile-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .sd-profile-item {
+    min-width: 100%;
+  }
+
+  .sd-profile-compact {
+    padding: 12px;
+  }
+}
+
+/* Pending Approval Styles */
+.sd-pending-approval {
+  width: 35%;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border: 1px solid #f59e0b;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 16px;
+  box-shadow: 0 4px 6px rgba(245, 158, 11, 0.1);
+}
+
+.sd-pending-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.sd-pending-content {
+  flex: 1;
+}
+
+.sd-pending-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #92400e;
+  margin: 0 0 8px 0;
+}
+
+.sd-pending-message {
+  font-size: 0.875rem;
+  color: #a16207;
+  margin: 0 0 12px 0;
+  line-height: 1.5;
+}
+
+.sd-pending-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sd-status-badge {
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sd-status-pending {
+  background: #fef3c7;
+  color: #d97706;
+  border: 1px solid #f59e0b;
+}
+
+/* Responsive adjustments for pending approval */
+@media (max-width: 768px) {
+  .sd-pending-approval {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+
+  .sd-pending-icon {
+    font-size: 1.5rem;
+  }
+}
+
+/* Excel Products Section */
+.sd-excel-products-section {
+  background: rgba(234, 230, 230, 0.144);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--sd-border);
+  border-radius: 16px;
+  padding: 20px;
+  margin: 20px 0;
+  box-shadow: var(--sd-shadow);
+}
+
+.sd-excel-products-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.sd-excel-products-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--sd-text);
+  margin: 0;
+}
+
+.sd-excel-products-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.sd-bulk-upload-btn {
+  background: var(--sd-accent);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.sd-bulk-upload-btn:hover:not(:disabled) {
+  background: #4338ca;
+  transform: translateY(-1px);
+}
+
+.sd-bulk-upload-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Excel Table */
+.sd-excel-products-table {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid var(--sd-border);
+}
+
+.sd-excel-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.sd-excel-table th {
+  background: #f8f9fa;
+  padding: 12px 8px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--sd-text);
+  border-bottom: 2px solid var(--sd-border);
+}
+
+.sd-excel-table td {
+  padding: 12px 8px;
+  border-bottom: 1px solid #e5e7eb;
+  vertical-align: top;
+}
+
+.sd-excel-product-row:hover {
+  background: #f8f9fa;
+}
+
+.sd-excel-cell {
+  max-width: 200px;
+  word-wrap: break-word;
+}
+
+/* Specifications in table */
+.sd-specs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sd-spec-item {
+  display: flex;
+  gap: 8px;
+  font-size: 0.875rem;
+}
+
+.sd-spec-title {
+  font-weight: 600;
+  color: var(--sd-text);
+  min-width: 80px;
+}
+
+.sd-spec-value {
+  color: var(--sd-text-dim);
+}
+
+/* Image upload in table */
+.sd-image-upload-cell {
+  min-width: 120px;
+}
+
+.sd-image-preview-cell {
+  position: relative;
+  display: inline-block;
+}
+
+.sd-preview-image-cell {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--sd-border);
+}
+
+.sd-remove-image-btn-cell {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: var(--sd-danger);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sd-image-upload-area-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.sd-image-input-cell {
+  display: none;
+}
+
+.sd-image-upload-label-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  border: 2px dashed var(--sd-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 80px;
+  text-align: center;
+}
+
+.sd-image-upload-label-cell:hover {
+  border-color: var(--sd-accent);
+  background: rgba(79, 70, 229, 0.05);
+}
+
+.sd-upload-icon-cell {
+  font-size: 1.5rem;
+}
+
+.sd-upload-text-cell {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--sd-text);
+}
+
+.sd-remove-product-btn {
+  background: var(--sd-danger);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.sd-remove-product-btn:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+}
+
+/* Excel Success State */
+.sd-excel-success-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
+  background: #f0f9ff;
+  border: 2px solid #0ea5e9;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.sd-success-icon {
+  font-size: 3rem;
+  color: #16a34a;
+}
+
+.sd-excel-success-state h5 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--sd-text);
+  margin: 0;
+}
+
+.sd-excel-success-state p {
+  color: var(--sd-text-dim);
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .sd-excel-products-header {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .sd-excel-products-actions {
+    justify-content: center;
+  }
+
+  .sd-excel-table {
+    font-size: 0.875rem;
+  }
+
+  .sd-excel-cell {
+    max-width: 150px;
+  }
+  .sd-pending-approval {
+    width: 100%;
+  }
+}

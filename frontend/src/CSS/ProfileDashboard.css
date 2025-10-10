@@ -249,6 +249,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  padding: 4px;
 }
 
 .pd-inquiry-item {
@@ -258,6 +259,12 @@
   padding: 1rem;
   transition: all 0.3s ease;
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  overflow: visible;
+  min-height: 60px;
+  margin-bottom: 4px;
 }
 
 .pd-inquiry-item:hover {
@@ -279,6 +286,41 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex: 1;
+}
+
+.pd-inquiry-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 12px;
+  flex-shrink: 0;
+}
+
+.pd-delete-btn {
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  padding: 4px 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.pd-delete-btn:hover {
+  background: #fecaca;
+  border-color: #f87171;
+  transform: scale(1.02);
+}
+
+.pd-delete-btn:active {
+  transform: scale(0.95);
 }
 
 .pd-product-name {
@@ -1224,4 +1266,82 @@
   .pd-email-actions .pd-btn {
     width: 100%;
   }
+}
+
+/* Inquiry Dropdown Styles */
+.pd-seller-header-clickable {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 8px;
+  padding: 16px;
+  margin: -16px;
+}
+
+.pd-seller-header-clickable:hover {
+  background: rgba(79, 70, 229, 0.05);
+  transform: translateY(-1px);
+}
+
+.pd-seller-title-row {
+  display: flex;
+  overflow: visible;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.pd-inquiry-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(79, 70, 229, 0.1);
+  transition: all 0.2s ease;
+}
+
+.pd-seller-header-clickable:hover .pd-inquiry-toggle {
+  background: rgba(79, 70, 229, 0.2);
+  transform: scale(1.1);
+}
+
+.pd-toggle-icon {
+  font-size: 14px;
+  color: var(--pd-accent);
+  font-weight: bold;
+  transition: transform 0.2s ease;
+}
+
+.pd-inquiry-dropdown {
+  margin-top: 16px;
+  padding: 16px;
+  background: rgba(248, 250, 252, 0.8);
+  border-radius: 8px;
+  border: 1px solid rgba(79, 70, 229, 0.1);
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pd-expand-hint {
+  color: var(--pd-accent);
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin: 4px 0 0 0;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.pd-seller-header-clickable:hover .pd-expand-hint {
+  opacity: 1;
 }

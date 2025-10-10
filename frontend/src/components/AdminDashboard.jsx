@@ -13,6 +13,18 @@ const AdminDashboard = () => {
   const [showUserModal, setShowUserModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [categories, setCategories] = useState([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(false);
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [categoryForm, setCategoryForm] = useState({
+    categoryName: "",
+    description: "",
+  });
+  const [messages, setMessages] = useState([]);
+  const [messagesLoading, setMessagesLoading] = useState(false);
+  const [messageStats, setMessageStats] = useState({});
+  const [selectedMessage, setSelectedMessage] = useState(null);
+  const [showMessageModal, setShowMessageModal] = useState(false);
   const navigate = useNavigate();
 
   // API Functions
@@ -57,6 +69,164 @@ const AdminDashboard = () => {
     } catch (error) {
       console.error("Error fetching sellers:", error);
       setError("Failed to fetch sellers");
+    }
+  };
+
+  // Category Management Functions
+  const fetchCategories = async () => {
+    try {
+      setCategoriesLoading(true);
+      const token = localStorage.getItem("adminToken");
+      const response = await fetch(
+        "http://localhost:4000/api/v1/categories/get-all-categories",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      if (data.success) {
+        setCategories(data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      setError("Failed to fetch categories");
+    } finally {
+      setCategoriesLoading(false);
+    }
+  };
+
+  const addCategory = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem("adminToken");
+      const response = await fetch(
+        "http://localhost:4000/api/v1/categories/add-category",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(categoryForm),
+        }
+      );
+      const data = await response.json();
+      if (data.success) {
+        setShowCategoryModal(false);
+        setCategoryForm({ categoryName: "", description: "" });
+        fetchCategories(); // Refresh categories list
+        alert("Category added successfully!");
+      } else {
+        alert(data.message || "Failed to add category");
+      }
+    } catch (error) {
+      console.error("Error adding category:", error);
+      alert("Failed to add category");
+    }
+  };
+
+  const deleteCategory = async (categoryId) => {
+    if (!window.confirm("Are you sure you want to delete this category?")) {
+      return;
+    }
+    try {
+      const token = localStorage.getItem("adminToken");
+      const response = await fetch(
+        `http://localhost:4000/api/v1/categories/delete-category/${categoryId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const data = await response.json();
+      if (data.success) {
+        fetchCategories(); // Refresh categories list
+        alert("Category deleted successfully!");
+      } else {
+        alert(data.message || "Failed to delete category");
+      }
+    } catch (error) {
+      console.error("Error deleting category:", error);
+      alert("Failed to delete category");
+    }
+  };
+
+  // Message Management Functions
+  const fetchMessages = async () => {
+    setMessagesLoading(true);
+    try {
+      const token = localStorage.getItem("adminToken");
+      const response = await fetch("http://localhost:4000/api/v1/contact", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      if (data.success) {
+        setMessages(data.data.messages);
+      }
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+      setError("Failed to fetch messages");
+    } finally {
+      setMessagesLoading(false);
+    }
+  };
+
+  const fetchMessageStats = async () => {
+    try {
+      const token = localStorage.getItem("adminToken");
+      const response = await fetch(
+        "http://localhost:4000/api/v1/contact/stats",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      if (data.success) {
+        setMessageStats(data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching message stats:", error);
+    }
+  };
+
+  const updateMessageStatus = async (messageId, status, adminNotes = "") => {
+    try {
+      const token = localStorage.getItem("adminToken");
+      const response = await fetch(
+        `http://localhost:4000/api/v1/contact/${messageId}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ status, adminNotes }),
+        }
+      );
+      const data = await response.json();
+      if (data.success) {
+        // Refresh messages
+        fetchMessages();
+        fetchMessageStats();
+        setShowMessageModal(false);
+        setSelectedMessage(null);
+      } else {
+        alert(data.message || "Failed to update message");
+      }
+    } catch (error) {
+      console.error("Error updating message:", error);
+      alert("Failed to update message");
     }
   };
 
@@ -113,6 +283,9 @@ const AdminDashboard = () => {
     if (adminUser) {
       fetchBuyers();
       fetchSellers();
+      fetchCategories();
+      fetchMessages();
+      fetchMessageStats();
     }
   }, [adminUser]);
 
@@ -187,12 +360,6 @@ const AdminDashboard = () => {
             📊 Overview
           </button>
           <button
-            className={`admin-tab ${activeTab === "users" ? "active" : ""}`}
-            onClick={() => setActiveTab("users")}
-          >
-            👥 User Management
-          </button>
-          <button
             className={`admin-tab ${activeTab === "sellers" ? "active" : ""}`}
             onClick={() => setActiveTab("sellers")}
           >
@@ -203,6 +370,20 @@ const AdminDashboard = () => {
             onClick={() => setActiveTab("buyers")}
           >
             🛒 Buyers
+          </button>
+          <button
+            className={`admin-tab ${
+              activeTab === "categories" ? "active" : ""
+            }`}
+            onClick={() => setActiveTab("categories")}
+          >
+            📂 Categories
+          </button>
+          <button
+            className={`admin-tab ${activeTab === "messages" ? "active" : ""}`}
+            onClick={() => setActiveTab("messages")}
+          >
+            💬 Messages
           </button>
         </div>
 
@@ -237,54 +418,20 @@ const AdminDashboard = () => {
                       {sellers.filter((s) => s.status === "approved").length}
                     </p>
                   </div>
+                  <div className="admin-stat-card">
+                    <h3>Total Messages</h3>
+                    <p className="stat-number">
+                      {messageStats.totalMessages || 0}
+                    </p>
+                  </div>
+                  <div className="admin-stat-card">
+                    <h3>New Messages</h3>
+                    <p className="stat-number">
+                      {messageStats.newMessages || 0}
+                    </p>
+                  </div>
                 </div>
               )}
-            </div>
-          )}
-
-          {activeTab === "users" && (
-            <div className="admin-users">
-              <div className="admin-section-header">
-                <h2>User Management</h2>
-                <div className="admin-filters">
-                  <input
-                    type="text"
-                    placeholder="Search users..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="admin-search"
-                  />
-                  <select
-                    value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value)}
-                    className="admin-filter"
-                  >
-                    <option value="all">All Status</option>
-                    <option value="pending">Pending</option>
-                    <option value="approved">Approved</option>
-                    <option value="rejected">Rejected</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="admin-tabs-inner">
-                <button
-                  className={`admin-tab-inner ${
-                    activeTab === "sellers" ? "active" : ""
-                  }`}
-                  onClick={() => setActiveTab("sellers")}
-                >
-                  Sellers ({sellers.length})
-                </button>
-                <button
-                  className={`admin-tab-inner ${
-                    activeTab === "buyers" ? "active" : ""
-                  }`}
-                  onClick={() => setActiveTab("buyers")}
-                >
-                  Buyers ({buyers.length})
-                </button>
-              </div>
             </div>
           )}
 
@@ -449,6 +596,136 @@ const AdminDashboard = () => {
               </div>
             </div>
           )}
+
+          {activeTab === "categories" && (
+            <div className="admin-categories">
+              <div className="admin-section-header">
+                <h2>Category Management</h2>
+                <button
+                  className="admin-btn admin-btn-primary"
+                  onClick={() => setShowCategoryModal(true)}
+                >
+                  ➕ Add Category
+                </button>
+              </div>
+
+              <div className="admin-categories-list">
+                {categoriesLoading ? (
+                  <div className="admin-loading">
+                    <div className="admin-loading-spinner"></div>
+                    <p>Loading categories...</p>
+                  </div>
+                ) : (
+                  categories.map((category) => (
+                    <div key={category._id} className="admin-category-card">
+                      <div className="admin-category-info">
+                        <h3>{category.categoryName}</h3>
+                        <p className="admin-category-description">
+                          {category.description || "No description"}
+                        </p>
+                        <p className="admin-category-date">
+                          Created:{" "}
+                          {new Date(category.createdAt).toLocaleDateString()}
+                        </p>
+                      </div>
+                      <div className="admin-category-actions">
+                        <button
+                          className="admin-btn admin-btn-danger"
+                          onClick={() => deleteCategory(category._id)}
+                        >
+                          🗑️ Delete
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
+
+          {activeTab === "messages" && (
+            <div className="admin-messages">
+              <div className="admin-section-header">
+                <h2>Contact Messages</h2>
+                <div className="admin-message-stats">
+                  <span className="stat-badge">
+                    Total: {messageStats.totalMessages || 0}
+                  </span>
+                  <span className="stat-badge new">
+                    New: {messageStats.newMessages || 0}
+                  </span>
+                </div>
+              </div>
+
+              <div className="admin-messages-list">
+                {messagesLoading ? (
+                  <div className="admin-loading">
+                    <div className="admin-loading-spinner"></div>
+                    <p>Loading messages...</p>
+                  </div>
+                ) : (
+                  messages.map((message) => (
+                    <div key={message._id} className="admin-message-card">
+                      <div className="admin-message-info">
+                        <div className="message-header">
+                          <h3>{message.name}</h3>
+                          <span className="message-email">{message.email}</span>
+                        </div>
+                        {message.subject && (
+                          <p className="message-subject">{message.subject}</p>
+                        )}
+                        <p className="message-content">{message.message}</p>
+                        <div className="message-meta">
+                          <span className="message-date">
+                            {new Date(message.createdAt).toLocaleDateString()}
+                          </span>
+                          <span
+                            className={`status-badge ${
+                              message.status === "new" ? "new" : ""
+                            }`}
+                          >
+                            {message.status}
+                          </span>
+                          <span
+                            className={`priority-badge ${message.priority}`}
+                          >
+                            {message.priority}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="admin-message-actions">
+                        <button
+                          className="admin-btn admin-btn-primary"
+                          onClick={() => {
+                            setSelectedMessage(message);
+                            setShowMessageModal(true);
+                          }}
+                        >
+                          👁️ View
+                        </button>
+                        <button
+                          className="admin-btn admin-btn-success"
+                          onClick={() =>
+                            updateMessageStatus(message._id, "read")
+                          }
+                        >
+                          ✅ Mark Read
+                        </button>
+                        <button
+                          className="admin-btn admin-btn-warning"
+                          onClick={() =>
+                            updateMessageStatus(message._id, "replied")
+                          }
+                        >
+                          📧 Mark Replied
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* User Details Modal */}
@@ -510,6 +787,161 @@ const AdminDashboard = () => {
                       </div>
                     </>
                   )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Category Modal */}
+        {showCategoryModal && (
+          <div className="admin-modal">
+            <div className="admin-modal-content">
+              <div className="admin-modal-header">
+                <h3>Add New Category</h3>
+                <button
+                  className="admin-modal-close"
+                  onClick={() => setShowCategoryModal(false)}
+                >
+                  ×
+                </button>
+              </div>
+              <form onSubmit={addCategory} className="admin-form">
+                <div className="admin-form-group">
+                  <label htmlFor="categoryName">Category Name *</label>
+                  <input
+                    type="text"
+                    id="categoryName"
+                    value={categoryForm.categoryName}
+                    onChange={(e) =>
+                      setCategoryForm({
+                        ...categoryForm,
+                        categoryName: e.target.value,
+                      })
+                    }
+                    required
+                    placeholder="Enter category name"
+                  />
+                </div>
+                <div className="admin-form-group">
+                  <label htmlFor="description">Description</label>
+                  <textarea
+                    id="description"
+                    value={categoryForm.description}
+                    onChange={(e) =>
+                      setCategoryForm({
+                        ...categoryForm,
+                        description: e.target.value,
+                      })
+                    }
+                    placeholder="Enter category description"
+                    rows="3"
+                  />
+                </div>
+                <div className="admin-form-actions">
+                  <button
+                    type="button"
+                    className="admin-btn admin-btn-secondary"
+                    onClick={() => setShowCategoryModal(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button type="submit" className="admin-btn admin-btn-primary">
+                    Add Category
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Message Modal */}
+        {showMessageModal && selectedMessage && (
+          <div className="admin-modal">
+            <div className="admin-modal-content">
+              <div className="admin-modal-header">
+                <h3>Message Details</h3>
+                <button
+                  className="admin-modal-close"
+                  onClick={() => {
+                    setShowMessageModal(false);
+                    setSelectedMessage(null);
+                  }}
+                >
+                  ×
+                </button>
+              </div>
+              <div className="admin-modal-body">
+                <div className="message-details">
+                  <div className="detail-row">
+                    <strong>From:</strong> {selectedMessage.name}
+                  </div>
+                  <div className="detail-row">
+                    <strong>Email:</strong> {selectedMessage.email}
+                  </div>
+                  {selectedMessage.subject && (
+                    <div className="detail-row">
+                      <strong>Subject:</strong> {selectedMessage.subject}
+                    </div>
+                  )}
+                  <div className="detail-row">
+                    <strong>Date:</strong>{" "}
+                    {new Date(selectedMessage.createdAt).toLocaleString()}
+                  </div>
+                  <div className="detail-row">
+                    <strong>Status:</strong>{" "}
+                    <span className={`status-badge ${selectedMessage.status}`}>
+                      {selectedMessage.status}
+                    </span>
+                  </div>
+                  <div className="detail-row">
+                    <strong>Priority:</strong>{" "}
+                    <span
+                      className={`priority-badge ${selectedMessage.priority}`}
+                    >
+                      {selectedMessage.priority}
+                    </span>
+                  </div>
+                  <div className="detail-row">
+                    <strong>Message:</strong>
+                    <div className="message-text">
+                      {selectedMessage.message}
+                    </div>
+                  </div>
+                  {selectedMessage.adminNotes && (
+                    <div className="detail-row">
+                      <strong>Admin Notes:</strong>
+                      <div className="admin-notes">
+                        {selectedMessage.adminNotes}
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="admin-message-actions">
+                  <button
+                    className="admin-btn admin-btn-success"
+                    onClick={() =>
+                      updateMessageStatus(selectedMessage._id, "read")
+                    }
+                  >
+                    ✅ Mark Read
+                  </button>
+                  <button
+                    className="admin-btn admin-btn-warning"
+                    onClick={() =>
+                      updateMessageStatus(selectedMessage._id, "replied")
+                    }
+                  >
+                    📧 Mark Replied
+                  </button>
+                  <button
+                    className="admin-btn admin-btn-danger"
+                    onClick={() =>
+                      updateMessageStatus(selectedMessage._id, "closed")
+                    }
+                  >
+                    🔒 Close
+                  </button>
                 </div>
               </div>
             </div>

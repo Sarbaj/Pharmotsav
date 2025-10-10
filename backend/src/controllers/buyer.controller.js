@@ -1,8 +1,11 @@
 import { Buyer } from "../models/buyer.model.js";
+import { OTP } from "../models/otp.model.js";
 import jwt from "jsonwebtoken";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponce } from "../utils/ApiResponce.js";
+import { sendWelcomeSMS } from "../utils/smsService.js";
+import { sendWelcomeEmail } from "../utils/emailService.js";
 
 //genarate a tokens for buyer
 const genarateRefreshToken_genarateAccessToken_for_buyer = async (userid) => {
@@ -47,6 +50,50 @@ const registerBuyer = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Please provide all required fields");
   }
 
+  // Check if both phone and email are verified via OTP
+  const phoneOTPRecord = await OTP.findOne({
+    mobileNumber,
+    verificationType: "phone",
+    isVerified: true,
+  });
+
+  const emailOTPRecord = await OTP.findOne({
+    email,
+    verificationType: "email",
+    isVerified: true,
+  });
+
+  if (!phoneOTPRecord) {
+    throw new ApiError(
+      400,
+      "Mobile number must be verified with OTP before registration"
+    );
+  }
+
+  if (!emailOTPRecord) {
+    throw new ApiError(
+      400,
+      "Email must be verified with OTP before registration"
+    );
+  }
+
+  // Check if OTPs are still valid (not expired)
+  if (new Date() > phoneOTPRecord.otpExpiry) {
+    await OTP.findByIdAndDelete(phoneOTPRecord._id);
+    throw new ApiError(
+      400,
+      "Phone OTP verification has expired. Please verify your mobile number again."
+    );
+  }
+
+  if (new Date() > emailOTPRecord.otpExpiry) {
+    await OTP.findByIdAndDelete(emailOTPRecord._id);
+    throw new ApiError(
+      400,
+      "Email OTP verification has expired. Please verify your email again."
+    );
+  }
+
   //cheak if buyer already exists
   const existingBuyer = await Buyer.findOne({
     $or: [{ email }, { mobileNumber }],
@@ -71,12 +118,30 @@ const registerBuyer = asyncHandler(async (req, res) => {
   });
 
   //see if buyer is created or not
-
   const newBuyer = await Buyer.findById(buyer._id).select(
     "-password -refreshToken"
   );
   if (!newBuyer) {
     throw new ApiError(500, "Something went wrong while creating buyer");
+  }
+
+  // Clean up OTP records after successful registration
+  await OTP.findByIdAndDelete(phoneOTPRecord._id);
+  await OTP.findByIdAndDelete(emailOTPRecord._id);
+
+  // Send welcome SMS and email
+  try {
+    await sendWelcomeSMS(mobileNumber, firstName);
+  } catch (error) {
+    console.error("Failed to send welcome SMS:", error);
+    // Don't fail registration if SMS fails
+  }
+
+  try {
+    await sendWelcomeEmail(email, firstName);
+  } catch (error) {
+    console.error("Failed to send welcome email:", error);
+    // Don't fail registration if email fails
   }
 
   //return buyer

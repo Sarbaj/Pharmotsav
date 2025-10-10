@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import "../../CSS/Buyer.css";
 import buyerRegister from "../../assets/buyerRegister.png";
 import productexploration from "../../assets/productexploration.png";
@@ -9,8 +10,18 @@ import communication from "../../assets/com.png";
 function Buyer() {
   const navigate = useNavigate();
   const stepsRef = useRef([]);
+  const { isLogin } = useSelector((state) => state.user);
 
   const handleSignUp = () => {
+    // Check if user is already logged in
+    const token = localStorage.getItem("token");
+    const isLoggedIn = isLogin || token;
+
+    if (isLoggedIn) {
+      alert("You are already logged in!");
+      return;
+    }
+
     navigate("/buyerregister");
   };
 
@@ -52,10 +63,10 @@ function Buyer() {
           <div className="hero-text">
             <h1>What can buyers do on SaathSource?</h1>
             <p className="hero-subtitle">
-              Get in touch with verified sellers. Save valuable time, money
-              and effort discovering verified suppliers on SaathSource. Share
-              your requirements with us and we'll connect you with the best
-              supplier directly.
+              Get in touch with verified sellers. Save valuable time, money and
+              effort discovering verified suppliers on SaathSource. Share your
+              requirements with us and we'll connect you with the best supplier
+              directly.
             </p>
             <button className="cta-button" onClick={handleSignUp}>
               Sign up for Free
@@ -84,7 +95,9 @@ function Buyer() {
       <div className="process-section">
         <div className="section-header">
           <h2>Search, Discover and Procure Products</h2>
-          <p className="section-subtitle">Connecting with the Right Suppliers</p>
+          <p className="section-subtitle">
+            Connecting with the Right Suppliers
+          </p>
         </div>
 
         <div className="steps-container">
@@ -105,50 +118,50 @@ function Buyer() {
         </div>
       </div>
 
-       {/* Benefits Section */}
-        <div className="benefits-section">
-          <div className="benefits-content">
-            <h2>Why Choose SaathSource?</h2>
-            <div className="benefits-grid">
-              <div className="benefit-item">
-                <div className="benefit-icon">⚡</div>
-                <h3>Save Time</h3>
-                <p>
-                  Quick access to verified suppliers without endless searching
-                </p>
-              </div>
-              <div className="benefit-item">
-                <div className="benefit-icon">💰</div>
-                <h3>Save Money</h3>
-                <p>Multiple sellers available, More quantity - more discount</p>
-              </div>
-              <div className="benefit-item">
-                <div className="benefit-icon">🛡️</div>
-                <h3>Verified Suppliers</h3>
-                <p>All sellers are verified and trusted partners</p>
-              </div>
-              <div className="benefit-item">
-                <div className="benefit-icon">📞</div>
-                <h3>Direct Communication</h3>
-                <p>Connect directly with suppliers for better negotiations</p>
-              </div>
+      {/* Benefits Section */}
+      <div className="benefits-section">
+        <div className="benefits-content">
+          <h2>Why Choose SaathSource?</h2>
+          <div className="benefits-grid">
+            <div className="benefit-item">
+              <div className="benefit-icon">⚡</div>
+              <h3>Save Time</h3>
+              <p>
+                Quick access to verified suppliers without endless searching
+              </p>
+            </div>
+            <div className="benefit-item">
+              <div className="benefit-icon">💰</div>
+              <h3>Save Money</h3>
+              <p>Multiple sellers available, More quantity - more discount</p>
+            </div>
+            <div className="benefit-item">
+              <div className="benefit-icon">🛡️</div>
+              <h3>Verified Suppliers</h3>
+              <p>All sellers are verified and trusted partners</p>
+            </div>
+            <div className="benefit-item">
+              <div className="benefit-icon">📞</div>
+              <h3>Direct Communication</h3>
+              <p>Connect directly with suppliers for better negotiations</p>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* CTA Section */}
-        <div className="cta-section">
-          <div className="cta-content">
-            <h2>Ready to Start Your Journey?</h2>
-            <p>
-              Join thousands of buyers who trust SaathSource for their
-              pharmaceutical and healthcare needs.
-            </p>
-            <button className="cta-button large" onClick={handleSignUp}>
-              Get Started Today
-            </button>
-          </div>
+      {/* CTA Section */}
+      <div className="cta-section">
+        <div className="cta-content">
+          <h2>Ready to Start Your Journey?</h2>
+          <p>
+            Join thousands of buyers who trust SaathSource for their
+            pharmaceutical and healthcare needs.
+          </p>
+          <button className="cta-button large" onClick={handleSignUp}>
+            Get Started Today
+          </button>
         </div>
+      </div>
     </div>
   );
 }

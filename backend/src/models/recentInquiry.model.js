@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-const inquirySchema = new Schema(
+const recentInquirySchema = new Schema(
   {
     buyerId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -25,12 +25,20 @@ const inquirySchema = new Schema(
       type: Date,
       default: Date.now,
     },
+    emailSentDate: {
+      type: Date,
+      default: Date.now,
+    },
     status: {
       type: String,
-      enum: ["pending", "responded", "closed"],
-      default: "pending",
+      enum: ["responded", "closed"],
+      default: "responded",
     },
     notes: {
+      type: String,
+      default: "",
+    },
+    emailContent: {
       type: String,
       default: "",
     },
@@ -39,9 +47,12 @@ const inquirySchema = new Schema(
 );
 
 // Index for efficient queries
-inquirySchema.index({ buyerId: 1, sellerId: 1 });
-inquirySchema.index({ sellerId: 1, status: 1 });
-inquirySchema.index({ buyerId: 1, productId: 1 });
-inquirySchema.index({ status: 1 });
+recentInquirySchema.index({ buyerId: 1, sellerId: 1 });
+recentInquirySchema.index({ sellerId: 1, status: 1 });
+recentInquirySchema.index({ buyerId: 1, productId: 1 });
+recentInquirySchema.index({ status: 1 });
 
-export const Inquiry = mongoose.model("Inquiry", inquirySchema);
+export const RecentInquiry = mongoose.model(
+  "RecentInquiry",
+  recentInquirySchema
+);

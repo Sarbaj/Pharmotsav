@@ -1,3 +1,62 @@
+/* Input with button styles */
+.input-with-button {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.input-with-button input {
+  flex: 1;
+}
+
+/* Mobile input container styles */
+.mobile-input-container {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+}
+
+.country-code-selector {
+  flex-shrink: 0;
+}
+
+.country-code-select {
+  padding: 12px 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: white;
+  font-size: 14px;
+  min-width: 120px;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.country-code-select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
+
+.mobile-number-input {
+  flex: 1;
+}
+
+.mobile-number-input input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.mobile-number-input input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
+
 /* Main container */
 .seller-register-container {
   display: flex;
@@ -439,5 +498,23 @@
   .btn {
     padding: 6px 12px;
     font-size: 12px;
+  }
+
+  .mobile-input-container {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .country-code-selector {
+    width: 100%;
+  }
+
+  .country-code-select {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .mobile-number-input {
+    width: 100%;
   }
 }

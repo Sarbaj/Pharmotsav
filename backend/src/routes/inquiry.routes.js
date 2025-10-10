@@ -4,7 +4,10 @@ import {
   getSellerInquiries,
   getBuyerInquiries,
   updateInquiryStatus,
-  removeProductFromInquiry,
+  deleteInquiry,
+  moveInquiriesToRecent,
+  getBuyerRecentInquiries,
+  getSellerRecentInquiries,
 } from "../controllers/inquiry.controller.js";
 import { verifyJwtMember } from "../middlewares/auth.middleware.js";
 
@@ -26,9 +29,22 @@ inquiryRouter
   .route("/update-status/:inquiryId")
   .put(verifyJwtMember, updateInquiryStatus);
 
-// Remove product from inquiry
+// Delete entire inquiry
 inquiryRouter
-  .route("/remove-product/:inquiryId/:productId")
-  .delete(verifyJwtMember, removeProductFromInquiry);
+  .route("/delete/:inquiryId")
+  .delete(verifyJwtMember, deleteInquiry);
+
+// Move inquiries from pending to recent
+inquiryRouter
+  .route("/move-to-recent")
+  .post(verifyJwtMember, moveInquiriesToRecent);
+
+// Get recent inquiries for buyer
+inquiryRouter.route("/recent").get(verifyJwtMember, getBuyerRecentInquiries);
+
+// Get recent inquiries for seller
+inquiryRouter
+  .route("/seller-recent")
+  .get(verifyJwtMember, getSellerRecentInquiries);
 
 export default inquiryRouter;

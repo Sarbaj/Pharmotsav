@@ -162,6 +162,7 @@
 }
 
 .section-header h2 {
+  overflow: visible;
   font-family: "Poppins", sans-serif;
   font-size: 3rem;
   font-weight: 700;
@@ -273,7 +274,6 @@
   opacity: 1;
   transform: translateX(80px);
 }
-
 
 /* Benefits Section */
 .benefits-section {

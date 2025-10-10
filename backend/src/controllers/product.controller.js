@@ -3,6 +3,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponce } from "../utils/ApiResponce.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import fs from "fs";
 
 //add product
 const addProduct = asyncHandler(async (req, res) => {
@@ -20,27 +21,38 @@ const addProduct = asyncHandler(async (req, res) => {
   }
   //get productImage
   let productImageLocalPath;
+  console.log("Files received:", req.files);
+
   if (
     req.files &&
     Array.isArray(req.files.productImage) &&
     req.files.productImage.length > 0
   ) {
     productImageLocalPath = req.files.productImage[0].path;
+    console.log("Product image path:", productImageLocalPath);
   }
 
   if (!productImageLocalPath) {
-    throw new ApiError(401, "local image not found");
+    throw new ApiError(400, "Product image is required");
+  }
+
+  // Check if file exists
+  if (!fs.existsSync(productImageLocalPath)) {
+    console.error("File not found at path:", productImageLocalPath);
+    throw new ApiError(
+      400,
+      "Uploaded file not found. Please try uploading again."
+    );
   }
 
   //upload photo  to cloudinary
   const productImageCloud = await uploadOnCloudinary(productImageLocalPath);
 
   if (!productImageCloud) {
-    throw new ApiError(
-      500,
-      "product image file uploading faield on cloudinary"
-    );
+    throw new ApiError(500, "Product image upload failed. Please try again.");
   }
+
+  // Note: File cleanup is handled by uploadOnCloudinary utility
 
   const product = await Product.create({
     sellerId: req.seller?._id,
@@ -170,13 +182,11 @@ const updateProductImage = asyncHandler(async (req, res) => {
   if (!updatedProduct) {
     throw new ApiError(500, "cant update the product image");
   }
-  return res
-    .status(200)
-    .json(
-      new ApiResponce(200, "Product image updated successfully...", {
-        product: updatedProduct,
-      })
-    );
+  return res.status(200).json(
+    new ApiResponce(200, "Product image updated successfully...", {
+      product: updatedProduct,
+    })
+  );
 });
 
 // get single product with full category & seller

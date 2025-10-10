@@ -199,6 +199,17 @@
   animation: slideIn 0.3s ease;
 }
 
+.error-message {
+  background: #ef4444;
+  color: white;
+  padding: 1rem;
+  border-radius: 12px;
+  text-align: center;
+  font-weight: 600;
+  margin-top: 1rem;
+  animation: slideIn 0.3s ease;
+}
+
 @keyframes slideIn {
   from {
     opacity: 0;

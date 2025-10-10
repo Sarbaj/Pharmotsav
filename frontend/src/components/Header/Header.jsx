@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import "../../CSS/Header.css"; // Assuming you have a CSS file for styling
-import { addBasicInfo } from "../REDUX/UserSlice";
+import { addBasicInfo, setUserRole } from "../REDUX/UserSlice";
 import { useDispatch } from "react-redux";
 import logo from "../../IMGS/logo.png";
 export default function Header() {
@@ -99,6 +99,33 @@ export default function Header() {
       window.removeEventListener("adminLogout", handleAdminLogout);
     };
   }, []);
+
+  // Set initial role immediately on component mount
+  useEffect(() => {
+    const storedRole = localStorage.getItem("role");
+    const userData = localStorage.getItem("user");
+
+    if (storedRole && userData) {
+      try {
+        const parsedUser = JSON.parse(userData);
+        const roleValue = storedRole === "buyer" ? "1" : "2";
+        setRole(roleValue);
+        dispatch(addBasicInfo(parsedUser));
+        dispatch(setUserRole(storedRole));
+        setIsLogin(true);
+        console.log(
+          "Initial role set:",
+          "storedRole:",
+          storedRole,
+          "roleValue:",
+          roleValue
+        );
+      } catch (error) {
+        console.error("Error setting initial role:", error);
+      }
+    }
+  }, []);
+
   useEffect(() => {
     const verifyToken = async () => {
       try {
@@ -111,9 +138,12 @@ export default function Header() {
           return;
         }
 
-        // Check for regular user token
+        // Check for regular user token and role
         const token = localStorage.getItem("refreshToken");
-        console.log(token);
+        const storedRole = localStorage.getItem("role");
+        const userData = localStorage.getItem("user");
+
+        console.log("Token:", token, "Role:", storedRole);
 
         if (!token) {
           // Only redirect to login if we're not on admin pages
@@ -127,8 +157,36 @@ export default function Header() {
           return;
         }
 
+        // If we have stored role and user data, use them first
+        if (storedRole && userData) {
+          try {
+            const parsedUser = JSON.parse(userData);
+            const roleValue = storedRole === "buyer" ? "1" : "2";
+            setRole(roleValue);
+            dispatch(addBasicInfo(parsedUser));
+            dispatch(setUserRole(storedRole));
+            console.log(
+              "Using stored role and user data:",
+              "storedRole:",
+              storedRole,
+              "roleValue:",
+              roleValue,
+              "parsedUser:",
+              parsedUser
+            );
+            return; // Exit early if we have valid stored data
+          } catch (error) {
+            console.error("Error parsing stored user data:", error);
+          }
+        }
+
+        // Fallback: Try to refresh token and determine role via API
+        let response,
+          data,
+          isBuyer = false;
+
         // Try buyer refresh token first
-        let response = await fetch(
+        response = await fetch(
           "http://localhost:4000/api/v1/buyers/login-after-refresh",
           {
             method: "POST",
@@ -137,14 +195,12 @@ export default function Header() {
           }
         );
 
-        let data;
-        let isBuyer = false;
-
         if (response.ok) {
           data = await response.json();
           if (data.message === "Buyer fetched successfully") {
             isBuyer = true;
             setRole("1");
+            localStorage.setItem("role", "buyer"); // Update stored role
           }
         } else {
           // If buyer refresh fails, try seller refresh token
@@ -161,6 +217,7 @@ export default function Header() {
             data = await response.json();
             if (data.message === "Seller fetched successfully") {
               setRole("2"); // Seller role
+              localStorage.setItem("role", "seller"); // Update stored role
             }
           } else {
             // Both buyer and seller refresh failed
@@ -175,8 +232,11 @@ export default function Header() {
           }
         }
 
-        dispatch(addBasicInfo(data.data));
-        console.log(data);
+        if (data && data.data) {
+          dispatch(addBasicInfo(data.data));
+          localStorage.setItem("user", JSON.stringify(data.data)); // Update stored user data
+          console.log("Updated user data from API:", data);
+        }
       } catch (error) {
         // Only redirect to login if we're not on admin pages
         const currentPath = window.location.pathname;
@@ -282,10 +342,18 @@ export default function Header() {
                 to={
                   isAdmin
                     ? "admin-dashboard"
-                    : role == 1
+                    : role === "1"
                     ? "buyer-profile"
                     : "seller-profile"
                 }
+                onClick={() => {
+                  console.log(
+                    "Profile link clicked - Role:",
+                    role,
+                    "isAdmin:",
+                    isAdmin
+                  );
+                }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -413,7 +481,7 @@ export default function Header() {
                     to={
                       isAdmin
                         ? "admin-dashboard"
-                        : role == 1
+                        : role === "1"
                         ? "buyer-profile"
                         : "seller-profile"
                     }
