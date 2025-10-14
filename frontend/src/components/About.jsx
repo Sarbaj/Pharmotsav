@@ -1,50 +1,18 @@
 import React from "react";
 import "../CSS/About.css";
+import mission from "../assets/mission.jpg";
+import vision from "../assets/vision.jpg";
+import impact from "../assets/impact.jpg";
+import smartmatch from "../assets/smartmatch.jpg";
+import realtime from "../assets/realtime.jpg";
+import global from "../assets/global.jpg";
+import fast from "../assets/fast.jpg";
+import quality from "../assets/quality.jpg";
+
 
 function About() {
   return (
     <div className="about-container">
-      {/* Hero Section */}
-      <section className="hero-section">
-        <div className="hero-content">
-          <div className="hero-text">
-            <h1 className="hero-title">
-              Simplifying B2B Pharma Connections for
-              <span className="gradient-text"> Trusted & Efficient</span>{" "}
-              Business
-            </h1>
-            <p className="hero-subtitle">
-              Connect with verified suppliers and buyers worldwide through our
-              intelligent B2B marketplace designed for the pharmaceutical
-              industry.
-            </p>
-            <div className="hero-buttons">
-              <button className="btn-primary">Get Started</button>
-              <button className="btn-secondary">Learn More</button>
-            </div>
-          </div>
-          <div className="hero-visual">
-            <div className="floating-cards">
-              <div className="card card-1">
-                <div className="card-icon">🏥</div>
-                <h3>Healthcare</h3>
-                <p>Verified suppliers</p>
-              </div>
-              <div className="card card-2">
-                <div className="card-icon">💊</div>
-                <h3>Pharmaceuticals</h3>
-                <p>Quality products</p>
-              </div>
-              <div className="card card-3">
-                <div className="card-icon">🌐</div>
-                <h3>Global Network</h3>
-                <p>Worldwide reach</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* About Section */}
       <section className="about-section">
         <div className="container">
@@ -60,7 +28,7 @@ function About() {
 
           <div className="about-grid">
             <div className="about-card">
-              <div className="card-icon-large">🎯</div>
+              <div className="card-icon-large"><img src={mission} alt="mission" /></div>
               <h3>Our Mission</h3>
               <p>
                 To simplify global B2B trade by connecting procurers and
@@ -71,7 +39,7 @@ function About() {
             </div>
 
             <div className="about-card">
-              <div className="card-icon-large">🚀</div>
+              <div className="card-icon-large"><img src={vision} alt="mission" /></div>
               <h3>Our Vision</h3>
               <p>
                 To become the world's most trusted B2B sourcing platform,
@@ -81,7 +49,7 @@ function About() {
             </div>
 
             <div className="about-card">
-              <div className="card-icon-large">⚡</div>
+              <div className="card-icon-large"><img src={impact} alt="mission" /></div>
               <h3>Our Impact</h3>
               <p>
                 We streamline international trade, offering faster sourcing,
@@ -108,16 +76,7 @@ function About() {
 
           <div className="features-grid">
             <div className="feature-item">
-              <div className="feature-icon">🔒</div>
-              <h3>Secure Transactions</h3>
-              <p>
-                Bank-level security for all your transactions with verified
-                partners worldwide.
-              </p>
-            </div>
-
-            <div className="feature-item">
-              <div className="feature-icon">🤖</div>
+              <div className="feature-icon"><img src={smartmatch} alt="mission" /></div>
               <h3>Smart Matching</h3>
               <p>
                 AI-powered algorithms that connect you with the most relevant
@@ -126,7 +85,7 @@ function About() {
             </div>
 
             <div className="feature-item">
-              <div className="feature-icon">📊</div>
+              <div className="feature-icon"><img src={realtime} alt="mission" /></div>
               <h3>Real-time Analytics</h3>
               <p>
                 Comprehensive insights and analytics to optimize your sourcing
@@ -135,7 +94,7 @@ function About() {
             </div>
 
             <div className="feature-item">
-              <div className="feature-icon">🌍</div>
+              <div className="feature-icon"><img src={global} alt="mission" /></div>
               <h3>Global Reach</h3>
               <p>
                 Access to suppliers and buyers from over 50 countries across the
@@ -144,7 +103,7 @@ function About() {
             </div>
 
             <div className="feature-item">
-              <div className="feature-icon">⚡</div>
+              <div className="feature-icon"><img src={fast} alt="mission" /></div>
               <h3>Fast Processing</h3>
               <p>
                 Streamlined processes that reduce sourcing time from weeks to
@@ -153,7 +112,7 @@ function About() {
             </div>
 
             <div className="feature-item">
-              <div className="feature-icon">🎯</div>
+              <div className="feature-icon"><img src={quality} alt="mission" /></div>
               <h3>Quality Assurance</h3>
               <p>
                 Rigorous verification process ensures only certified and quality
