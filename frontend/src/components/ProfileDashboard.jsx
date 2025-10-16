@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "../CSS/ProfileDashboard.css";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import emailjs from "@emailjs/browser";
+import { addBasicInfo } from "./REDUX/UserSlice";
 
 export default function ProfileDashboard() {
   const [isCompanyModalOpen, setIsCompanyModalOpen] = useState(false);
@@ -21,8 +22,59 @@ export default function ProfileDashboard() {
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const [currentSellerGroup, setCurrentSellerGroup] = useState(null);
   const [expandedInquiries, setExpandedInquiries] = useState(new Set());
+  const [isProfileUpdateModalOpen, setIsProfileUpdateModalOpen] =
+    useState(false);
+  const [isPasswordChangeModalOpen, setIsPasswordChangeModalOpen] =
+    useState(false);
+  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
+    useState(false);
+  const [profileUpdateData, setProfileUpdateData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    mobileNumber: "",
+    country: "",
+    natureOfBusiness: "",
+  });
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [forgotPasswordData, setForgotPasswordData] = useState({
+    email: "",
+  });
+  const [otpData, setOtpData] = useState({
+    mobileNumber: "",
+    otp: "",
+    isOtpSent: false,
+    isOtpVerified: false,
+  });
+  const [emailOtpData, setEmailOtpData] = useState({
+    email: "",
+    otp: "",
+    isOtpSent: false,
+    isOtpVerified: false,
+  });
 
   const { UserInfo } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
+  // Function to update user data in both Redux store and localStorage
+  const updateUserData = (newUserData) => {
+    // Update Redux store
+    dispatch(addBasicInfo(newUserData));
+
+    // Update localStorage
+    const existingUserData = JSON.parse(localStorage.getItem("user") || "null");
+    if (existingUserData) {
+      const updatedUserData = { ...existingUserData, ...newUserData };
+      localStorage.setItem("user", JSON.stringify(updatedUserData));
+    }
+
+    // Update local state
+    setUSerdata(newUserData);
+  };
 
   // Fetch inquiries from API
   const fetchInquiries = async () => {
@@ -633,6 +685,373 @@ export default function ProfileDashboard() {
     setCurrentSellerGroup(null);
   };
 
+  // Profile Update Functions
+  const handleProfileUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem("token");
+
+      // Update basic profile info (name, country, nature of business)
+      const basicProfileData = {
+        firstName: profileUpdateData.firstName,
+        lastName: profileUpdateData.lastName,
+        email: userdata.email, // Keep current email for basic update
+        mobileNumber: userdata.mobileNumber, // Keep current mobile for basic update
+        country: profileUpdateData.country,
+        natureOfBusiness: profileUpdateData.natureOfBusiness,
+      };
+
+      const response = await fetch(
+        "http://localhost:4000/api/v1/buyers/update-buyer-profile",
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(basicProfileData),
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        let updatedUserData = { ...data.data };
+
+        // Update email if it was changed and verified
+        if (
+          profileUpdateData.email !== userdata.email &&
+          emailOtpData.isOtpVerified
+        ) {
+          const emailResponse = await fetch(
+            "http://localhost:4000/api/v1/buyers/update-buyer-email",
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                email: profileUpdateData.email,
+                isEmailVerified: true,
+              }),
+            }
+          );
+
+          const emailData = await emailResponse.json();
+          if (!emailData.success) {
+            alert(emailData.message || "Failed to update email");
+            return;
+          }
+          updatedUserData = { ...updatedUserData, ...emailData.data };
+        }
+
+        // Update mobile number if it was changed and verified
+        if (
+          profileUpdateData.mobileNumber !== userdata.mobileNumber &&
+          otpData.isOtpVerified
+        ) {
+          const mobileResponse = await fetch(
+            "http://localhost:4000/api/v1/buyers/update-buyer-mobile",
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                mobileNumber: profileUpdateData.mobileNumber,
+                isMobileVerified: true,
+              }),
+            }
+          );
+
+          const mobileData = await mobileResponse.json();
+          if (!mobileData.success) {
+            alert(mobileData.message || "Failed to update mobile number");
+            return;
+          }
+          updatedUserData = { ...updatedUserData, ...mobileData.data };
+        }
+
+        // Update user data in Redux store, localStorage, and local state
+        updateUserData(updatedUserData);
+
+        alert("Profile updated successfully!");
+        setIsProfileUpdateModalOpen(false);
+
+        // Reset form
+        setProfileUpdateData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          mobileNumber: "",
+          country: "",
+          natureOfBusiness: "",
+        });
+        // Reset OTP states
+        setOtpData({
+          mobileNumber: "",
+          otp: "",
+          isOtpSent: false,
+          isOtpVerified: false,
+        });
+        setEmailOtpData({
+          email: "",
+          otp: "",
+          isOtpSent: false,
+          isOtpVerified: false,
+        });
+      } else {
+        alert(data.message || "Failed to update profile");
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      alert("Failed to update profile. Please try again.");
+    }
+  };
+
+  const handlePasswordChange = async (e) => {
+    e.preventDefault();
+
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      alert("New passwords do not match");
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        "http://localhost:4000/api/v1/buyers/change-password-buyer",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            oldPassword: passwordData.currentPassword,
+            newPassword: passwordData.newPassword,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert("Password changed successfully!");
+        setIsPasswordChangeModalOpen(false);
+        setPasswordData({
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: "",
+        });
+      } else {
+        alert(data.message || "Failed to change password");
+      }
+    } catch (error) {
+      console.error("Error changing password:", error);
+      alert("Failed to change password. Please try again.");
+    }
+  };
+
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(
+        "http://localhost:4000/api/v1/buyers/forgot-password",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: forgotPasswordData.email,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert("Password reset email sent successfully!");
+        setIsForgotPasswordModalOpen(false);
+        setForgotPasswordData({ email: "" });
+      } else {
+        alert(data.message || "Failed to send reset email");
+      }
+    } catch (error) {
+      console.error("Error sending reset email:", error);
+      alert("Failed to send reset email. Please try again.");
+    }
+  };
+
+  const sendOTPForMobileUpdate = async () => {
+    try {
+      console.log("Sending mobile OTP for:", userdata.mobileNumber);
+
+      console.log("Userdata object:", userdata);
+
+      // Send OTP to current mobile number for verification
+      const response = await fetch(
+        "http://localhost:4000/api/v1/otp/buyer/phone/update/initiate",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            mobileNumber: userdata.mobileNumber, // Send OTP to current mobile
+          }),
+        }
+      );
+
+      const data = await response.json();
+      console.log("Mobile OTP response:", data);
+
+      if (data.success) {
+        setOtpData((prev) => ({
+          ...prev,
+          mobileNumber: userdata.mobileNumber, // Store current mobile for verification
+          isOtpSent: true,
+        }));
+        alert(
+          `OTP sent successfully to your current mobile: ${userdata.mobileNumber}`
+        );
+      } else {
+        console.error("Mobile OTP error:", data);
+        alert(data.message || "Failed to send OTP");
+      }
+    } catch (error) {
+      console.error("Error sending OTP:", error);
+      alert("Failed to send OTP. Please try again.");
+    }
+  };
+
+  const verifyOTPForMobileUpdate = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:4000/api/v1/otp/buyer/phone/update/verify",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            mobileNumber: userdata.mobileNumber, // Verify OTP for current mobile
+            otp: otpData.otp,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        setOtpData((prev) => ({
+          ...prev,
+          isOtpVerified: true,
+        }));
+        alert(
+          "Mobile verification successful! You can now change your mobile number."
+        );
+      } else {
+        alert(data.message || "Invalid OTP");
+      }
+    } catch (error) {
+      console.error("Error verifying OTP:", error);
+      alert("Failed to verify OTP. Please try again.");
+    }
+  };
+
+  const sendOTPForEmailUpdate = async () => {
+    try {
+      console.log("Sending email OTP for:", userdata.email);
+      console.log("Userdata object:", userdata);
+
+      // Send OTP to current email for verification
+      const response = await fetch(
+        "http://localhost:4000/api/v1/otp/buyer/email/update/initiate",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: userdata.email, // Send OTP to current email
+          }),
+        }
+      );
+
+      const data = await response.json();
+      console.log("Email OTP response:", data);
+
+      if (data.success) {
+        setEmailOtpData((prev) => ({
+          ...prev,
+          email: userdata.email, // Store current email for verification
+          isOtpSent: true,
+        }));
+        alert(`OTP sent successfully to your current email: ${userdata.email}`);
+      } else {
+        console.error("Email OTP error:", data);
+        alert(data.message || "Failed to send OTP");
+      }
+    } catch (error) {
+      console.error("Error sending email OTP:", error);
+      alert("Failed to send OTP. Please try again.");
+    }
+  };
+
+  const verifyOTPForEmailUpdate = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:4000/api/v1/otp/buyer/email/update/verify",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: userdata.email, // Verify OTP for current email
+            otp: emailOtpData.otp,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        setEmailOtpData((prev) => ({
+          ...prev,
+          isOtpVerified: true,
+        }));
+        alert(
+          "Email verification successful! You can now change your email address."
+        );
+      } else {
+        alert(data.message || "Invalid OTP");
+      }
+    } catch (error) {
+      console.error("Error verifying email OTP:", error);
+      alert("Failed to verify OTP. Please try again.");
+    }
+  };
+
+  // Initialize profile data when modal opens
+  const openProfileUpdateModal = () => {
+    if (userdata) {
+      setProfileUpdateData({
+        firstName: userdata.firstName || "",
+        lastName: userdata.lastName || "",
+        email: userdata.email || "",
+        mobileNumber: userdata.mobileNumber || "",
+        country: userdata.country || "",
+        natureOfBusiness: userdata.natureOfBusiness || "",
+      });
+    }
+    setIsProfileUpdateModalOpen(true);
+  };
+
   // Delete inquiry function
   const handleDeleteInquiry = async (productId, inquiryId) => {
     if (!window.confirm("Are you sure you want to delete this inquiry?")) {
@@ -766,7 +1185,14 @@ export default function ProfileDashboard() {
             </div>
           </div>
         </div>
-        <div className="pd-actions">{/* actions reserved */}</div>
+        <div className="pd-actions">
+          <button
+            className="pd-btn pd-btn--primary"
+            onClick={openProfileUpdateModal}
+          >
+            Update Profile
+          </button>
+        </div>
       </section>
 
       {/* Pending Inquiries Section */}
@@ -1403,6 +1829,400 @@ export default function ProfileDashboard() {
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Profile Update Modal */}
+      {isProfileUpdateModalOpen && (
+        <div
+          className="pd-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="profileUpdateModalTitle"
+        >
+          <div className="pd-dialog">
+            <div className="pd-dialog-head">
+              <h3 id="profileUpdateModalTitle">Update Profile</h3>
+              <button
+                className="pd-icon-btn"
+                onClick={() => setIsProfileUpdateModalOpen(false)}
+                aria-label="Close"
+              >
+                ×
+              </button>
+            </div>
+            <form className="pd-form" onSubmit={handleProfileUpdate}>
+              <div className="pd-row">
+                <label>
+                  <span>First Name</span>
+                  <input
+                    type="text"
+                    value={profileUpdateData.firstName}
+                    onChange={(e) =>
+                      setProfileUpdateData((prev) => ({
+                        ...prev,
+                        firstName: e.target.value,
+                      }))
+                    }
+                    required
+                  />
+                </label>
+                <label>
+                  <span>Last Name</span>
+                  <input
+                    type="text"
+                    value={profileUpdateData.lastName}
+                    onChange={(e) =>
+                      setProfileUpdateData((prev) => ({
+                        ...prev,
+                        lastName: e.target.value,
+                      }))
+                    }
+                    required
+                  />
+                </label>
+              </div>
+              <label>
+                <span>Email Address</span>
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "8px",
+                    alignItems: "center",
+                  }}
+                >
+                  <input
+                    type="email"
+                    value={profileUpdateData.email}
+                    onChange={(e) =>
+                      setProfileUpdateData((prev) => ({
+                        ...prev,
+                        email: e.target.value,
+                      }))
+                    }
+                    required
+                    style={{ flex: 1 }}
+                    readOnly={!emailOtpData.isOtpVerified}
+                    className={
+                      !emailOtpData.isOtpVerified ? "readonly-field" : ""
+                    }
+                  />
+                  {!emailOtpData.isOtpVerified && (
+                    <button
+                      type="button"
+                      className="pd-btn pd-btn--ghost"
+                      onClick={sendOTPForEmailUpdate}
+                      style={{ whiteSpace: "nowrap" }}
+                    >
+                      Change Email
+                    </button>
+                  )}
+                </div>
+                {emailOtpData.isOtpSent && !emailOtpData.isOtpVerified && (
+                  <div className="pd-otp-section">
+                    <div className="pd-otp-input-group">
+                      <input
+                        type="text"
+                        placeholder="Enter OTP sent to your email"
+                        value={emailOtpData.otp}
+                        onChange={(e) =>
+                          setEmailOtpData((prev) => ({
+                            ...prev,
+                            otp: e.target.value,
+                          }))
+                        }
+                      />
+                      <button
+                        type="button"
+                        className="pd-btn pd-btn--primary"
+                        onClick={verifyOTPForEmailUpdate}
+                      >
+                        Verify
+                      </button>
+                    </div>
+                  </div>
+                )}
+                {emailOtpData.isOtpVerified && (
+                  <p className="pd-otp-verified">
+                    Email verified - You can now edit
+                  </p>
+                )}
+              </label>
+              <div className="pd-row">
+                <label>
+                  <span>Mobile Number</span>
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "8px",
+                      alignItems: "center",
+                    }}
+                  >
+                    <input
+                      type="tel"
+                      value={profileUpdateData.mobileNumber}
+                      onChange={(e) =>
+                        setProfileUpdateData((prev) => ({
+                          ...prev,
+                          mobileNumber: e.target.value,
+                        }))
+                      }
+                      required
+                      style={{ flex: 1 }}
+                      readOnly={!otpData.isOtpVerified}
+                      className={!otpData.isOtpVerified ? "readonly-field" : ""}
+                    />
+                    {!otpData.isOtpVerified && (
+                      <button
+                        type="button"
+                        className="pd-btn pd-btn--ghost"
+                        onClick={sendOTPForMobileUpdate}
+                        style={{ whiteSpace: "nowrap" }}
+                      >
+                        Change Mobile
+                      </button>
+                    )}
+                  </div>
+                  {otpData.isOtpSent && !otpData.isOtpVerified && (
+                    <div className="pd-otp-section">
+                      <div className="pd-otp-input-group">
+                        <input
+                          type="text"
+                          placeholder="Enter OTP sent to your mobile"
+                          value={otpData.otp}
+                          onChange={(e) =>
+                            setOtpData((prev) => ({
+                              ...prev,
+                              otp: e.target.value,
+                            }))
+                          }
+                        />
+                        <button
+                          type="button"
+                          className="pd-btn pd-btn--primary"
+                          onClick={verifyOTPForMobileUpdate}
+                        >
+                          Verify
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  {otpData.isOtpVerified && (
+                    <p className="pd-otp-verified">
+                      Mobile verified - You can now edit
+                    </p>
+                  )}
+                </label>
+                <label>
+                  <span>Country</span>
+                  <input
+                    type="text"
+                    value={profileUpdateData.country}
+                    onChange={(e) =>
+                      setProfileUpdateData((prev) => ({
+                        ...prev,
+                        country: e.target.value,
+                      }))
+                    }
+                    required
+                  />
+                </label>
+              </div>
+              <label>
+                <span>Nature of Business</span>
+                <select
+                  value={profileUpdateData.natureOfBusiness}
+                  onChange={(e) =>
+                    setProfileUpdateData((prev) => ({
+                      ...prev,
+                      natureOfBusiness: e.target.value,
+                    }))
+                  }
+                  required
+                >
+                  <option value="">Select Business Type</option>
+                  <option value="Pharmacy">Pharmacy</option>
+                  <option value="Hospital">Hospital</option>
+                  <option value="Agent">Agent</option>
+                  <option value="Distributors">Distributors</option>
+                  <option value="Manufacturer">Manufacturer</option>
+                  <option value="Other">Other</option>
+                </select>
+              </label>
+              <div className="pd-actions-inline">
+                <button className="pd-btn pd-btn--primary" type="submit">
+                  Update Profile
+                </button>
+                <button
+                  className="pd-btn pd-btn--ghost"
+                  type="button"
+                  onClick={() => setIsProfileUpdateModalOpen(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+              <div className="pd-password-options">
+                <h4>Password Options</h4>
+                <div className="pd-actions-inline">
+                  <button
+                    className="pd-btn pd-btn--ghost"
+                    type="button"
+                    onClick={() => {
+                      setIsProfileUpdateModalOpen(false);
+                      setIsPasswordChangeModalOpen(true);
+                    }}
+                  >
+                    Change Password
+                  </button>
+                  <button
+                    className="pd-btn pd-btn--ghost"
+                    type="button"
+                    onClick={() => {
+                      setIsProfileUpdateModalOpen(false);
+                      setIsForgotPasswordModalOpen(true);
+                    }}
+                  >
+                    Forgot Password
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Password Change Modal */}
+      {isPasswordChangeModalOpen && (
+        <div
+          className="pd-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="passwordChangeModalTitle"
+        >
+          <div className="pd-dialog">
+            <div className="pd-dialog-head">
+              <h3 id="passwordChangeModalTitle">Change Password</h3>
+              <button
+                className="pd-icon-btn"
+                onClick={() => setIsPasswordChangeModalOpen(false)}
+                aria-label="Close"
+              >
+                ×
+              </button>
+            </div>
+            <form className="pd-form" onSubmit={handlePasswordChange}>
+              <label>
+                <span>Current Password</span>
+                <input
+                  type="password"
+                  value={passwordData.currentPassword}
+                  onChange={(e) =>
+                    setPasswordData((prev) => ({
+                      ...prev,
+                      currentPassword: e.target.value,
+                    }))
+                  }
+                  required
+                />
+              </label>
+              <label>
+                <span>New Password</span>
+                <input
+                  type="password"
+                  value={passwordData.newPassword}
+                  onChange={(e) =>
+                    setPasswordData((prev) => ({
+                      ...prev,
+                      newPassword: e.target.value,
+                    }))
+                  }
+                  required
+                  minLength="8"
+                />
+              </label>
+              <label>
+                <span>Confirm New Password</span>
+                <input
+                  type="password"
+                  value={passwordData.confirmPassword}
+                  onChange={(e) =>
+                    setPasswordData((prev) => ({
+                      ...prev,
+                      confirmPassword: e.target.value,
+                    }))
+                  }
+                  required
+                  minLength="8"
+                />
+              </label>
+              <div className="pd-actions-inline">
+                <button className="pd-btn pd-btn--primary" type="submit">
+                  Change Password
+                </button>
+                <button
+                  className="pd-btn pd-btn--ghost"
+                  type="button"
+                  onClick={() => setIsPasswordChangeModalOpen(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Forgot Password Modal */}
+      {isForgotPasswordModalOpen && (
+        <div
+          className="pd-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="forgotPasswordModalTitle"
+        >
+          <div className="pd-dialog">
+            <div className="pd-dialog-head">
+              <h3 id="forgotPasswordModalTitle">Reset Password</h3>
+              <button
+                className="pd-icon-btn"
+                onClick={() => setIsForgotPasswordModalOpen(false)}
+                aria-label="Close"
+              >
+                ×
+              </button>
+            </div>
+            <form className="pd-form" onSubmit={handleForgotPassword}>
+              <label>
+                <span>Email Address</span>
+                <input
+                  type="email"
+                  value={forgotPasswordData.email}
+                  onChange={(e) =>
+                    setForgotPasswordData((prev) => ({
+                      ...prev,
+                      email: e.target.value,
+                    }))
+                  }
+                  required
+                />
+              </label>
+              <p style={{ fontSize: "12px", color: "#666", margin: "8px 0" }}>
+                We'll send you a password reset link to your email address.
+              </p>
+              <div className="pd-actions-inline">
+                <button className="pd-btn pd-btn--primary" type="submit">
+                  Send Reset Link
+                </button>
+                <button
+                  className="pd-btn pd-btn--ghost"
+                  type="button"
+                  onClick={() => setIsForgotPasswordModalOpen(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

@@ -374,13 +374,13 @@
   display: flex;
   align-items: flex-start;
   gap: 20px;
-  flex: 1;
 }
 
 .sd-user-meta {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 22rem;
 }
 
 .sd-name {
@@ -1986,6 +1986,146 @@
     max-width: 150px;
   }
   .sd-pending-approval {
+    width: 100%;
+  }
+}
+
+/* Profile Update Modal Styles */
+.sd-profile-update-section {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.sd-profile-update-section h4 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--sd-text);
+}
+
+.sd-otp-section {
+  margin-top: 8px;
+  padding: 8px;
+  background-color: #f8fafc;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.sd-otp-input-group {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.sd-otp-input-group input {
+  flex: 1;
+}
+
+.sd-otp-verified {
+  color: var(--sd-success);
+  font-size: 12px;
+  margin: 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sd-otp-verified::before {
+  content: "✓";
+  font-weight: bold;
+}
+
+.sd-password-options {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.sd-password-options h4 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--sd-text);
+}
+
+.sd-form select {
+  background: var(--sd-surface-2);
+  border: 1px solid var(--sd-border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--sd-text);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.sd-form select:focus {
+  outline: none;
+  border-color: var(--sd-accent);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.sd-form select option {
+  background: white;
+  color: var(--sd-text);
+}
+
+/* Readonly field styles */
+.readonly-field {
+  background-color: #f8f9fa !important;
+  color: #6c757d !important;
+  cursor: not-allowed !important;
+  border-color: #e9ecef !important;
+}
+
+.readonly-field:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: #e9ecef !important;
+}
+
+/* Enhanced button styles for profile update */
+.sd-btn--primary {
+  background: linear-gradient(135deg, var(--sd-accent), var(--sd-accent-2));
+  border-color: transparent;
+  color: white;
+  font-weight: 600;
+}
+
+.sd-btn--primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.sd-btn--ghost {
+  background: transparent;
+  border: 1px solid var(--sd-border);
+  color: var(--sd-text);
+}
+
+.sd-btn--ghost:hover {
+  background: rgba(79, 70, 229, 0.05);
+  border-color: var(--sd-accent);
+}
+
+/* Responsive styles for profile update modals */
+@media (max-width: 768px) {
+  .sd-otp-input-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .sd-otp-input-group button {
+    width: 100%;
+  }
+
+  .sd-profile-update-section .sd-actions-inline {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .sd-profile-update-section .sd-actions-inline button {
     width: 100%;
   }
 }

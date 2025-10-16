@@ -10,6 +10,14 @@ import {
   verifyBuyerEmailOTP,
   resendBuyerPhoneOTP,
   resendBuyerEmailOTP,
+  initiateBuyerPhoneOTPForUpdate,
+  initiateBuyerEmailOTPForUpdate,
+  verifyBuyerPhoneOTPForUpdate,
+  verifyBuyerEmailOTPForUpdate,
+  initiateSellerPhoneOTPForUpdate,
+  initiateSellerEmailOTPForUpdate,
+  verifySellerPhoneOTPForUpdate,
+  verifySellerEmailOTPForUpdate,
 } from "../controllers/otp.controller.js";
 import {
   phoneOtpRateLimiter,
@@ -43,5 +51,51 @@ router.post(
 );
 router.post("/buyer/email/verify", otpVerifyRateLimiter, verifyBuyerEmailOTP);
 router.post("/buyer/email/resend", emailOtpRateLimiter, resendBuyerEmailOTP);
+
+// Buyer profile update OTP routes
+router.post(
+  "/buyer/phone/update/initiate",
+  phoneOtpRateLimiter,
+  initiateBuyerPhoneOTPForUpdate
+);
+router.post(
+  "/buyer/phone/update/verify",
+  otpVerifyRateLimiter,
+  verifyBuyerPhoneOTPForUpdate
+);
+
+router.post(
+  "/buyer/email/update/initiate",
+  emailOtpRateLimiter,
+  initiateBuyerEmailOTPForUpdate
+);
+router.post(
+  "/buyer/email/update/verify",
+  otpVerifyRateLimiter,
+  verifyBuyerEmailOTPForUpdate
+);
+
+// Seller profile update OTP routes
+router.post(
+  "/seller/phone/update/initiate",
+  phoneOtpRateLimiter,
+  initiateSellerPhoneOTPForUpdate
+);
+router.post(
+  "/seller/phone/update/verify",
+  otpVerifyRateLimiter,
+  verifySellerPhoneOTPForUpdate
+);
+
+router.post(
+  "/seller/email/update/initiate",
+  emailOtpRateLimiter,
+  initiateSellerEmailOTPForUpdate
+);
+router.post(
+  "/seller/email/update/verify",
+  otpVerifyRateLimiter,
+  verifySellerEmailOTPForUpdate
+);
 
 export { router as otpRouter };

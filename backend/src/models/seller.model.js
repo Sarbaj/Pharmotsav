@@ -104,6 +104,9 @@ const sellerSchema = new Schema(
     refreshToken: {
       type: String,
     },
+    resetToken: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

@@ -40,7 +40,7 @@ const otpSchema = new mongoose.Schema(
     },
     verificationType: {
       type: String,
-      enum: ["phone", "email"],
+      enum: ["phone", "email", "phone_update", "email_update"],
       default: "phone", // Default to phone for backward compatibility
     },
   },
@@ -79,10 +79,18 @@ otpSchema.methods.resetAttempts = function () {
 
 // Custom validation to ensure either mobileNumber or email is provided
 otpSchema.pre("validate", function (next) {
-  if (this.verificationType === "phone" && !this.mobileNumber) {
+  if (
+    (this.verificationType === "phone" ||
+      this.verificationType === "phone_update") &&
+    !this.mobileNumber
+  ) {
     return next(new Error("Mobile number is required for phone verification"));
   }
-  if (this.verificationType === "email" && !this.email) {
+  if (
+    (this.verificationType === "email" ||
+      this.verificationType === "email_update") &&
+    !this.email
+  ) {
     return next(new Error("Email is required for email verification"));
   }
   next();

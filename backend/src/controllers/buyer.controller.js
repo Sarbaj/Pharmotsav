@@ -370,11 +370,33 @@ const updateBuyerProfile = asyncHandler(async (req, res) => {
     email,
     mobileNumber,
     country,
-    natureOfBuisness,
+    natureOfBusiness,
   } = req.body;
 
   if (!firstName || !lastName || !email || !mobileNumber || !country) {
     throw new ApiError(400, "Please provide all required fields");
+  }
+
+  // Check if email is being changed
+  const currentBuyer = await Buyer.findById(req.buyer?._id);
+  if (!currentBuyer) {
+    throw new ApiError(404, "Buyer not found");
+  }
+
+  // If email is being changed, check if new email already exists
+  if (email !== currentBuyer.email) {
+    const existingBuyer = await Buyer.findOne({ email });
+    if (existingBuyer) {
+      throw new ApiError(409, "Email already exists");
+    }
+  }
+
+  // If mobile number is being changed, check if new mobile number already exists
+  if (mobileNumber !== currentBuyer.mobileNumber) {
+    const existingBuyer = await Buyer.findOne({ mobileNumber });
+    if (existingBuyer) {
+      throw new ApiError(409, "Mobile number already exists");
+    }
   }
 
   const buyer = await Buyer.findByIdAndUpdate(
@@ -385,12 +407,12 @@ const updateBuyerProfile = asyncHandler(async (req, res) => {
       email,
       mobileNumber,
       country,
-      natureOfBuisness,
+      natureOfBusiness,
     },
     {
       new: true,
     }
-  ).select("-password -refreshToken");
+  ).select("-password -refreshToken -resetToken");
 
   return res
     .status(200)

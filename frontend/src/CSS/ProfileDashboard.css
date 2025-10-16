@@ -1345,3 +1345,143 @@
 .pd-seller-header-clickable:hover .pd-expand-hint {
   opacity: 1;
 }
+
+/* Profile Update Modal Styles */
+.pd-profile-update-section {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.pd-profile-update-section h4 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--pd-text);
+}
+
+.pd-otp-section {
+  margin-top: 8px;
+  padding: 8px;
+  background-color: #f8fafc;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.pd-otp-input-group {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.pd-otp-input-group input {
+  flex: 1;
+}
+
+.pd-otp-verified {
+  color: var(--pd-success);
+  font-size: 12px;
+  margin: 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pd-otp-verified::before {
+  content: "✓";
+  font-weight: bold;
+}
+
+.pd-password-options {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.pd-password-options h4 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--pd-text);
+}
+
+.pd-form select {
+  background: var(--pd-surface-2);
+  border: 1px solid var(--pd-border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--pd-text);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.pd-form select:focus {
+  outline: none;
+  border-color: var(--pd-accent);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.pd-form select option {
+  background: white;
+  color: var(--pd-text);
+}
+
+/* Enhanced button styles for profile update */
+.pd-btn--primary {
+  background: linear-gradient(135deg, var(--pd-accent), var(--pd-accent-2));
+  border-color: transparent;
+  color: white;
+  font-weight: 600;
+}
+
+.pd-btn--primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.pd-btn--ghost {
+  background: transparent;
+  border: 1px solid var(--pd-border);
+  color: var(--pd-text);
+}
+
+.pd-btn--ghost:hover {
+  background: rgba(79, 70, 229, 0.05);
+  border-color: var(--pd-accent);
+}
+
+/* Readonly field styles */
+.readonly-field {
+  background-color: #f8f9fa !important;
+  color: #6c757d !important;
+  cursor: not-allowed !important;
+  border-color: #e9ecef !important;
+}
+
+.readonly-field:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: #e9ecef !important;
+}
+
+/* Responsive styles for profile update modals */
+@media (max-width: 768px) {
+  .pd-otp-input-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .pd-otp-input-group button {
+    width: 100%;
+  }
+
+  .pd-profile-update-section .pd-actions-inline {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .pd-profile-update-section .pd-actions-inline button {
+    width: 100%;
+  }
+}

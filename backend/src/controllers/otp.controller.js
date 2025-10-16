@@ -468,6 +468,436 @@ const resendBuyerPhoneOTP = asyncHandler(async (req, res) => {
 });
 
 /**
+ * Initiate phone OTP verification for seller profile update
+ */
+const initiateSellerPhoneOTPForUpdate = asyncHandler(async (req, res) => {
+  const { mobileNumber } = req.body;
+
+  console.log("Seller Mobile OTP request body:", req.body);
+  console.log("Mobile number received:", mobileNumber);
+
+  if (!mobileNumber) {
+    throw new ApiError(400, "Mobile number is required");
+  }
+
+  // Check if seller exists with this mobile number (for profile updates)
+  const existingSeller = await Seller.findOne({ mobileNumber });
+  if (!existingSeller) {
+    throw new ApiError(404, "No seller found with this mobile number");
+  }
+
+  // Generate OTP
+  const otp = generateOTP();
+  const hashedOTP = hashOTP(otp);
+  const otpExpiry = generateOTPExpiry();
+
+  // Clean up any existing OTP for this mobile number
+  await OTP.deleteMany({ mobileNumber, verificationType: "phone_update" });
+
+  // Create new OTP record
+  const otpRecord = await OTP.create({
+    mobileNumber,
+    otp: hashedOTP,
+    otpExpiry,
+    userData: { sellerId: existingSeller._id },
+    verificationType: "phone_update",
+  });
+
+  // Send SMS
+  try {
+    await sendOTPSMS(mobileNumber, otp);
+  } catch (error) {
+    // If SMS fails, delete the OTP record
+    await OTP.findByIdAndDelete(otpRecord._id);
+    throw new ApiError(500, "Failed to send OTP. Please try again.");
+  }
+
+  return res.status(200).json(
+    new ApiResponce(200, "OTP sent successfully to your mobile number", {
+      mobileNumber,
+      expiresIn: "10 minutes",
+    })
+  );
+});
+
+/**
+ * Initiate email OTP verification for seller profile update
+ */
+const initiateSellerEmailOTPForUpdate = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  console.log("Seller Email OTP request body:", req.body);
+  console.log("Email received:", email);
+
+  if (!email) {
+    throw new ApiError(400, "Email is required");
+  }
+
+  // Check if seller exists with this email (for profile updates)
+  const existingSeller = await Seller.findOne({ email });
+  if (!existingSeller) {
+    throw new ApiError(404, "No seller found with this email");
+  }
+
+  // Generate OTP
+  const otp = generateOTP();
+  const hashedOTP = hashOTP(otp);
+  const otpExpiry = generateOTPExpiry();
+
+  // Clean up any existing OTP for this email
+  await OTP.deleteMany({ email, verificationType: "email_update" });
+
+  // Create new OTP record
+  const otpRecord = await OTP.create({
+    email,
+    otp: hashedOTP,
+    otpExpiry,
+    userData: { sellerId: existingSeller._id },
+    verificationType: "email_update",
+  });
+
+  // Send email
+  try {
+    await sendEmailVerificationOTP(email, otp, existingSeller.firstName);
+  } catch (error) {
+    // If email fails, delete the OTP record
+    await OTP.findByIdAndDelete(otpRecord._id);
+    throw new ApiError(
+      500,
+      "Failed to send email verification. Please try again."
+    );
+  }
+
+  return res.status(200).json(
+    new ApiResponce(200, "Verification email sent successfully", {
+      email,
+      expiresIn: "10 minutes",
+    })
+  );
+});
+
+/**
+ * Verify phone OTP for seller profile update
+ */
+const verifySellerPhoneOTPForUpdate = asyncHandler(async (req, res) => {
+  const { mobileNumber, otp } = req.body;
+
+  if (!mobileNumber || !otp) {
+    throw new ApiError(400, "Mobile number and OTP are required");
+  }
+
+  // Find OTP record
+  const otpRecord = await OTP.findOne({
+    mobileNumber,
+    verificationType: "phone_update",
+  });
+  if (!otpRecord) {
+    throw new ApiError(404, "OTP not found. Please request a new OTP.");
+  }
+
+  // Check if OTP is expired
+  if (new Date() > otpRecord.otpExpiry) {
+    await OTP.findByIdAndDelete(otpRecord._id);
+    throw new ApiError(400, "OTP has expired. Please request a new OTP.");
+  }
+
+  // Check if max attempts reached
+  if (otpRecord.attempts >= otpRecord.maxAttempts) {
+    await OTP.findByIdAndDelete(otpRecord._id);
+    throw new ApiError(
+      400,
+      "Too many failed attempts. Please request a new OTP."
+    );
+  }
+
+  // Verify OTP
+  const isOTPValid = verifyOTPCode(otp, otpRecord.otp);
+  if (!isOTPValid) {
+    await otpRecord.incrementAttempts();
+    throw new ApiError(400, "Invalid OTP. Please try again.");
+  }
+
+  // Mark OTP as verified but don't delete it yet
+  otpRecord.isVerified = true;
+  await otpRecord.save();
+
+  return res.status(200).json(
+    new ApiResponce(200, "Phone number verified successfully", {
+      mobileNumber,
+      verified: true,
+    })
+  );
+});
+
+/**
+ * Verify email OTP for seller profile update
+ */
+const verifySellerEmailOTPForUpdate = asyncHandler(async (req, res) => {
+  const { email, otp } = req.body;
+
+  if (!email || !otp) {
+    throw new ApiError(400, "Email and OTP are required");
+  }
+
+  // Find OTP record
+  const otpRecord = await OTP.findOne({
+    email,
+    verificationType: "email_update",
+  });
+  if (!otpRecord) {
+    throw new ApiError(404, "OTP not found. Please request a new OTP.");
+  }
+
+  // Check if OTP is expired
+  if (new Date() > otpRecord.otpExpiry) {
+    await OTP.findByIdAndDelete(otpRecord._id);
+    throw new ApiError(400, "OTP has expired. Please request a new OTP.");
+  }
+
+  // Check if max attempts reached
+  if (otpRecord.attempts >= otpRecord.maxAttempts) {
+    await OTP.findByIdAndDelete(otpRecord._id);
+    throw new ApiError(
+      400,
+      "Too many failed attempts. Please request a new OTP."
+    );
+  }
+
+  // Verify OTP
+  const isOTPValid = verifyOTPCode(otp, otpRecord.otp);
+  if (!isOTPValid) {
+    await otpRecord.incrementAttempts();
+    throw new ApiError(400, "Invalid OTP. Please try again.");
+  }
+
+  // Mark OTP as verified but don't delete it yet
+  otpRecord.isVerified = true;
+  await otpRecord.save();
+
+  return res.status(200).json(
+    new ApiResponce(200, "Email verified successfully", {
+      email,
+      verified: true,
+    })
+  );
+});
+
+/**
+ * Initiate phone OTP verification for buyer profile update
+ */
+const initiateBuyerPhoneOTPForUpdate = asyncHandler(async (req, res) => {
+  const { mobileNumber } = req.body;
+
+  console.log("Mobile OTP request body:", req.body);
+  console.log("Mobile number received:", mobileNumber);
+
+  if (!mobileNumber) {
+    throw new ApiError(400, "Mobile number is required");
+  }
+
+  // Check if buyer exists with this mobile number (for profile updates)
+  const existingBuyer = await Buyer.findOne({ mobileNumber });
+  if (!existingBuyer) {
+    throw new ApiError(404, "No buyer found with this mobile number");
+  }
+
+  // Generate OTP
+  const otp = generateOTP();
+  const hashedOTP = hashOTP(otp);
+  const otpExpiry = generateOTPExpiry();
+
+  // Clean up any existing OTP for this mobile number
+  await OTP.deleteMany({ mobileNumber, verificationType: "phone_update" });
+
+  // Create new OTP record
+  const otpRecord = await OTP.create({
+    mobileNumber,
+    otp: hashedOTP,
+    otpExpiry,
+    userData: { buyerId: existingBuyer._id },
+    verificationType: "phone_update",
+  });
+
+  // Send SMS
+  try {
+    await sendOTPSMS(mobileNumber, otp);
+  } catch (error) {
+    // If SMS fails, delete the OTP record
+    await OTP.findByIdAndDelete(otpRecord._id);
+    throw new ApiError(500, "Failed to send OTP. Please try again.");
+  }
+
+  return res.status(200).json(
+    new ApiResponce(200, "OTP sent successfully to your mobile number", {
+      mobileNumber,
+      expiresIn: "10 minutes",
+    })
+  );
+});
+
+/**
+ * Initiate email OTP verification for buyer profile update
+ */
+const initiateBuyerEmailOTPForUpdate = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  console.log("Email OTP request body:", req.body);
+  console.log("Email received:", email);
+
+  if (!email) {
+    throw new ApiError(400, "Email is required");
+  }
+
+  // Check if buyer exists with this email (for profile updates)
+  const existingBuyer = await Buyer.findOne({ email });
+  if (!existingBuyer) {
+    throw new ApiError(404, "No buyer found with this email");
+  }
+
+  // Generate OTP
+  const otp = generateOTP();
+  const hashedOTP = hashOTP(otp);
+  const otpExpiry = generateOTPExpiry();
+
+  // Clean up any existing OTP for this email
+  await OTP.deleteMany({ email, verificationType: "email_update" });
+
+  // Create new OTP record
+  const otpRecord = await OTP.create({
+    email,
+    otp: hashedOTP,
+    otpExpiry,
+    userData: { buyerId: existingBuyer._id },
+    verificationType: "email_update",
+  });
+
+  // Send email
+  try {
+    await sendEmailVerificationOTP(email, otp, existingBuyer.firstName);
+  } catch (error) {
+    // If email fails, delete the OTP record
+    await OTP.findByIdAndDelete(otpRecord._id);
+    throw new ApiError(
+      500,
+      "Failed to send email verification. Please try again."
+    );
+  }
+
+  return res.status(200).json(
+    new ApiResponce(200, "Verification email sent successfully", {
+      email,
+      expiresIn: "10 minutes",
+    })
+  );
+});
+
+/**
+ * Verify phone OTP for buyer profile update
+ */
+const verifyBuyerPhoneOTPForUpdate = asyncHandler(async (req, res) => {
+  const { mobileNumber, otp } = req.body;
+
+  if (!mobileNumber || !otp) {
+    throw new ApiError(400, "Mobile number and OTP are required");
+  }
+
+  // Find OTP record
+  const otpRecord = await OTP.findOne({
+    mobileNumber,
+    verificationType: "phone_update",
+  });
+  if (!otpRecord) {
+    throw new ApiError(404, "OTP not found. Please request a new OTP.");
+  }
+
+  // Check if OTP is expired
+  if (new Date() > otpRecord.otpExpiry) {
+    await OTP.findByIdAndDelete(otpRecord._id);
+    throw new ApiError(400, "OTP has expired. Please request a new OTP.");
+  }
+
+  // Check if max attempts reached
+  if (otpRecord.attempts >= otpRecord.maxAttempts) {
+    await OTP.findByIdAndDelete(otpRecord._id);
+    throw new ApiError(
+      400,
+      "Too many failed attempts. Please request a new OTP."
+    );
+  }
+
+  // Verify OTP
+  const isOTPValid = verifyOTPCode(otp, otpRecord.otp);
+  if (!isOTPValid) {
+    await otpRecord.incrementAttempts();
+    throw new ApiError(400, "Invalid OTP. Please try again.");
+  }
+
+  // Mark OTP as verified but don't delete it yet
+  otpRecord.isVerified = true;
+  await otpRecord.save();
+
+  return res.status(200).json(
+    new ApiResponce(200, "Phone number verified successfully", {
+      mobileNumber,
+      verified: true,
+    })
+  );
+});
+
+/**
+ * Verify email OTP for buyer profile update
+ */
+const verifyBuyerEmailOTPForUpdate = asyncHandler(async (req, res) => {
+  const { email, otp } = req.body;
+
+  if (!email || !otp) {
+    throw new ApiError(400, "Email and OTP are required");
+  }
+
+  // Find OTP record
+  const otpRecord = await OTP.findOne({
+    email,
+    verificationType: "email_update",
+  });
+  if (!otpRecord) {
+    throw new ApiError(404, "OTP not found. Please request a new OTP.");
+  }
+
+  // Check if OTP is expired
+  if (new Date() > otpRecord.otpExpiry) {
+    await OTP.findByIdAndDelete(otpRecord._id);
+    throw new ApiError(400, "OTP has expired. Please request a new OTP.");
+  }
+
+  // Check if max attempts reached
+  if (otpRecord.attempts >= otpRecord.maxAttempts) {
+    await OTP.findByIdAndDelete(otpRecord._id);
+    throw new ApiError(
+      400,
+      "Too many failed attempts. Please request a new OTP."
+    );
+  }
+
+  // Verify OTP
+  const isOTPValid = verifyOTPCode(otp, otpRecord.otp);
+  if (!isOTPValid) {
+    await otpRecord.incrementAttempts();
+    throw new ApiError(400, "Invalid OTP. Please try again.");
+  }
+
+  // Mark OTP as verified but don't delete it yet
+  otpRecord.isVerified = true;
+  await otpRecord.save();
+
+  return res.status(200).json(
+    new ApiResponce(200, "Email verified successfully", {
+      email,
+      verified: true,
+    })
+  );
+});
+
+/**
  * Resend email OTP for buyer registration
  */
 const resendBuyerEmailOTP = asyncHandler(async (req, res) => {
@@ -538,4 +968,12 @@ export {
   verifyBuyerEmailOTP,
   resendBuyerPhoneOTP,
   resendBuyerEmailOTP,
+  initiateBuyerPhoneOTPForUpdate,
+  initiateBuyerEmailOTPForUpdate,
+  verifyBuyerPhoneOTPForUpdate,
+  verifyBuyerEmailOTPForUpdate,
+  initiateSellerPhoneOTPForUpdate,
+  initiateSellerEmailOTPForUpdate,
+  verifySellerPhoneOTPForUpdate,
+  verifySellerEmailOTPForUpdate,
 };

@@ -10,6 +10,10 @@ import {
   refreshAccessTokenSeller,
   changeSellerCurrentPassword,
   changeSellerForgotedPassword,
+  forgotSellerPassword,
+  resetSellerPassword,
+  updateSellerEmail,
+  updateSellerMobileNumber,
   updateSellerProfile,
   getCurrentSeller,
   getLoginAfterRefresh,
@@ -43,6 +47,14 @@ sellerRouter.route("/current-seller").get(verifyJwtSeller, getCurrentSeller);
 sellerRouter
   .route("/update-seller-profile")
   .patch(verifyJwtSeller, updateSellerProfile);
+sellerRouter
+  .route("/update-seller-email")
+  .patch(verifyJwtSeller, updateSellerEmail);
+sellerRouter
+  .route("/update-seller-mobile")
+  .patch(verifyJwtSeller, updateSellerMobileNumber);
+sellerRouter.route("/forgot-password").post(forgotSellerPassword);
+sellerRouter.route("/reset-password").post(resetSellerPassword);
 sellerRouter.route("/my-products").get(verifyJwtSeller, getSellerAllProducts);
 
 //secure for member

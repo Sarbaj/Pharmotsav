@@ -16,7 +16,6 @@ import {
   removeBuyer,
   getBuyer,
   getLoginAfterRefresh,
-  getBuyerDetails,
 } from "../controllers/buyer.controller.js";
 
 const buyerRouter = Router();
@@ -45,8 +44,5 @@ buyerRouter
 buyerRouter.route("/all-buyers").get(verifyJwtMember, getAllBuyers);
 buyerRouter.route("/remove-buyer").post(verifyJwtMember, removeBuyer);
 buyerRouter.route("/get-buyer").post(verifyJwtMember, getBuyer);
-
-// Public route for getting buyer details (no authentication required)
-buyerRouter.route("/details/:buyerId").get(getBuyerDetails);
 
 export default buyerRouter;

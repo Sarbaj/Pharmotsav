@@ -8,6 +8,7 @@ import { ApiResponce } from "../utils/ApiResponce.js";
 import mongoose from "mongoose";
 import { Product } from "../models/product.model.js";
 import { sendWelcomeSMS } from "../utils/smsService.js";
+import { sendPasswordResetEmail } from "../utils/emailService.js";
 
 //genarate a tokens for seller
 const genarateRefreshToken_genarateAccessToken_for_seller = async (userid) => {
@@ -321,6 +322,144 @@ const changeSellerForgotedPassword = asyncHandler(async (req, res) => {
     .json(new ApiResponce(200, "password chagne successfully..", {}));
 });
 
+//forgot password - send reset email
+const forgotSellerPassword = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    throw new ApiError(400, "Email is required");
+  }
+
+  const seller = await Seller.findOne({ email });
+  if (!seller) {
+    throw new ApiError(404, "Seller not found with this email");
+  }
+
+  // Generate reset token (you can use JWT or a simple random string)
+  const resetToken = jwt.sign(
+    { sellerId: seller._id },
+    process.env.ACCESS_TOKEN_SECRET,
+    { expiresIn: "15m" }
+  );
+
+  // Save reset token to seller (you might want to add a resetToken field to the schema)
+  seller.resetToken = resetToken;
+  await seller.save({ validateBeforeSave: false });
+
+  // Send reset email
+  try {
+    await sendPasswordResetEmail(email, seller.firstName, resetToken);
+  } catch (error) {
+    console.error("Failed to send password reset email:", error);
+    throw new ApiError(500, "Failed to send password reset email");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponce(200, "Password reset email sent successfully", {}));
+});
+
+//reset password with token
+const resetSellerPassword = asyncHandler(async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  if (!token || !newPassword) {
+    throw new ApiError(400, "Token and new password are required");
+  }
+
+  try {
+    // Verify the reset token
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+
+    const seller = await Seller.findById(decoded.sellerId);
+    if (!seller) {
+      throw new ApiError(404, "Seller not found");
+    }
+
+    if (seller.resetToken !== token) {
+      throw new ApiError(400, "Invalid or expired reset token");
+    }
+
+    // Update password
+    seller.password = newPassword;
+    seller.resetToken = undefined; // Clear the reset token
+    await seller.save({ validateBeforeSave: false });
+
+    return res
+      .status(200)
+      .json(new ApiResponce(200, "Password reset successfully", {}));
+  } catch (error) {
+    if (
+      error.name === "JsonWebTokenError" ||
+      error.name === "TokenExpiredError"
+    ) {
+      throw new ApiError(400, "Invalid or expired reset token");
+    }
+    throw error;
+  }
+});
+
+//update seller email with OTP verification
+const updateSellerEmail = asyncHandler(async (req, res) => {
+  const { email, isEmailVerified } = req.body;
+
+  if (!email) {
+    throw new ApiError(400, "Email is required");
+  }
+
+  if (!isEmailVerified) {
+    throw new ApiError(400, "Email must be verified with OTP before updating");
+  }
+
+  // Check if email already exists
+  const existingSeller = await Seller.findOne({ email });
+  if (existingSeller) {
+    throw new ApiError(409, "Email already exists");
+  }
+
+  const seller = await Seller.findByIdAndUpdate(
+    req.seller?._id,
+    { email },
+    { new: true }
+  ).select("-password -refreshToken -resetToken");
+
+  return res
+    .status(200)
+    .json(new ApiResponce(200, "Email updated successfully", seller));
+});
+
+//update seller mobile number with OTP verification
+const updateSellerMobileNumber = asyncHandler(async (req, res) => {
+  const { mobileNumber, isMobileVerified } = req.body;
+
+  if (!mobileNumber) {
+    throw new ApiError(400, "Mobile number is required");
+  }
+
+  if (!isMobileVerified) {
+    throw new ApiError(
+      400,
+      "Mobile number must be verified with OTP before updating"
+    );
+  }
+
+  // Check if mobile number already exists
+  const existingSeller = await Seller.findOne({ mobileNumber });
+  if (existingSeller) {
+    throw new ApiError(409, "Mobile number already exists");
+  }
+
+  const seller = await Seller.findByIdAndUpdate(
+    req.seller?._id,
+    { mobileNumber },
+    { new: true }
+  ).select("-password -refreshToken -resetToken");
+
+  return res
+    .status(200)
+    .json(new ApiResponce(200, "Mobile number updated successfully", seller));
+});
+
 //update seller Profile
 const updateSellerProfile = asyncHandler(async (req, res) => {
   const {
@@ -329,7 +468,7 @@ const updateSellerProfile = asyncHandler(async (req, res) => {
     email,
     mobileNumber,
     country,
-    natureOfBuisness,
+    natureOfBusiness,
     CompanyName,
     licenseNumber,
     gstNumber,
@@ -360,7 +499,7 @@ const updateSellerProfile = asyncHandler(async (req, res) => {
       email,
       mobileNumber,
       country,
-      natureOfBuisness,
+      natureOfBusiness,
       CompanyName,
       licenseNumber,
       gstNumber,
@@ -594,6 +733,10 @@ export {
   refreshAccessTokenSeller,
   changeSellerCurrentPassword,
   changeSellerForgotedPassword,
+  forgotSellerPassword,
+  resetSellerPassword,
+  updateSellerEmail,
+  updateSellerMobileNumber,
   updateSellerProfile,
   getCurrentSeller,
   getLoginAfterRefresh,
