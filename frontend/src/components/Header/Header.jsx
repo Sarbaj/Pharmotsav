@@ -19,6 +19,11 @@ export default function Header() {
 
   // Click outside handler
   useEffect(() => {
+    if (role != "") {
+      console.log(role);
+    }
+  }, [role]);
+  useEffect(() => {
     const handleClickOutside = (event) => {
       if (headerRef.current && !headerRef.current.contains(event.target)) {
         setIsOpen(false);

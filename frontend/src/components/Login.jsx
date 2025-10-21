@@ -48,6 +48,7 @@ const Login = () => {
         dispatch(addBasicInfo(user)); // user must be a flat object
 
         dispatch(login());
+        alert(`/${role}-profile`);
         navigate(`/${role}-profile`);
       } else {
         console.log(data.message);
@@ -163,6 +164,3 @@ const Login = () => {
 };
 
 export default Login;
-
-
-
