@@ -1,6 +1,7 @@
 import { Admin } from "../models/admin.model.js";
 import { Seller } from "../models/seller.model.js";
 import { Buyer } from "../models/buyer.model.js";
+import { AdminNotification } from "../models/adminNotification.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponce } from "../utils/ApiResponce.js";
@@ -295,6 +296,87 @@ const getSellersByStatusController = asyncHandler(async (req, res, next) => {
     )
   );
 });
+
+// Get all admin notifications (inquiry tracking)
+const getAdminNotificationsController = asyncHandler(async (req, res, next) => {
+  const { status, limit = 50 } = req.query;
+
+  let query = { isActive: true };
+  if (status && ["unread", "read"].includes(status)) {
+    query.status = status;
+  }
+
+  const notifications = await AdminNotification.find(query)
+    .populate(
+      "buyerId",
+      "firstName lastName email mobileNumber country natureOfBusiness"
+    )
+    .populate(
+      "sellerId",
+      "firstName lastName email CompanyName mobileNumber location"
+    )
+    .populate("productId", "productName productImage description")
+    .populate("inquiryId", "status createdAt")
+    .sort({ createdAt: -1 })
+    .limit(parseInt(limit));
+
+  const totalCount = await AdminNotification.countDocuments({ isActive: true });
+  const unreadCount = await AdminNotification.countDocuments({
+    status: "unread",
+    isActive: true,
+  });
+
+  return res.status(200).json(
+    new ApiResponce(200, "Admin notifications fetched successfully", {
+      notifications,
+      stats: {
+        total: totalCount,
+        unread: unreadCount,
+        read: totalCount - unreadCount,
+      },
+    })
+  );
+});
+
+// Mark notification as read
+const markNotificationAsReadController = asyncHandler(
+  async (req, res, next) => {
+    const { notificationId } = req.params;
+
+    if (!notificationId) {
+      throw new ApiError(400, "Notification ID is required");
+    }
+
+    const notification = await AdminNotification.findById(notificationId);
+    if (!notification) {
+      throw new ApiError(404, "Notification not found");
+    }
+
+    notification.status = "read";
+    await notification.save();
+
+    return res
+      .status(200)
+      .json(
+        new ApiResponce(200, "Notification marked as read", { notification })
+      );
+  }
+);
+
+// Mark all notifications as read
+const markAllNotificationsAsReadController = asyncHandler(
+  async (req, res, next) => {
+    await AdminNotification.updateMany(
+      { status: "unread", isActive: true },
+      { status: "read" }
+    );
+
+    return res
+      .status(200)
+      .json(new ApiResponce(200, "All notifications marked as read", {}));
+  }
+);
+
 export {
   memberRegisterController,
   adminLoginController,
@@ -308,4 +390,7 @@ export {
   getSellerByIdController,
   getBuyerByIdController,
   getSellersByStatusController,
+  getAdminNotificationsController,
+  markNotificationAsReadController,
+  markAllNotificationsAsReadController,
 };

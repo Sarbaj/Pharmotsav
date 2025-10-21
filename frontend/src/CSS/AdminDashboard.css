@@ -857,3 +857,196 @@
     align-items: flex-start;
   }
 }
+
+/* Inquiry Notification Styles */
+.notification-badge {
+  background: #dc3545;
+  color: white;
+  border-radius: 50%;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  margin-left: 0.5rem;
+  min-width: 1.5rem;
+  text-align: center;
+  display: inline-block;
+}
+
+.admin-inquiries {
+  padding: 2rem;
+}
+
+.admin-inquiry-stats {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.admin-inquiries-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.admin-inquiry-card {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.admin-inquiry-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.admin-inquiry-info {
+  flex: 1;
+}
+
+.inquiry-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.inquiry-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.inquiry-arrow {
+  color: #667eea;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.company-name {
+  color: #666;
+  font-weight: normal;
+}
+
+.inquiry-message {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+  margin: 1rem 0;
+  color: #555;
+  line-height: 1.5;
+}
+
+.inquiry-meta {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.inquiry-date {
+  font-weight: 600;
+}
+
+.inquiry-product {
+  color: #667eea;
+}
+
+.inquiry-status {
+  color: #28a745;
+  font-weight: 600;
+}
+
+.inquiry-details {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.buyer-details,
+.seller-details {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.admin-inquiry-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.status-badge.unread {
+  background: #dc3545;
+  color: white;
+}
+
+.status-badge.read {
+  background: #28a745;
+  color: white;
+}
+
+/* Notification Modal Styles */
+.notification-details {
+  margin-bottom: 1.5rem;
+}
+
+.participant-section {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+}
+
+.participant-section h4 {
+  margin: 0 0 1rem 0;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.notification-message {
+  background: #e3f2fd;
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid #2196f3;
+  margin-top: 0.5rem;
+  line-height: 1.6;
+}
+
+.admin-notification-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+/* Responsive Inquiry Styles */
+@media (max-width: 768px) {
+  .inquiry-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .inquiry-meta {
+    flex-direction: column;
+  }
+
+  .admin-inquiry-actions {
+    flex-direction: column;
+  }
+
+  .admin-inquiry-stats {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

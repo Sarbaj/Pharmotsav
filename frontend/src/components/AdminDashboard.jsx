@@ -25,6 +25,15 @@ const AdminDashboard = () => {
   const [messageStats, setMessageStats] = useState({});
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [showMessageModal, setShowMessageModal] = useState(false);
+  const [inquiryNotifications, setInquiryNotifications] = useState([]);
+  const [inquiryLoading, setInquiryLoading] = useState(false);
+  const [inquiryStats, setInquiryStats] = useState({
+    total: 0,
+    unread: 0,
+    read: 0,
+  });
+  const [selectedNotification, setSelectedNotification] = useState(null);
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
   const navigate = useNavigate();
 
   // API Functions
@@ -230,6 +239,79 @@ const AdminDashboard = () => {
     }
   };
 
+  // Inquiry Notification Functions
+  const fetchInquiryNotifications = async () => {
+    setInquiryLoading(true);
+    try {
+      const token = localStorage.getItem("adminToken");
+      const response = await fetch(
+        "http://localhost:4000/api/v1/admin/notifications",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      if (data.success) {
+        setInquiryNotifications(data.data.notifications);
+        setInquiryStats(data.data.stats);
+      }
+    } catch (error) {
+      console.error("Error fetching inquiry notifications:", error);
+      setError("Failed to fetch inquiry notifications");
+    } finally {
+      setInquiryLoading(false);
+    }
+  };
+
+  const markNotificationAsRead = async (notificationId) => {
+    try {
+      const token = localStorage.getItem("adminToken");
+      const response = await fetch(
+        `http://localhost:4000/api/v1/admin/notifications/${notificationId}/mark-read`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      if (data.success) {
+        // Refresh notifications
+        fetchInquiryNotifications();
+      }
+    } catch (error) {
+      console.error("Error marking notification as read:", error);
+    }
+  };
+
+  const markAllNotificationsAsRead = async () => {
+    try {
+      const token = localStorage.getItem("adminToken");
+      const response = await fetch(
+        "http://localhost:4000/api/v1/admin/notifications/mark-all-read",
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      if (data.success) {
+        // Refresh notifications
+        fetchInquiryNotifications();
+      }
+    } catch (error) {
+      console.error("Error marking all notifications as read:", error);
+    }
+  };
+
   const approveSeller = async (sellerId, status) => {
     try {
       setLoading(true);
@@ -286,6 +368,7 @@ const AdminDashboard = () => {
       fetchCategories();
       fetchMessages();
       fetchMessageStats();
+      fetchInquiryNotifications();
     }
   }, [adminUser]);
 
@@ -385,6 +468,15 @@ const AdminDashboard = () => {
           >
             💬 Messages
           </button>
+          <button
+            className={`admin-tab ${activeTab === "inquiries" ? "active" : ""}`}
+            onClick={() => setActiveTab("inquiries")}
+          >
+            🔍 Inquiries
+            {inquiryStats.unread > 0 && (
+              <span className="notification-badge">{inquiryStats.unread}</span>
+            )}
+          </button>
         </div>
 
         {/* Content */}
@@ -429,6 +521,14 @@ const AdminDashboard = () => {
                     <p className="stat-number">
                       {messageStats.newMessages || 0}
                     </p>
+                  </div>
+                  <div className="admin-stat-card">
+                    <h3>Total Inquiries</h3>
+                    <p className="stat-number">{inquiryStats.total || 0}</p>
+                  </div>
+                  <div className="admin-stat-card">
+                    <h3>Unread Inquiries</h3>
+                    <p className="stat-number">{inquiryStats.unread || 0}</p>
                   </div>
                 </div>
               )}
@@ -726,6 +826,128 @@ const AdminDashboard = () => {
               </div>
             </div>
           )}
+
+          {activeTab === "inquiries" && (
+            <div className="admin-inquiries">
+              <div className="admin-section-header">
+                <h2>Buyer-Seller Inquiries Tracking</h2>
+                <div className="admin-inquiry-stats">
+                  <span className="stat-badge">
+                    Total: {inquiryStats.total || 0}
+                  </span>
+                  <span className="stat-badge new">
+                    Unread: {inquiryStats.unread || 0}
+                  </span>
+                  <span className="stat-badge">
+                    Read: {inquiryStats.read || 0}
+                  </span>
+                  {inquiryStats.unread > 0 && (
+                    <button
+                      className="admin-btn admin-btn-primary"
+                      onClick={markAllNotificationsAsRead}
+                    >
+                      Mark All Read
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className="admin-inquiries-list">
+                {inquiryLoading ? (
+                  <div className="admin-loading">
+                    <div className="admin-loading-spinner"></div>
+                    <p>Loading inquiry notifications...</p>
+                  </div>
+                ) : inquiryNotifications.length === 0 ? (
+                  <div className="admin-empty-state">
+                    <p>No inquiry notifications found.</p>
+                  </div>
+                ) : (
+                  inquiryNotifications.map((notification) => (
+                    <div key={notification._id} className="admin-inquiry-card">
+                      <div className="admin-inquiry-info">
+                        <div className="inquiry-header">
+                          <h3>
+                            {notification.buyerId?.firstName}{" "}
+                            {notification.buyerId?.lastName}
+                          </h3>
+                          <span className="inquiry-arrow">→</span>
+                          <h3>
+                            {notification.sellerId?.firstName}{" "}
+                            {notification.sellerId?.lastName}
+                            {notification.sellerId?.CompanyName && (
+                              <span className="company-name">
+                                {" "}
+                                ({notification.sellerId.CompanyName})
+                              </span>
+                            )}
+                          </h3>
+                          <span
+                            className={`status-badge ${
+                              notification.status === "unread"
+                                ? "unread"
+                                : "read"
+                            }`}
+                          >
+                            {notification.status}
+                          </span>
+                        </div>
+                        <p className="inquiry-message">
+                          {notification.message}
+                        </p>
+                        <div className="inquiry-meta">
+                          <span className="inquiry-date">
+                            {new Date(notification.createdAt).toLocaleString()}
+                          </span>
+                          <span className="inquiry-product">
+                            Product: {notification.productName}
+                          </span>
+                          {notification.inquiryId?.status && (
+                            <span className="inquiry-status">
+                              Status: {notification.inquiryId.status}
+                            </span>
+                          )}
+                        </div>
+                        <div className="inquiry-details">
+                          <div className="buyer-details">
+                            <strong>Buyer:</strong>{" "}
+                            {notification.buyerId?.email} |{" "}
+                            {notification.buyerId?.mobileNumber}
+                          </div>
+                          <div className="seller-details">
+                            <strong>Seller:</strong>{" "}
+                            {notification.sellerId?.email} |{" "}
+                            {notification.sellerId?.mobileNumber}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="admin-inquiry-actions">
+                        <button
+                          className="admin-btn admin-btn-primary"
+                          onClick={() => {
+                            setSelectedNotification(notification);
+                            setShowNotificationModal(true);
+                          }}
+                        >
+                          👁️ View Details
+                        </button>
+                        {notification.status === "unread" && (
+                          <button
+                            className="admin-btn admin-btn-success"
+                            onClick={() =>
+                              markNotificationAsRead(notification._id)
+                            }
+                          >
+                            ✅ Mark Read
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* User Details Modal */}
@@ -942,6 +1164,153 @@ const AdminDashboard = () => {
                   >
                     🔒 Close
                   </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Notification Detail Modal */}
+        {showNotificationModal && selectedNotification && (
+          <div className="admin-modal">
+            <div className="admin-modal-content">
+              <div className="admin-modal-header">
+                <h3>Inquiry Notification Details</h3>
+                <button
+                  className="admin-modal-close"
+                  onClick={() => {
+                    setShowNotificationModal(false);
+                    setSelectedNotification(null);
+                  }}
+                >
+                  ×
+                </button>
+              </div>
+              <div className="admin-modal-body">
+                <div className="notification-details">
+                  <div className="detail-row">
+                    <strong>Notification Type:</strong>{" "}
+                    {selectedNotification.type}
+                  </div>
+                  <div className="detail-row">
+                    <strong>Date:</strong>{" "}
+                    {new Date(selectedNotification.createdAt).toLocaleString()}
+                  </div>
+                  <div className="detail-row">
+                    <strong>Status:</strong>{" "}
+                    <span
+                      className={`status-badge ${selectedNotification.status}`}
+                    >
+                      {selectedNotification.status}
+                    </span>
+                  </div>
+                  <div className="detail-row">
+                    <strong>Message:</strong>
+                    <div className="notification-message">
+                      {selectedNotification.message}
+                    </div>
+                  </div>
+
+                  <div className="participant-section">
+                    <h4>Buyer Information</h4>
+                    <div className="detail-row">
+                      <strong>Name:</strong>{" "}
+                      {selectedNotification.buyerId?.firstName}{" "}
+                      {selectedNotification.buyerId?.lastName}
+                    </div>
+                    <div className="detail-row">
+                      <strong>Email:</strong>{" "}
+                      {selectedNotification.buyerId?.email}
+                    </div>
+                    <div className="detail-row">
+                      <strong>Phone:</strong>{" "}
+                      {selectedNotification.buyerId?.mobileNumber}
+                    </div>
+                    <div className="detail-row">
+                      <strong>Country:</strong>{" "}
+                      {selectedNotification.buyerId?.country}
+                    </div>
+                    <div className="detail-row">
+                      <strong>Business Type:</strong>{" "}
+                      {selectedNotification.buyerId?.natureOfBusiness}
+                    </div>
+                  </div>
+
+                  <div className="participant-section">
+                    <h4>Seller Information</h4>
+                    <div className="detail-row">
+                      <strong>Name:</strong>{" "}
+                      {selectedNotification.sellerId?.firstName}{" "}
+                      {selectedNotification.sellerId?.lastName}
+                    </div>
+                    <div className="detail-row">
+                      <strong>Email:</strong>{" "}
+                      {selectedNotification.sellerId?.email}
+                    </div>
+                    <div className="detail-row">
+                      <strong>Phone:</strong>{" "}
+                      {selectedNotification.sellerId?.mobileNumber}
+                    </div>
+                    <div className="detail-row">
+                      <strong>Company:</strong>{" "}
+                      {selectedNotification.sellerId?.CompanyName}
+                    </div>
+                    <div className="detail-row">
+                      <strong>Location:</strong>{" "}
+                      {selectedNotification.sellerId?.location}
+                    </div>
+                  </div>
+
+                  <div className="participant-section">
+                    <h4>Product Information</h4>
+                    <div className="detail-row">
+                      <strong>Product Name:</strong>{" "}
+                      {selectedNotification.productName}
+                    </div>
+                    {selectedNotification.productId && (
+                      <>
+                        <div className="detail-row">
+                          <strong>Description:</strong>{" "}
+                          {selectedNotification.productId?.description ||
+                            "No description available"}
+                        </div>
+                      </>
+                    )}
+                  </div>
+
+                  {selectedNotification.inquiryId && (
+                    <div className="participant-section">
+                      <h4>Inquiry Status</h4>
+                      <div className="detail-row">
+                        <strong>Current Status:</strong>{" "}
+                        <span
+                          className={`status-badge ${selectedNotification.inquiryId.status}`}
+                        >
+                          {selectedNotification.inquiryId.status}
+                        </span>
+                      </div>
+                      <div className="detail-row">
+                        <strong>Inquiry Created:</strong>{" "}
+                        {new Date(
+                          selectedNotification.inquiryId.createdAt
+                        ).toLocaleString()}
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="admin-notification-actions">
+                  {selectedNotification.status === "unread" && (
+                    <button
+                      className="admin-btn admin-btn-success"
+                      onClick={() => {
+                        markNotificationAsRead(selectedNotification._id);
+                        setShowNotificationModal(false);
+                        setSelectedNotification(null);
+                      }}
+                    >
+                      ✅ Mark as Read
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

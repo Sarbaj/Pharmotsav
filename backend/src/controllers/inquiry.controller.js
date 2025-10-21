@@ -1,6 +1,9 @@
 import { Inquiry } from "../models/inquiry.model.js";
 import { RecentInquiry } from "../models/recentInquiry.model.js";
 import { Product } from "../models/product.model.js";
+import { Buyer } from "../models/buyer.model.js";
+import { Seller } from "../models/seller.model.js";
+import { AdminNotification } from "../models/adminNotification.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponce } from "../utils/ApiResponce.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -46,6 +49,26 @@ const createOrUpdateInquiry = asyncHandler(async (req, res) => {
       productId,
       productName: product.productName,
       status: "pending",
+    });
+
+    // Get buyer and seller details for notification
+    const buyer = await Buyer.findById(buyerId).select(
+      "firstName lastName email"
+    );
+    const seller = await Seller.findById(sellerId).select(
+      "firstName lastName email CompanyName"
+    );
+
+    // Create admin notification for tracking
+    await AdminNotification.create({
+      type: "buyer_inquiry",
+      buyerId,
+      sellerId,
+      productId,
+      productName: product.productName,
+      inquiryId: inquiry._id,
+      message: `${buyer.firstName} ${buyer.lastName} sent an inquiry to ${seller.firstName} ${seller.lastName} (${seller.CompanyName}) for product: ${product.productName}`,
+      status: "unread",
     });
   }
 

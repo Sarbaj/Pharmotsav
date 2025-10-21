@@ -16,6 +16,9 @@ import {
   getSellerByIdController,
   getBuyerByIdController,
   getSellersByStatusController,
+  getAdminNotificationsController,
+  markNotificationAsReadController,
+  markAllNotificationsAsReadController,
 } from "../controllers/admin.controller.js";
 
 const adminRouter = Router();
@@ -54,5 +57,16 @@ adminRouter
 adminRouter
   .route("/approve-seller/:sellerId")
   .put(verifyJwtAdmin, approveSellerController);
+
+// Admin Notification Routes
+adminRouter
+  .route("/notifications")
+  .get(verifyJwtAdmin, getAdminNotificationsController);
+adminRouter
+  .route("/notifications/:notificationId/mark-read")
+  .put(verifyJwtAdmin, markNotificationAsReadController);
+adminRouter
+  .route("/notifications/mark-all-read")
+  .put(verifyJwtAdmin, markAllNotificationsAsReadController);
 
 export default adminRouter;
