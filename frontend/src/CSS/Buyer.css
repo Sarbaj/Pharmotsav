@@ -2,18 +2,17 @@
 .buyer-container {
   padding: 4rem 0rem 0rem 0rem;
   position: relative;
-
   width: 100vw;
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: #ffffff;
   overflow-x: hidden;
 }
 
 /* Hero Section */
 .buyer-hero {
   padding: 6rem 2rem 4rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: #ffffff;
+  color: #111827;
   position: relative;
   overflow: hidden;
 }
@@ -25,8 +24,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-  opacity: 0.3;
+  background: none;
+  opacity: 0;
 }
 
 .hero-content {
@@ -40,32 +39,30 @@
   z-index: 1;
 }
 .hero-text {
-  width: 40rem;
+  max-width: 40rem;
 }
 .hero-text h1 {
   overflow: visible;
   font-family: "Poppins", sans-serif;
   font-size: 3.5rem;
-  font-weight: 700;
+  font-weight: 800;
   line-height: 1.2;
   margin-bottom: 1.5rem;
-  background: linear-gradient(45deg, #fff, #e0e7ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #111827;
 }
 
 .hero-subtitle {
   font-size: 1.2rem;
   line-height: 1.6;
   margin-bottom: 2rem;
-  opacity: 0.9;
+  opacity: 0.95;
   font-family: "uppercasefont";
+  color: #4b5563;
 }
 
 .cta-button {
-  background: linear-gradient(45deg, #14db9a, #00b894);
-  color: white;
+  background: #000000;
+  color: #ffffff;
   padding: 1rem 2rem;
   border: none;
   border-radius: 50px;
@@ -73,14 +70,14 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(20, 219, 154, 0.3);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.25);
   font-family: "uppercasefont";
 }
 
 .cta-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(20, 219, 154, 0.4);
-  background: linear-gradient(45deg, #00b894, #14db9a);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.35);
+  background: #111827;
 }
 
 .cta-button.large {
@@ -189,7 +186,7 @@
   top: 0;
   bottom: 0;
   width: 4px;
-  background: linear-gradient(to bottom, #14db9a, #667eea);
+  background: #14db9a;
   transform: translateX(-50%);
   border-radius: 2px;
 }
@@ -213,8 +210,8 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  background: linear-gradient(45deg, #14db9a, #00b894);
-  color: white;
+  background: #000000;
+  color: #ffffff;
   width: 60px;
   height: 60px;
   border-radius: 50%;
@@ -224,16 +221,16 @@
   font-size: 1.2rem;
   font-weight: 700;
   z-index: 2;
-  box-shadow: 0 4px 15px rgba(20, 219, 154, 0.3);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.25);
 }
 
 .step-image {
   background: #ffffff;
-  border-radius: 20px;
+  border-radius: 18px;
   padding: 1.5rem;
   width: 45%;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e2e8f0;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+  border: 1px solid #e5e7eb;
   transition: all 0.3s ease;
   display: flex;
   justify-content: center;
@@ -242,15 +239,15 @@
 
 .step-image img {
   max-width: 100%;
-  max-height: 350px;
-  object-fit: contain;
+  max-height: 320px;
+  object-fit: cover;
   border-radius: 12px;
   transition: transform 0.3s ease;
 }
 
 .step-image:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
 }
 
 .step-image img:hover {
@@ -434,21 +431,14 @@
   }
 
   .steps-container::before {
-    display: none; /* Hide timeline for clean mobile view */
+    display: none;
   }
 
   .step-card {
     flex-direction: column !important;
-    align-items: center;
-    margin: 1.5rem 0;
-    padding: 1.5rem;
-    border-radius: 14px;
-    background: #fff;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-
-    /* animation start state */
-    opacity: 0;
-    transform: translateY(40px);
+    background-color: transparent;
+    text-align: center;
+    margin-bottom: 4rem;
     animation: fadeUp 0.8s ease forwards;
   }
 

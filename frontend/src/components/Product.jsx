@@ -24,6 +24,8 @@ const Product = () => {
   const [error, setError] = useState(null);
   const [productsLoading, setProductsLoading] = useState(true);
   const [productsError, setProductsError] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Fetch categories from backend
   const fetchCategories = async () => {
@@ -69,6 +71,16 @@ const Product = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const openProductModal = (product) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const closeProductModal = () => {
+    setIsModalOpen(false);
+    setSelectedProduct(null);
   };
 
   // Fetch products by category from backend
@@ -172,7 +184,7 @@ const Product = () => {
           image:
             product.productImage ||
             "https://via.placeholder.com/300x200?text=Product+Image",
-          price: "Contact for Price", // Price not available in endpoint
+          price: "Contact", // Price not available in endpoint
           supplier: product.sellerName,
           minOrder: "Contact Supplier",
           sellerCity: product.sellerCity,
@@ -320,9 +332,9 @@ const Product = () => {
   };
 
   const scrollToCategorySection = () => {
-    const categorySection = document.querySelector(".product-sidebar");
-    if (categorySection) {
-      categorySection.scrollIntoView({
+    const productsSection = document.querySelector(".products-section");
+    if (productsSection) {
+      productsSection.scrollIntoView({
         behavior: "smooth",
         block: "start",
       });
@@ -478,7 +490,11 @@ const Product = () => {
           ) : filteredProducts.length > 0 ? (
             <div className="products-grid">
               {filteredProducts.map((product) => (
-                <div key={product.id} className="product-card">
+                <div
+                  key={product.id}
+                  className="product-card"
+                  onClick={() => openProductModal(product)}
+                >
                   <div className="product-image-container">
                     <img
                       src={product.image}
@@ -495,86 +511,102 @@ const Product = () => {
                     <h3 className="product-name">{product.name}</h3>
                     <p className="product-description">{product.description}</p>
 
-                    <div className="product-details">
-                      <div className="detail-item">
-                        <span className="detail-label">Supplier:</span>
-                        <span className="detail-value">{product.supplier}</span>
-                      </div>
-                      {product.sellerCity && (
-                        <div className="detail-item">
-                          <span className="detail-label">Location:</span>
-                          <span className="detail-value">
-                            {product.sellerCity}
-                          </span>
-                        </div>
-                      )}
-                      {product.specification &&
-                      product.specification.length > 0 ? (
-                        <>
-                          {product.specification
-                            .slice(
-                              0,
-                              product.showAllSpecs
-                                ? product.specification.length
-                                : 4
+                    {(() => {
+                      const typeSpec =
+                        product.specification &&
+                        product.specification.find(
+                          (spec) =>
+                            spec &&
+                            typeof spec.key === "string" &&
+                            spec.key.toLowerCase() === "type"
+                        );
+
+                      const otherSpecs =
+                        product.specification &&
+                        product.specification.filter(
+                          (spec) =>
+                            !(
+                              spec &&
+                              typeof spec.key === "string" &&
+                              spec.key.toLowerCase() === "type"
                             )
-                            .map((spec, index) => (
-                              <div key={index} className="detail-item">
-                                <span className="detail-label">
-                                  {spec.key}:
-                                </span>
+                        );
+
+                      return (
+                        <div className="product-details">
+                          <div className="detail-item">
+                            <span className="detail-label">Supplier:</span>
+                            <span className="detail-value">
+                              {product.supplier}
+                            </span>
+                          </div>
+                          {product.sellerCity && (
+                            <div className="detail-item">
+                              <span className="detail-label">Location:</span>
+                              <span className="detail-value">
+                                {product.sellerCity}
+                              </span>
+                            </div>
+                          )}
+                          {typeSpec && (
+                            <div className="detail-item">
+                              <span className="detail-label">Type:</span>
+                              <span className="detail-value">{typeSpec.value}</span>
+                            </div>
+                          )}
+
+                          {otherSpecs && otherSpecs.length > 0 && (
+                            <>
+                              {product.showAllSpecs &&
+                                otherSpecs.map((spec, index) => (
+                                  <div key={index} className="detail-item">
+                                    <span className="detail-label">
+                                      {spec.key}:
+                                    </span>
+                                    <span className="detail-value">
+                                      {spec.value}
+                                    </span>
+                                  </div>
+                                ))}
+
+                              <div className="detail-item">
+                                <button
+                                  className="see-more-btn"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    openProductModal(product);
+                                  }}
+                                >
+                                  See More Details
+                                </button>
+                              </div>
+                            </>
+                          )}
+
+                          {!product.specification ||
+                            (product.specification.length === 0 && (
+                              <div className="detail-item">
+                                <span className="detail-label">Min Order:</span>
                                 <span className="detail-value">
-                                  {spec.value}
+                                  {product.minOrder}
                                 </span>
                               </div>
                             ))}
-                          {product.specification.length > 4 && (
-                            <div className="detail-item">
-                              <button
-                                className="see-more-btn"
-                                onClick={() => {
-                                  const updatedProducts = filteredProducts.map(
-                                    (p) =>
-                                      p.id === product.id
-                                        ? {
-                                            ...p,
-                                            showAllSpecs: !p.showAllSpecs,
-                                          }
-                                        : p
-                                  );
-                                  setFilteredProducts(updatedProducts);
-                                }}
-                              >
-                                {product.showAllSpecs
-                                  ? "See Less"
-                                  : `See More (${
-                                      product.specification.length - 4
-                                    } more)`}
-                              </button>
-                            </div>
-                          )}
-                        </>
-                      ) : (
-                        <div className="detail-item">
-                          <span className="detail-label">Min Order:</span>
-                          <span className="detail-value">
-                            {product.minOrder}
-                          </span>
                         </div>
-                      )}
-                    </div>
+                      );
+                    })()}
+                  </div>
 
-                    <div className="product-footer">
-                      <div className="price-container">
-                        <span className="product-price">{product.price}</span>
-                      </div>
-                      <button
-                        className="inquire-button"
-                        onClick={() => handleInquire(product)}
-                      >
-                        Inquire Now
-                      </button>
-                    </div>
+                  <div className="product-footer">
+                    <button
+                      className="inquire-button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleInquire(product);
+                      }}
+                    >
+                      Inquire Now
+                    </button>
                   </div>
                 </div>
               ))}
@@ -599,6 +631,88 @@ const Product = () => {
           <span className="category-text">Categories</span>
         </button>
       </div>
+
+      {isModalOpen && selectedProduct && (
+        <div className="product-modal-overlay" onClick={closeProductModal}>
+          <div
+            className="product-modal"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            <button className="product-modal-close" onClick={closeProductModal}>
+              X
+            </button>
+
+            <div className="product-modal-header">
+              <h2 className="product-modal-title">{selectedProduct.name}</h2>
+              {selectedProduct.supplier && (
+                <p className="product-modal-supplier">{selectedProduct.supplier}</p>
+              )}
+            </div>
+
+            <div className="product-modal-body">
+              <div className="product-modal-image-wrapper">
+                <img
+                  src={selectedProduct.image}
+                  alt={selectedProduct.name}
+                  onError={(e) => {
+                    e.target.src =
+                      "https://via.placeholder.com/400x260?text=Product+Image";
+                  }}
+                />
+              </div>
+
+              <p className="product-modal-description">
+                {selectedProduct.description}
+              </p>
+
+              <div className="product-modal-details">
+                {selectedProduct.sellerCity && (
+                  <div className="product-modal-detail-row">
+                    <span className="detail-label">Location:</span>
+                    <span className="detail-value">
+                      {selectedProduct.sellerCity}
+                    </span>
+                  </div>
+                )}
+
+                {selectedProduct.minOrder && (
+                  <div className="product-modal-detail-row">
+                    <span className="detail-label">Min Order:</span>
+                    <span className="detail-value">
+                      {selectedProduct.minOrder}
+                    </span>
+                  </div>
+                )}
+
+                {Array.isArray(selectedProduct.specification) &&
+                  selectedProduct.specification.length > 0 && (
+                    <div className="product-modal-specs">
+                      {selectedProduct.specification.map((spec, index) => (
+                        <div key={index} className="product-modal-detail-row">
+                          <span className="detail-label">{spec.key}:</span>
+                          <span className="detail-value">{spec.value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+              </div>
+            </div>
+
+            <div className="product-modal-footer">
+              <button
+                className="inquire-button"
+                onClick={() => {
+                  handleInquire(selectedProduct);
+                }}
+              >
+                Inquire Now
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
