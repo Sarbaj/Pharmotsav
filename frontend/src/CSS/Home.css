@@ -9,9 +9,9 @@
   src: url(../FONT/JTUSjIg1_i6t8kCHKm459WlhyyTh89Y.woff2) format("woff");
 }
 :root {
-  --primary-color: #4f46e5;
-  --secondary-color: #06b6d4;
-  --accent-color: #10b981;
+  --primary-color: #14db9a;
+  --secondary-color: #14db9a;
+  --accent-color: #14db9a;
   --text-primary: #1f2937;
   --text-secondary: #6b7280;
   --text-light: #9ca3af;
@@ -374,7 +374,7 @@ main .container .div1 .btns button:hover {
 /* Hero Section */
 .hero-section {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #ffffff;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -407,7 +407,7 @@ main .container .div1 .btns button:hover {
 }
 
 .hero-text {
-  color: white;
+  color: #111827;
 }
 
 .hero-title {
@@ -419,15 +419,12 @@ main .container .div1 .btns button:hover {
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #14db9a;
 }
 
 .hero-subtitle {
   font-size: 1.25rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: #4b5563;
   margin-bottom: 2rem;
   line-height: 1.6;
 }
@@ -454,8 +451,8 @@ main .container .div1 .btns button:hover {
 }
 
 .btn-primary {
-  background: white;
-  color: var(--primary-color);
+  background: #000000;
+  color: #ffffff;
   box-shadow: var(--shadow-lg);
 }
 
@@ -465,15 +462,14 @@ main .container .div1 .btns button:hover {
 }
 
 .btn-secondary {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(10px);
+  background: transparent;
+  color: #111827;
+  border: 2px solid #111827;
 }
 
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.5);
+  background: #111827;
+  color: #ffffff;
 }
 
 .btn-outline {

@@ -1,32 +1,21 @@
 :root {
-  --pd-bg: transparent;
+  --pd-bg: #f3f4f6;
   --pd-surface: #ffffff;
   --pd-surface-2: #ffffff;
-  --pd-border: #1f2a36;
-  --pd-accent: #4f46e5;
-  --pd-accent-2: #06b6d4;
-  --pd-text: #000000;
-  --pd-text-dim: #000000;
+  --pd-border: #e5e7eb;
+  --pd-accent: #14db9a;
+  --pd-accent-2: #14db9a;
+  --pd-text: #111827;
+  --pd-text-dim: #6b7280;
   --pd-success: #16a34a;
   --pd-danger: #ef4444;
-  --pd-shadow: 0 10px 30px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.02);
+  --pd-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
 }
 
 .profile-dashboard {
   top: 8vh;
   font-family: uppercasefont;
-  background: radial-gradient(
-      1200px 600px at 10% -10%,
-      rgba(195, 194, 210, 0.12),
-      transparent
-    ),
-    radial-gradient(
-      1000px 500px at 110% 10%,
-      rgba(245, 249, 249, 0.12),
-      transparent
-    ),
-    var(--pd-bg);
+  background: var(--pd-bg);
   min-height: 100vh;
   padding: 8rem 3rem;
 
@@ -39,12 +28,11 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: 16px;
-  background: rgba(234, 230, 230, 0.144);
-  backdrop-filter: blur(10px);
+  background: #ffffff;
   border: 1px solid var(--pd-border);
   border-radius: 16px;
   padding: 20px 20px;
-  color: black;
+  color: var(--pd-text);
   position: relative;
   bottom: 1rem;
   box-shadow: var(--pd-shadow);
@@ -95,8 +83,7 @@
 /* Inquiries Section - Integrated */
 .pd-inquiries-section {
   margin-top: 2rem;
-  background: rgba(234, 230, 230, 0.144);
-  backdrop-filter: blur(10px);
+  background: #ffffff;
   border: 1px solid var(--pd-border);
   border-radius: 16px;
   padding: 1.5rem;
@@ -161,11 +148,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: linear-gradient(135deg, var(--pd-accent), var(--pd-accent-2));
-  color: white;
+  background: #ffffff;
+  color: var(--pd-text);
   padding: 1rem 1.5rem;
   border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+  border: 1px solid var(--pd-border);
 }
 
 .pd-total-number {
@@ -174,6 +161,7 @@
   font-weight: 700;
   font-family: "Poppins", sans-serif;
   line-height: 1;
+  color: #14db9a;
 }
 
 .pd-total-label {
@@ -192,8 +180,8 @@
 
 /* Seller Group Styles */
 .pd-seller-group {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
   border-radius: 12px;
   padding: 1.5rem;
   transition: all 0.3s ease;
@@ -208,13 +196,13 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--pd-accent), var(--pd-accent-2));
+  background: #14db9a;
 }
 
 .pd-seller-group:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-  background: white;
+  box-shadow: 0 8px 25px rgba(15, 23, 42, 0.08);
+  background: #ffffff;
 }
 
 .pd-seller-header {
@@ -349,13 +337,13 @@
   width: 56px;
   height: 56px;
   border-radius: 14px;
-  background: linear-gradient(135deg, var(--pd-accent), var(--pd-accent-2));
+  background: #000000;
   display: grid;
   place-items: center;
   font-weight: 700;
   letter-spacing: 0.5px;
-  color: white;
-  box-shadow: 0 10px 20px rgba(79, 70, 229, 0.35);
+  color: #ffffff;
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.15);
 }
 
 .pd-user-meta {
@@ -381,18 +369,18 @@
 }
 
 .pd-tag {
-  background: rgba(79, 70, 229, 0.15);
-  color: black;
-  border: 1px solid rgba(79, 70, 229, 0.35);
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
   padding: 6px 10px;
   border-radius: 999px;
   font-size: 12px;
 }
 
 .pd-tag--accent {
-  background: rgba(6, 182, 212, 0.15);
-  border-color: rgba(6, 182, 212, 0.35);
-  color: black;
+  background: #000000;
+  border-color: #000000;
+  color: #ffffff;
 }
 
 .pd-actions {
@@ -404,7 +392,7 @@
 .pd-btn {
   appearance: none;
   border: 1px solid var(--pd-border);
-  background: var(--pd-surface-2);
+  background: #ffffff;
   color: var(--pd-text);
   border-radius: 12px;
   padding: 10px 14px;
@@ -420,12 +408,13 @@
 
 .pd-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.08);
 }
 
 .pd-btn--primary {
-  background: linear-gradient(135deg, var(--pd-accent), var(--pd-accent-2));
-  border-color: transparent;
+  background: #000000;
+  border-color: #000000;
+  color: #ffffff;
 }
 
 .pd-btn--ghost {
@@ -441,7 +430,7 @@
 }
 
 .pd-stat-card {
-  background: var(--pd-surface);
+  background: #ffffff;
   border: 1px solid var(--pd-border);
   border-radius: 14px;
   padding: 16px;
@@ -544,12 +533,8 @@
 .pd-bar {
   width: 18px;
   border-radius: 8px 8px 0 0;
-  background: linear-gradient(
-    180deg,
-    rgba(79, 70, 229, 0.9),
-    rgba(79, 70, 229, 0.3)
-  );
-  border: 1px solid rgba(79, 70, 229, 0.35);
+  background: linear-gradient(180deg, #14db9a, rgba(20, 219, 154, 0.3));
+  border: 1px solid rgba(20, 219, 154, 0.35);
 }
 .pd-legend {
   margin-top: 10px;
