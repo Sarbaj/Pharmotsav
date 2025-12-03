@@ -16,11 +16,8 @@ export const API_ENDPOINTS = {
   BUYERS: {
     REGISTER: `${API_BASE_URL}/api/v1/buyers/register-buyer`,
     UPDATE_PROFILE: `${API_BASE_URL}/api/v1/buyers/update-buyer-profile`,
-    UPDATE_EMAIL: `${API_BASE_URL}/api/v1/buyers/update-buyer-email`,
-    UPDATE_MOBILE: `${API_BASE_URL}/api/v1/buyers/update-buyer-mobile`,
     CHANGE_PASSWORD: `${API_BASE_URL}/api/v1/buyers/change-password-buyer`,
-    FORGOT_PASSWORD: `${API_BASE_URL}/api/v1/buyers/forgot-password`,
-    DETAILS: `${API_BASE_URL}/api/v1/buyers/details`,
+    DETAILS: `${API_BASE_URL}/api/v1/buyers/details`, // Public route for buyer details
   },
 
   // Sellers
@@ -65,7 +62,7 @@ export const API_ENDPOINTS = {
   CATEGORIES: {
     GET_ALL: `${API_BASE_URL}/api/v1/categories/get-all-categories`,
     ADD: `${API_BASE_URL}/api/v1/categories/add-category`,
-    DELETE: `${API_BASE_URL}/api/v1/categories/delete-category`,
+    UPDATE: `${API_BASE_URL}/api/v1/categories/update-category`,
   },
 
   // Inquiries

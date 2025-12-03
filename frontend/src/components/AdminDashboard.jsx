@@ -42,7 +42,7 @@ const AdminDashboard = () => {
     try {
       const token = localStorage.getItem("adminToken");
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.ADMIN.GET_ALL_BUYERS}`,
+        `${API_ENDPOINTS.ADMIN.GET_ALL_BUYERS}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -64,7 +64,7 @@ const AdminDashboard = () => {
     try {
       const token = localStorage.getItem("adminToken");
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.ADMIN.GET_ALL_SELLERS}`,
+        `${API_ENDPOINTS.ADMIN.GET_ALL_SELLERS}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -88,7 +88,7 @@ const AdminDashboard = () => {
       setCategoriesLoading(true);
       const token = localStorage.getItem("adminToken");
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.CATEGORIES.GET_ALL}`,
+        `${API_ENDPOINTS.CATEGORIES.GET_ALL}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -113,7 +113,7 @@ const AdminDashboard = () => {
     try {
       const token = localStorage.getItem("adminToken");
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.CATEGORIES.ADD}`,
+        `${API_ENDPOINTS.CATEGORIES.ADD}`,
         {
           method: "POST",
           headers: {
@@ -139,13 +139,19 @@ const AdminDashboard = () => {
   };
 
   const deleteCategory = async (categoryId) => {
+    // NOTE: Delete category endpoint doesn't exist in backend
+    // Backend only has: add-category, update-category, get-all-categories
+    // If you need delete functionality, add it to backend first
+    alert("Delete category feature not implemented in backend yet.");
+    
+    /* COMMENTED OUT - Backend route doesn't exist
     if (!window.confirm("Are you sure you want to delete this category?")) {
       return;
     }
     try {
       const token = localStorage.getItem("adminToken");
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.CATEGORIES.DELETE}/${categoryId}`,
+        `${API_ENDPOINTS.CATEGORIES.DELETE}/${categoryId}`,
         {
           method: "DELETE",
           headers: {
@@ -164,6 +170,7 @@ const AdminDashboard = () => {
       console.error("Error deleting category:", error);
       alert("Failed to delete category");
     }
+    */
   };
 
   // Message Management Functions
@@ -171,7 +178,7 @@ const AdminDashboard = () => {
     setMessagesLoading(true);
     try {
       const token = localStorage.getItem("adminToken");
-      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.CONTACT.GET_ALL}`, {
+      const response = await fetch(`${API_ENDPOINTS.CONTACT.GET_ALL}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -193,7 +200,7 @@ const AdminDashboard = () => {
     try {
       const token = localStorage.getItem("adminToken");
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.CONTACT.STATS}`,
+        `${API_ENDPOINTS.CONTACT.STATS}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -214,7 +221,7 @@ const AdminDashboard = () => {
     try {
       const token = localStorage.getItem("adminToken");
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.CONTACT.UPDATE}/${messageId}`,
+        `${API_ENDPOINTS.CONTACT.UPDATE}/${messageId}`,
         {
           method: "PUT",
           headers: {
@@ -246,7 +253,7 @@ const AdminDashboard = () => {
     try {
       const token = localStorage.getItem("adminToken");
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.ADMIN.NOTIFICATIONS}`,
+        `${API_ENDPOINTS.ADMIN.NOTIFICATIONS}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -271,7 +278,7 @@ const AdminDashboard = () => {
     try {
       const token = localStorage.getItem("adminToken");
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.ADMIN.MARK_NOTIFICATION_READ}/${notificationId}`,
+        `${API_ENDPOINTS.ADMIN.MARK_NOTIFICATION_READ}/${notificationId}`,
         {
           method: "PUT",
           headers: {
@@ -294,7 +301,7 @@ const AdminDashboard = () => {
     try {
       const token = localStorage.getItem("adminToken");
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.ADMIN.MARK_ALL_NOTIFICATIONS_READ}`,
+        `${API_ENDPOINTS.ADMIN.MARK_ALL_NOTIFICATIONS_READ}`,
         {
           method: "PUT",
           headers: {
@@ -318,7 +325,7 @@ const AdminDashboard = () => {
       setLoading(true);
       const token = localStorage.getItem("adminToken");
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.ADMIN.APPROVE_SELLER}/${sellerId}`,
+        `${API_ENDPOINTS.ADMIN.APPROVE_SELLER}/${sellerId}`,
         {
           method: "PUT",
           headers: {
@@ -1330,3 +1337,4 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+

@@ -112,7 +112,7 @@ export default function ProfileDashboard() {
 
       // Fetch pending inquiries
       const pendingResponse = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.INQUIRIES.BUYER}`,
+        `${API_ENDPOINTS.INQUIRIES.BUYER}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -124,7 +124,7 @@ export default function ProfileDashboard() {
 
       // Fetch recent inquiries
       const recentResponse = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.INQUIRIES.RECENT}`,
+        `${API_ENDPOINTS.INQUIRIES.RECENT}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -488,7 +488,7 @@ export default function ProfileDashboard() {
       const sellerId = sellerInquiries[0].sellerId;
 
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.SELLERS.DETAILS}/${sellerId}`
+        `${API_ENDPOINTS.SELLERS.DETAILS}/${sellerId}`
       );
 
       const data = await response.json();
@@ -618,7 +618,7 @@ export default function ProfileDashboard() {
       // Move selected inquiries from pending to recent via API
       try {
         const moveResponse = await fetch(
-          `${API_BASE_URL}${API_ENDPOINTS.INQUIRIES.MOVE_TO_RECENT}`,
+          `${API_ENDPOINTS.INQUIRIES.MOVE_TO_RECENT}`,
           {
             method: "POST",
             headers: {
@@ -703,7 +703,7 @@ export default function ProfileDashboard() {
       };
 
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.BUYERS.UPDATE_PROFILE}`,
+        `${API_ENDPOINTS.BUYERS.UPDATE_PROFILE}`,
         {
           method: "PATCH",
           headers: {
@@ -719,61 +719,11 @@ export default function ProfileDashboard() {
       if (data.success) {
         let updatedUserData = { ...data.data };
 
-        // Update email if it was changed and verified
-        if (
-          profileUpdateData.email !== userdata.email &&
-          emailOtpData.isOtpVerified
-        ) {
-          const emailResponse = await fetch(
-            `${API_BASE_URL}${API_ENDPOINTS.BUYERS.UPDATE_EMAIL}`,
-            {
-              method: "PATCH",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify({
-                email: profileUpdateData.email,
-                isEmailVerified: true,
-              }),
-            }
-          );
-
-          const emailData = await emailResponse.json();
-          if (!emailData.success) {
-            alert(emailData.message || "Failed to update email");
-            return;
-          }
-          updatedUserData = { ...updatedUserData, ...emailData.data };
-        }
-
-        // Update mobile number if it was changed and verified
-        if (
-          profileUpdateData.mobileNumber !== userdata.mobileNumber &&
-          otpData.isOtpVerified
-        ) {
-          const mobileResponse = await fetch(
-            `${API_BASE_URL}${API_ENDPOINTS.BUYERS.UPDATE_MOBILE}`,
-            {
-              method: "PATCH",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify({
-                mobileNumber: profileUpdateData.mobileNumber,
-                isMobileVerified: true,
-              }),
-            }
-          );
-
-          const mobileData = await mobileResponse.json();
-          if (!mobileData.success) {
-            alert(mobileData.message || "Failed to update mobile number");
-            return;
-          }
-          updatedUserData = { ...updatedUserData, ...mobileData.data };
-        }
+        // NOTE: Separate email/mobile update endpoints don't exist in backend
+        // Email and mobile are updated together with the profile update above
+        // If you need separate updates, add these routes to backend first:
+        // - /api/v1/buyers/update-buyer-email
+        // - /api/v1/buyers/update-buyer-mobile
 
         // Update user data in Redux store, localStorage, and local state
         updateUserData(updatedUserData);
@@ -823,7 +773,7 @@ export default function ProfileDashboard() {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.BUYERS.CHANGE_PASSWORD}`,
+        `${API_ENDPOINTS.BUYERS.CHANGE_PASSWORD}`,
         {
           method: "POST",
           headers: {
@@ -858,9 +808,16 @@ export default function ProfileDashboard() {
 
   const handleForgotPassword = async (e) => {
     e.preventDefault();
+    // NOTE: Forgot password endpoint doesn't exist for buyers in backend
+    // Only sellers have /api/v1/sellers/forgot-password
+    // If you need this feature, add it to backend first
+    alert("Forgot password feature not available for buyers yet. Please contact support.");
+    setIsForgotPasswordModalOpen(false);
+    
+    /* COMMENTED OUT - Backend route doesn't exist
     try{
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.BUYERS.FORGOT_PASSWORD}`,
+        `${API_ENDPOINTS.BUYERS.FORGOT_PASSWORD}`,
         {
           method: "POST",
           headers: {
@@ -885,6 +842,7 @@ export default function ProfileDashboard() {
       console.error("Error sending reset email:", error);
       alert("Failed to send reset email. Please try again.");
     }
+    */
   };
 
   const sendOTPForMobileUpdate = async () => {
@@ -895,7 +853,7 @@ export default function ProfileDashboard() {
 
       // Send OTP to current mobile number for verification
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.OTP.BUYER_PHONE_UPDATE_INITIATE}`,
+        `${API_ENDPOINTS.OTP.BUYER_PHONE_UPDATE_INITIATE}`,
         {
           method: "POST",
           headers: {
@@ -932,7 +890,7 @@ export default function ProfileDashboard() {
   const verifyOTPForMobileUpdate = async () => {
     try {
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.OTP.BUYER_PHONE_UPDATE_VERIFY}`,
+        `${API_ENDPOINTS.OTP.BUYER_PHONE_UPDATE_VERIFY}`,
         {
           method: "POST",
           headers: {
@@ -971,7 +929,7 @@ export default function ProfileDashboard() {
 
       // Send OTP to current email for verification
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.OTP.BUYER_EMAIL_UPDATE_INITIATE}`,
+        `${API_ENDPOINTS.OTP.BUYER_EMAIL_UPDATE_INITIATE}`,
         {
           method: "POST",
           headers: {
@@ -1006,7 +964,7 @@ export default function ProfileDashboard() {
   const verifyOTPForEmailUpdate = async () => {
     try {
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.OTP.BUYER_EMAIL_UPDATE_VERIFY}`,
+        `${API_ENDPOINTS.OTP.BUYER_EMAIL_UPDATE_VERIFY}`,
         {
           method: "POST",
           headers: {
@@ -1061,7 +1019,7 @@ export default function ProfileDashboard() {
 
     try {
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.INQUIRIES.DELETE}/${inquiryId}`,
+        `${API_ENDPOINTS.INQUIRIES.DELETE}/${inquiryId}`,
         {
           method: "DELETE",
           headers: {
@@ -2244,3 +2202,4 @@ export default function ProfileDashboard() {
     </div>
   );
 }
+

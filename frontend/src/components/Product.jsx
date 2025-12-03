@@ -39,7 +39,7 @@ const Product = () => {
       console.log("Fetching categories from API...");
 
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.CATEGORIES.GET_ALL}`
+        `${API_ENDPOINTS.CATEGORIES.GET_ALL}`
       );
 
       if (!response.ok) {
@@ -95,7 +95,7 @@ const Product = () => {
       console.log("Fetching products by category:", categoryId);
 
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.PRODUCTS.GET_BY_CATEGORY_FULL}`,
+        `${API_ENDPOINTS.PRODUCTS.GET_BY_CATEGORY_FULL}`,
         {
           method: "POST",
           headers: {
@@ -166,7 +166,7 @@ const Product = () => {
       console.log("Fetching products from API...");
 
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.PRODUCTS.GET_ALL_FULL}`
+        `${API_ENDPOINTS.PRODUCTS.GET_ALL_FULL}`
       );
 
       if (!response.ok) {
@@ -316,7 +316,7 @@ const Product = () => {
       }
 
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.INQUIRIES.CREATE}`,
+        `${API_ENDPOINTS.INQUIRIES.CREATE}`,
         {
           method: "POST",
           headers: {
@@ -679,3 +679,4 @@ const Product = () => {
 };
 
 export default Product;
+

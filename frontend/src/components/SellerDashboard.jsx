@@ -106,7 +106,7 @@ export default function SellerDashboard() {
     try {
       setCategoriesLoading(true);
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.CATEGORIES.GET_ALL}`
+        `${API_ENDPOINTS.CATEGORIES.GET_ALL}`
       );
       const data = await response.json();
 
@@ -175,7 +175,7 @@ export default function SellerDashboard() {
     try {
       setInquiriesLoading(true);
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.INQUIRIES.SELLER_RECENT}`,
+        `${API_ENDPOINTS.INQUIRIES.SELLER_RECENT}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -258,7 +258,7 @@ export default function SellerDashboard() {
       setBuyerLoading(true);
 
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.BUYERS.DETAILS}/${buyerId}`
+        `${API_ENDPOINTS.BUYERS.DETAILS}/${buyerId}`
       );
 
       const data = await response.json();
@@ -522,7 +522,7 @@ export default function SellerDashboard() {
 
         // Send to backend API
         const response = await fetch(
-          `${API_BASE_URL}${API_ENDPOINTS.PRODUCTS.ADD}`,
+          `${API_ENDPOINTS.PRODUCTS.ADD}`,
           {
             method: "POST",
             headers: {
@@ -678,7 +678,7 @@ export default function SellerDashboard() {
 
       // Send to backend API
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.PRODUCTS.ADD}`,
+        `${API_ENDPOINTS.PRODUCTS.ADD}`,
         {
           method: "POST",
           headers: {
@@ -749,7 +749,7 @@ export default function SellerDashboard() {
       };
 
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.SELLERS.UPDATE_PROFILE}`,
+        `${API_ENDPOINTS.SELLERS.UPDATE_PROFILE}`,
         {
           method: "PATCH",
           headers: {
@@ -771,7 +771,7 @@ export default function SellerDashboard() {
           emailOtpData.isOtpVerified
         ) {
           const emailResponse = await fetch(
-            `${API_BASE_URL}${API_ENDPOINTS.SELLERS.UPDATE_EMAIL}`,
+            `${API_ENDPOINTS.SELLERS.UPDATE_EMAIL}`,
             {
               method: "PATCH",
               headers: {
@@ -799,7 +799,7 @@ export default function SellerDashboard() {
           otpData.isOtpVerified
         ) {
           const mobileResponse = await fetch(
-            `${API_BASE_URL}${API_ENDPOINTS.SELLERS.UPDATE_MOBILE}`,
+            `${API_ENDPOINTS.SELLERS.UPDATE_MOBILE}`,
             {
               method: "PATCH",
               headers: {
@@ -872,7 +872,7 @@ export default function SellerDashboard() {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.SELLERS.CHANGE_PASSWORD}`,
+        `${API_ENDPOINTS.SELLERS.CHANGE_PASSWORD}`,
         {
           method: "POST",
           headers: {
@@ -910,7 +910,7 @@ export default function SellerDashboard() {
 
     try {
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.SELLERS.FORGOT_PASSWORD}`,
+        `${API_ENDPOINTS.SELLERS.FORGOT_PASSWORD}`,
         {
           method: "POST",
           headers: {
@@ -944,7 +944,7 @@ export default function SellerDashboard() {
 
       // Send OTP to current mobile number for verification
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.OTP.SELLER_PHONE_UPDATE_INITIATE}`,
+        `${API_ENDPOINTS.OTP.SELLER_PHONE_UPDATE_INITIATE}`,
         {
           method: "POST",
           headers: {
@@ -981,7 +981,7 @@ export default function SellerDashboard() {
   const verifyOTPForMobileUpdate = async () => {
     try {
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.OTP.SELLER_PHONE_UPDATE_VERIFY}`,
+        `${API_ENDPOINTS.OTP.SELLER_PHONE_UPDATE_VERIFY}`,
         {
           method: "POST",
           headers: {
@@ -1020,7 +1020,7 @@ export default function SellerDashboard() {
 
       // Send OTP to current email for verification
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.OTP.SELLER_EMAIL_UPDATE_INITIATE}`,
+        `${API_ENDPOINTS.OTP.SELLER_EMAIL_UPDATE_INITIATE}`,
         {
           method: "POST",
           headers: {
@@ -1055,7 +1055,7 @@ export default function SellerDashboard() {
   const verifyOTPForEmailUpdate = async () => {
     try {
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.OTP.SELLER_EMAIL_UPDATE_VERIFY}`,
+        `${API_ENDPOINTS.OTP.SELLER_EMAIL_UPDATE_VERIFY}`,
         {
           method: "POST",
           headers: {
@@ -2471,3 +2471,4 @@ export default function SellerDashboard() {
     </div>
   );
 }
+

@@ -325,7 +325,7 @@ export default function BuyerRegister() {
     try {
       const fullMobileNumber = `${formData.countryCode}${formData.mobileNumber}`;
       const response = await fetch(
-        API_ENDPOINTS.OTP_BUYER_PHONE_INITIATE,
+        API_ENDPOINTS.OTP.BUYER_PHONE_INITIATE,
         {
           method: "POST",
           headers: {
@@ -363,7 +363,7 @@ export default function BuyerRegister() {
     try {
       setOtpLoading(true);
       const response = await fetch(
-        API_ENDPOINTS.OTP_BUYER_EMAIL_INITIATE,
+        API_ENDPOINTS.OTP.BUYER_EMAIL_INITIATE,
         {
           method: "POST",
           headers: {
@@ -404,7 +404,7 @@ export default function BuyerRegister() {
       setOtpLoading(true);
       const fullMobileNumber = `${formData.countryCode}${formData.mobileNumber}`;
       const response = await fetch(
-        API_ENDPOINTS.OTP_BUYER_PHONE_VERIFY,
+        API_ENDPOINTS.OTP.BUYER_PHONE_VERIFY,
         {
           method: "POST",
           headers: {
@@ -440,7 +440,7 @@ export default function BuyerRegister() {
     try {
       setOtpLoading(true);
       const response = await fetch(
-        API_ENDPOINTS.OTP_BUYER_EMAIL_VERIFY,
+        API_ENDPOINTS.OTP.BUYER_EMAIL_VERIFY,
         {
           method: "POST",
           headers: {
@@ -483,7 +483,7 @@ export default function BuyerRegister() {
       data.mobileNumber = `${formData.countryCode}${formData.mobileNumber}`;
 
       const response = await fetch(
-        API_ENDPOINTS.BUYER_REGISTER,
+        API_ENDPOINTS.BUYERS.REGISTER,
         {
           method: "POST",
           headers: {

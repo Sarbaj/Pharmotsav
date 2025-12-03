@@ -105,7 +105,7 @@ const Contact = () => {
     setSubmitStatus("");
 
     try {
-      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.CONTACT.SUBMIT}`, {
+      const response = await fetch(`${API_ENDPOINTS.CONTACT.SUBMIT}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -349,3 +349,4 @@ const Contact = () => {
 export default Contact;
 
 // push to github from virpal gayyyyyy to sarbaz
+

@@ -25,8 +25,8 @@ const Login = () => {
     try {
       const endpoint =
         role === "buyer"
-          ? API_ENDPOINTS.BUYER_LOGIN
-          : API_ENDPOINTS.SELLER_LOGIN;
+          ? API_ENDPOINTS.AUTH.BUYER_LOGIN
+          : API_ENDPOINTS.AUTH.SELLER_LOGIN;
 
       const res = await fetch(endpoint, {
         method: "POST",

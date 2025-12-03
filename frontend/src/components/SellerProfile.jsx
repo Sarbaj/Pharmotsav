@@ -84,7 +84,7 @@ function SellerProfile() {
       }
 
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.INQUIRIES.SELLER}`,
+        `${API_ENDPOINTS.INQUIRIES.SELLER}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -124,7 +124,7 @@ function SellerProfile() {
       setBuyerLoading(true);
 
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.BUYERS.DETAILS}/${buyerId}`
+        `${API_ENDPOINTS.BUYERS.DETAILS}/${buyerId}`
       );
 
       const data = await response.json();
@@ -152,7 +152,7 @@ function SellerProfile() {
   const updateInquiryStatus = async (inquiryId, productId, status) => {
     try {
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.INQUIRIES.UPDATE_STATUS}/${inquiryId}`,
+        `${API_ENDPOINTS.INQUIRIES.UPDATE_STATUS}/${inquiryId}`,
         {
           method: "PUT",
           headers: {
@@ -796,3 +796,4 @@ function SellerProfile() {
 }
 
 export default SellerProfile;
+

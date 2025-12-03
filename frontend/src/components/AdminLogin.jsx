@@ -23,7 +23,7 @@ const AdminLogin = () => {
 
     try {
       const res = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.ADMIN.LOGIN}`,
+        `${API_ENDPOINTS.ADMIN.LOGIN}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -140,3 +140,4 @@ const AdminLogin = () => {
 };
 
 export default AdminLogin;
+

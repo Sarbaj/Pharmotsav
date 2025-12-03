@@ -134,7 +134,7 @@ export default function SellerRegister() {
     /* COMMENTED OUT - Real API call
     try {
       const fullMobileNumber = `${formData.countryCode}${formData.mobileNumber}`;
-      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.OTP.INITIATE}`, {
+      const response = await fetch(`${API_ENDPOINTS.OTP.INITIATE}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -179,7 +179,7 @@ export default function SellerRegister() {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.OTP.VERIFY}`, {
+      const response = await fetch(`${API_ENDPOINTS.OTP.VERIFY}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -217,7 +217,7 @@ export default function SellerRegister() {
 
     try {
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.OTP.SELLER_EMAIL_INITIATE}`,
+        `${API_ENDPOINTS.OTP.SELLER_EMAIL_INITIATE}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -258,7 +258,7 @@ export default function SellerRegister() {
 
     try {
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.OTP.SELLER_EMAIL_VERIFY}`,
+        `${API_ENDPOINTS.OTP.SELLER_EMAIL_VERIFY}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -382,7 +382,7 @@ export default function SellerRegister() {
       delete dataToSend.formattedAddress;
 
       const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.SELLERS.REGISTER}`,
+        `${API_ENDPOINTS.SELLERS.REGISTER}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -792,3 +792,4 @@ export default function SellerRegister() {
     </div>
   );
 }
+
