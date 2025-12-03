@@ -152,14 +152,9 @@ export default function Header() {
         console.log("Token:", token, "Role:", storedRole);
 
         if (!token) {
-          // Only redirect to login if we're not on admin pages
-          const currentPath = window.location.pathname;
-          if (
-            !currentPath.includes("/admin") &&
-            !currentPath.includes("/login-admin")
-          ) {
-            navigate("/login");
-          }
+          // No token found - user is not logged in
+          // Don't redirect - let them browse public pages
+          console.log("No refresh token found - user not logged in");
           return;
         }
 
@@ -226,14 +221,12 @@ export default function Header() {
               localStorage.setItem("role", "seller"); // Update stored role
             }
           } else {
-            // Both buyer and seller refresh failed
-            const currentPath = window.location.pathname;
-            if (
-              !currentPath.includes("/admin") &&
-              !currentPath.includes("/login-admin")
-            ) {
-              navigate("/login");
-            }
+            // Both buyer and seller refresh failed - token is invalid
+            console.log("Token refresh failed - clearing invalid token");
+            localStorage.removeItem("refreshToken");
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            localStorage.removeItem("role");
             return;
           }
         }
@@ -244,15 +237,8 @@ export default function Header() {
           console.log("Updated user data from API:", data);
         }
       } catch (error) {
-        // Only redirect to login if we're not on admin pages
-        const currentPath = window.location.pathname;
-        if (
-          !currentPath.includes("/admin") &&
-          !currentPath.includes("/login-admin")
-        ) {
-          navigate("/login");
-        }
-        console.log("error verifying token");
+        console.log("Error verifying token:", error);
+        // Don't redirect on error - let users browse public pages
         return;
       }
     };
