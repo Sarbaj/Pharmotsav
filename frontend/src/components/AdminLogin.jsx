@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../CSS/AdminLogin.css";
+import { API_BASE_URL, API_ENDPOINTS } from "../config/api";
 
 const AdminLogin = () => {
   const [email, setEmail] = useState("");
@@ -22,7 +23,7 @@ const AdminLogin = () => {
 
     try {
       const res = await fetch(
-        "http://localhost:4000/api/v1/admin/login-admin",
+        `${API_BASE_URL}${API_ENDPOINTS.ADMIN.LOGIN}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

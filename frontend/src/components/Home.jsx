@@ -15,7 +15,7 @@ gsap.registerPlugin(ScrollTrigger);
 const Home = () => {
   const navigate = useNavigate();
   const { isLogin } = useSelector((state) => state.user);
-  
+
   const heroTextRef = useRef(null);
   const heroButtonsRef = useRef(null);
   const floatingCardsRef = useRef([]);
@@ -23,6 +23,9 @@ const Home = () => {
   const trustBadgesRef = useRef([]);
   const ctaRef = useRef(null);
   const ctaButtonsRef = useRef([]);
+  const b2bRef = useRef(null);
+  const firstBRef = useRef(null);
+  const secondBRef = useRef(null);
 
   const handleSelling = () => {
     // Check if user is already logged in
@@ -62,16 +65,93 @@ const Home = () => {
       });
     }
 
+    // B2B Flip Animation - After page loads
+    if (b2bRef.current && firstBRef.current && secondBRef.current) {
+      const numberRef = b2bRef.current.querySelector(".home-b2b-number");
+
+      // Wait for initial animations to complete
+      gsap.delayedCall(2, () => {
+        // Create infinite loop animation
+        const tl = gsap.timeline({ repeat: -1 });
+
+        // Flip to GREEN - one after another
+        tl.to(firstBRef.current, {
+          rotationX: 360,
+          color: "#10b981",
+          duration: 0.5,
+          ease: "power2.inOut",
+        })
+          .to(
+            numberRef,
+            {
+              rotationX: 360,
+              color: "#10b981",
+              duration: 0.5,
+              ease: "power2.inOut",
+            },
+            "-=0.2"
+          )
+          .to(
+            secondBRef.current,
+            {
+              rotationX: 360,
+              color: "#10b981",
+              duration: 0.5,
+              ease: "power2.inOut",
+            },
+            "-=0.2"
+          )
+          // Wait 2 seconds in green
+          .to({}, { duration: 2 })
+          // Flip back to BLUE - one after another
+          .to(firstBRef.current, {
+            rotationX: 720,
+            color: "#3b82f6",
+            duration: 0.5,
+            ease: "power2.inOut",
+          })
+          .to(
+            numberRef,
+            {
+              rotationX: 720,
+              color: "#3b82f6",
+              duration: 0.5,
+              ease: "power2.inOut",
+            },
+            "-=0.2"
+          )
+          .to(
+            secondBRef.current,
+            {
+              rotationX: 720,
+              color: "#3b82f6",
+              duration: 0.5,
+              ease: "power2.inOut",
+            },
+            "-=0.2"
+          )
+          // Wait 2 seconds in blue before repeating
+          .to({}, { duration: 2 });
+      });
+    }
+
     // Hero buttons animation
     if (heroButtonsRef.current) {
-      gsap.from(heroButtonsRef.current.children, {
-        opacity: 0,
-        scale: 0.8,
-        duration: 0.6,
-        stagger: 0.15,
-        delay: 0.8,
-        ease: "back.out(1.7)",
-      });
+      gsap.fromTo(
+        heroButtonsRef.current.children,
+        {
+          opacity: 0,
+          scale: 0.8,
+        },
+        {
+          opacity: 1,
+          scale: 1,
+          duration: 0.6,
+          stagger: 0.15,
+          delay: 0.8,
+          ease: "back.out(1.7)",
+        }
+      );
     }
 
     // Floating cards - staggered entrance with rotation
@@ -158,99 +238,195 @@ const Home = () => {
 
   return (
     <>
-    <div className="hero">
-    {/* Hero Section */}
-          <section className="hero-section">
-            <div className="hero-content">
-              <div className="hero-text" ref={heroTextRef}>
-                <h1 className="hero-title">
-                  Simplifying B2B Pharma Connections for
-                  <span className="gradient-text"> Trusted & Efficient</span>{" "}
-                  Business
-                </h1>
-                <p className="hero-subtitle">
-                  Connect with verified suppliers and buyers worldwide through our
-                  intelligent B2B marketplace designed for the pharmaceutical
-                  industry.
-                </p>
-                <div className="hero-buttons" ref={heroButtonsRef}>
-                  <button className="btn-primary">Get Started</button>
-                  <button className="btn-secondary">Learn More</button>
-                </div>
-              </div>
-              <div className="hero-visual">
-                <div className="floating-cards">
-                  <div className="card card-1" ref={(el) => (floatingCardsRef.current[0] = el)}>
-                    <div className="card-icon"><img src={healthcare} alt="health" /></div>
+      <div className="home-hero">
+        {/* Hero Section */}
+        <section className="home-hero-section">
+          <div className="home-hero-content">
+            <div className="home-hero-text" ref={heroTextRef}>
+              <h1 className="home-hero-title">
+                Simplifying{" "}
+                <span className="home-b2b-container" ref={b2bRef}>
+                  <span className="home-b2b-letter" ref={firstBRef}>
+                    B
+                  </span>
+                  <span className="home-b2b-number">2</span>
+                  <span className="home-b2b-letter" ref={secondBRef}>
+                    B
+                  </span>
+                </span>{" "}
+                Pharma Connections for
+                <span className="home-gradient-text"> Trusted & Efficient</span>{" "}
+                Business
+              </h1>
+              <p className="home-hero-subtitle">
+                Connect with verified suppliers and buyers worldwide through our
+                intelligent B2B marketplace designed for the pharmaceutical
+                industry.
+              </p>
+
+              {/* Cards for mobile - shown between description and buttons */}
+              <div className="home-hero-visual-mobile">
+                <div className="home-floating-cards">
+                  <div
+                    className="home-card home-card-1"
+                    ref={(el) => (floatingCardsRef.current[0] = el)}
+                  >
+                    <div className="home-card-icon">
+                      <img src={healthcare} alt="health" />
+                    </div>
                     <h3>Healthcare</h3>
                     <p>Verified suppliers</p>
                   </div>
-                  <div className="card card-2" ref={(el) => (floatingCardsRef.current[1] = el)}>
-                    <div className="card-icon"><img src={pharma} alt="health" /></div>
+                  <div
+                    className="home-card home-card-2"
+                    ref={(el) => (floatingCardsRef.current[1] = el)}
+                  >
+                    <div className="home-card-icon">
+                      <img src={pharma} alt="pharma" />
+                    </div>
                     <h3>Pharmaceuticals</h3>
                     <p>Quality products</p>
                   </div>
-                  <div className="card card-3" ref={(el) => (floatingCardsRef.current[2] = el)}>
-                    <div className="card-icon"><img src={network} alt="health" /></div>
+                  <div
+                    className="home-card home-card-3"
+                    ref={(el) => (floatingCardsRef.current[2] = el)}
+                  >
+                    <div className="home-card-icon">
+                      <img src={network} alt="network" />
+                    </div>
                     <h3>Global Network</h3>
                     <p>Worldwide reach</p>
                   </div>
                 </div>
               </div>
+
+              <div className="home-hero-buttons" ref={heroButtonsRef}>
+                <button
+                  className="home-btn-primary"
+                  onClick={() => navigate("/products")}
+                >
+                  View Products
+                </button>
+                <button
+                  className="home-btn-secondary"
+                  onClick={() => navigate("/about")}
+                >
+                  Learn More
+                </button>
+              </div>
             </div>
-          </section>
-        </div>
+            <div className="home-hero-visual home-hero-visual-desktop">
+              <div className="home-floating-cards">
+                <div
+                  className="home-card home-card-1"
+                  ref={(el) => (floatingCardsRef.current[0] = el)}
+                >
+                  <div className="home-card-icon">
+                    <img src={healthcare} alt="health" />
+                  </div>
+                  <h3>Healthcare</h3>
+                  <p>Verified suppliers</p>
+                </div>
+                <div
+                  className="home-card home-card-2"
+                  ref={(el) => (floatingCardsRef.current[1] = el)}
+                >
+                  <div className="home-card-icon">
+                    <img src={pharma} alt="health" />
+                  </div>
+                  <h3>Pharmaceuticals</h3>
+                  <p>Quality products</p>
+                </div>
+                <div
+                  className="home-card home-card-3"
+                  ref={(el) => (floatingCardsRef.current[2] = el)}
+                >
+                  <div className="home-card-icon">
+                    <img src={network} alt="health" />
+                  </div>
+                  <h3>Global Network</h3>
+                  <p>Worldwide reach</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
 
       {/* Trust Section */}
       <section className="home-trust">
-        <div className="container">
-          <div className="trust-content">
-            <div className="trust-text">
-              <h2 className="trust-title">Trusted by Leading Pharmaceutical Companies</h2>
-              <p className="trust-description">
-                Join the growing community of healthcare professionals and pharmaceutical businesses 
-                who trust Saathsource for their B2B trading needs. Our platform ensures compliance, 
-                quality, and transparency at every step.
+        <div className="home-container">
+          <div className="home-trust-content">
+            <div className="home-trust-text">
+              <h2 className="home-trust-title">
+                Trusted by Leading Pharmaceutical Companies
+              </h2>
+              <p className="home-trust-description">
+                Join the growing community of healthcare professionals and
+                pharmaceutical businesses who trust Saathsource for their B2B
+                trading needs. Our platform ensures compliance, quality, and
+                transparency at every step.
               </p>
-              <div className="trust-features">
-                <div className="trust-item" ref={(el) => (trustItemsRef.current[0] = el)}>
-                  <span className="trust-icon">✓</span>
+              <div className="home-trust-features">
+                <div
+                  className="home-trust-item"
+                  ref={(el) => (trustItemsRef.current[0] = el)}
+                >
+                  <span className="home-trust-icon">✓</span>
                   <span>ISO Certified Platform</span>
                 </div>
-                <div className="trust-item" ref={(el) => (trustItemsRef.current[1] = el)}>
-                  <span className="trust-icon">✓</span>
+                <div
+                  className="home-trust-item"
+                  ref={(el) => (trustItemsRef.current[1] = el)}
+                >
+                  <span className="home-trust-icon">✓</span>
                   <span>GMP Compliant Suppliers</span>
                 </div>
-                <div className="trust-item" ref={(el) => (trustItemsRef.current[2] = el)}>
-                  <span className="trust-icon">✓</span>
+                <div
+                  className="home-trust-item"
+                  ref={(el) => (trustItemsRef.current[2] = el)}
+                >
+                  <span className="home-trust-icon">✓</span>
                   <span>Regulatory Approved</span>
                 </div>
-                <div className="trust-item" ref={(el) => (trustItemsRef.current[3] = el)}>
-                  <span className="trust-icon">✓</span>
+                <div
+                  className="home-trust-item"
+                  ref={(el) => (trustItemsRef.current[3] = el)}
+                >
+                  <span className="home-trust-icon">✓</span>
                   <span>Secure Data Protection</span>
                 </div>
               </div>
             </div>
-            <div className="trust-visual">
-              <div className="trust-badge" ref={(el) => (trustBadgesRef.current[0] = el)}>
-                <div className="badge-icon">🏆</div>
-                <div className="badge-text">
-                  <div className="badge-title">Industry Leader</div>
-                  <div className="badge-subtitle">Since 2020</div>
+            <div className="home-trust-visual">
+              <div
+                className="home-trust-badge"
+                ref={(el) => (trustBadgesRef.current[0] = el)}
+              >
+                <div className="home-badge-icon">🏆</div>
+                <div className="home-badge-text">
+                  <div className="home-badge-title">Industry Leader</div>
+                  <div className="home-badge-subtitle">Since 2020</div>
                 </div>
               </div>
-              <div className="trust-badge" ref={(el) => (trustBadgesRef.current[1] = el)}>
-                <div className="badge-icon">🔒</div>
-                <div className="badge-text">
-                  <div className="badge-title">Secure & Verified</div>
-                  <div className="badge-subtitle">100% Protected</div>
+              <div
+                className="home-trust-badge"
+                ref={(el) => (trustBadgesRef.current[1] = el)}
+              >
+                <div className="home-badge-icon">🔒</div>
+                <div className="home-badge-text">
+                  <div className="home-badge-title">Secure & Verified</div>
+                  <div className="home-badge-subtitle">100% Protected</div>
                 </div>
               </div>
-              <div className="trust-badge" ref={(el) => (trustBadgesRef.current[2] = el)}>
-                <div className="badge-icon">⭐</div>
-                <div className="badge-text">
-                  <div className="badge-title">4.9/5 Rating</div>
-                  <div className="badge-subtitle">15K+ Reviews</div>
+              <div
+                className="home-trust-badge"
+                ref={(el) => (trustBadgesRef.current[2] = el)}
+              >
+                <div className="home-badge-icon">⭐</div>
+                <div className="home-badge-text">
+                  <div className="home-badge-title">4.9/5 Rating</div>
+                  <div className="home-badge-subtitle">15K+ Reviews</div>
                 </div>
               </div>
             </div>
@@ -260,15 +436,30 @@ const Home = () => {
 
       {/* CTA Section */}
       <section className="home-cta">
-        <div className="container">
-          <div className="cta-content" ref={ctaRef}>
-            <h2 className="cta-title">Ready to Transform Your Pharmaceutical Business?</h2>
-            <p className="cta-description">
-              Join thousands of businesses already using Saathsource to streamline their operations and expand their reach.
+        <div className="home-container">
+          <div className="home-cta-content" ref={ctaRef}>
+            <h2 className="home-cta-title">
+              Ready to Transform Your Pharmaceutical Business?
+            </h2>
+            <p className="home-cta-description">
+              Join thousands of businesses already using Saathsource to
+              streamline their operations and expand their reach.
             </p>
-            <div className="cta-buttons">
-              <button className="btn-cta-primary" onClick={handleBuying} ref={(el) => (ctaButtonsRef.current[0] = el)}>Start Buying</button>
-              <button className="btn-cta-secondary" onClick={handleSelling} ref={(el) => (ctaButtonsRef.current[1] = el)}>Start Selling</button>
+            <div className="home-cta-buttons">
+              <button
+                className="home-btn-cta-primary"
+                onClick={handleBuying}
+                ref={(el) => (ctaButtonsRef.current[0] = el)}
+              >
+                Start Buying
+              </button>
+              <button
+                className="home-btn-cta-secondary"
+                onClick={handleSelling}
+                ref={(el) => (ctaButtonsRef.current[1] = el)}
+              >
+                Start Selling
+              </button>
             </div>
           </div>
         </div>

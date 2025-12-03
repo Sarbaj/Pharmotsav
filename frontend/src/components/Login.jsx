@@ -4,6 +4,7 @@ import "../CSS/Login.css";
 import { useDispatch, useSelector } from "react-redux";
 import { addBasicInfo } from "./REDUX/UserSlice";
 import { login } from "./REDUX/UserSlice";
+import { API_ENDPOINTS } from "../config/api";
 const Login = () => {
   const [role, setRole] = useState("buyer");
   const [email, setEmail] = useState("");
@@ -24,8 +25,8 @@ const Login = () => {
     try {
       const endpoint =
         role === "buyer"
-          ? "http://localhost:4000/api/v1/buyers/login-buyer"
-          : "http://localhost:4000/api/v1/sellers/login-seller";
+          ? API_ENDPOINTS.BUYER_LOGIN
+          : API_ENDPOINTS.SELLER_LOGIN;
 
       const res = await fetch(endpoint, {
         method: "POST",
@@ -129,7 +130,7 @@ const Login = () => {
           </form>
         </div>
 
-        {/* Overlay */}
+        {/* Overlay - Desktop */}
         <div className="login-overlay-container">
           <div className="login-overlay">
             <div className="login-overlay-panel login-overlay-left">
@@ -157,6 +158,37 @@ const Login = () => {
               </button>
             </div>
           </div>
+        </div>
+
+        {/* Mobile Switch Section */}
+        <div className="login-mobile-switch">
+          {role === "buyer" ? (
+            <>
+              <h2 className="login-mobile-switch-title">Hello Seller!</h2>
+              <p className="login-mobile-switch-text">
+                Want to sell your products? Switch to Seller Login
+              </p>
+              <button
+                className="login-mobile-switch-btn"
+                onClick={() => setRole("seller")}
+              >
+                Seller Login
+              </button>
+            </>
+          ) : (
+            <>
+              <h2 className="login-mobile-switch-title">Hello Buyer!</h2>
+              <p className="login-mobile-switch-text">
+                Looking to shop? Switch to Buyer Login
+              </p>
+              <button
+                className="login-mobile-switch-btn"
+                onClick={() => setRole("buyer")}
+              >
+                Buyer Login
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>

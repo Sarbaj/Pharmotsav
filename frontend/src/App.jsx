@@ -16,9 +16,12 @@ import BuyerProfile from "./components/BuyerProfile.jsx";
 import SellerProfile from "./components/SellerProfile.jsx";
 import About from "./components/About.jsx";
 import SellerDashboard from "./components/SellerDashboard.jsx";
+import ScrollToTop from "./components/ScrollToTop.jsx";
+
 const App = () => {
   return (
     <>
+      <ScrollToTop />
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />

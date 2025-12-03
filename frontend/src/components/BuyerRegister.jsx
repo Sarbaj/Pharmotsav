@@ -3,6 +3,7 @@ import "../CSS/BuyerRegister.css";
 import registerImage from "../assets/BuyerRegister.png"; // Replace with your actual image path
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { API_ENDPOINTS } from "../config/api";
 
 export default function BuyerRegister() {
   const navigate = useNavigate();
@@ -310,13 +311,22 @@ export default function BuyerRegister() {
     setError("");
   };
 
-  // Send phone OTP
+  // Send phone OTP - TEST SYSTEM (Auto verify, no API)
   const sendPhoneOTP = async () => {
+    setOtpLoading(true);
+    
+    // Simulate delay
+    setTimeout(() => {
+      setPhoneVerified(true);
+      alert("TEST MODE: Phone number verified successfully!");
+      setOtpLoading(false);
+    }, 500);
+
+    /* COMMENTED OUT - Real API call
     try {
-      setOtpLoading(true);
       const fullMobileNumber = `${formData.countryCode}${formData.mobileNumber}`;
       const response = await fetch(
-        "http://localhost:4000/api/v1/otp/buyer/phone/initiate",
+        API_ENDPOINTS.OTP_BUYER_PHONE_INITIATE,
         {
           method: "POST",
           headers: {
@@ -336,7 +346,6 @@ export default function BuyerRegister() {
       const data = await response.json();
       if (response.ok) {
         alert("OTP sent to your mobile number!");
-        // Show phone verification modal or inline form
         setVerificationStep("phone");
       } else {
         alert(data.message || "Failed to send OTP");
@@ -347,6 +356,7 @@ export default function BuyerRegister() {
     } finally {
       setOtpLoading(false);
     }
+    */
   };
 
   // Send email OTP
@@ -354,7 +364,7 @@ export default function BuyerRegister() {
     try {
       setOtpLoading(true);
       const response = await fetch(
-        "http://localhost:4000/api/v1/otp/buyer/email/initiate",
+        API_ENDPOINTS.OTP_BUYER_EMAIL_INITIATE,
         {
           method: "POST",
           headers: {
@@ -395,7 +405,7 @@ export default function BuyerRegister() {
       setOtpLoading(true);
       const fullMobileNumber = `${formData.countryCode}${formData.mobileNumber}`;
       const response = await fetch(
-        "http://localhost:4000/api/v1/otp/buyer/phone/verify",
+        API_ENDPOINTS.OTP_BUYER_PHONE_VERIFY,
         {
           method: "POST",
           headers: {
@@ -431,7 +441,7 @@ export default function BuyerRegister() {
     try {
       setOtpLoading(true);
       const response = await fetch(
-        "http://localhost:4000/api/v1/otp/buyer/email/verify",
+        API_ENDPOINTS.OTP_BUYER_EMAIL_VERIFY,
         {
           method: "POST",
           headers: {
@@ -474,7 +484,7 @@ export default function BuyerRegister() {
       data.mobileNumber = `${formData.countryCode}${formData.mobileNumber}`;
 
       const response = await fetch(
-        "http://localhost:4000/api/v1/buyers/register-buyer",
+        API_ENDPOINTS.BUYER_REGISTER,
         {
           method: "POST",
           headers: {
@@ -523,16 +533,16 @@ export default function BuyerRegister() {
       return;
     }
 
-    // Check if both phone and email are verified
-    if (!phoneVerified) {
-      setError("Please verify your phone number first");
-      return;
-    }
+    // TEMPORARILY COMMENTED - Check if both phone and email are verified
+    // if (!phoneVerified) {
+    //   setError("Please verify your phone number first");
+    //   return;
+    // }
 
-    if (!emailVerified) {
-      setError("Please verify your email address first");
-      return;
-    }
+    // if (!emailVerified) {
+    //   setError("Please verify your email address first");
+    //   return;
+    // }
 
     setError("");
     // Proceed with final registration
@@ -618,131 +628,116 @@ export default function BuyerRegister() {
   );
 
   return (
-    <div className="register-wrapper">
-      <div className="register-container">
-        <div className="image-container">
-          <img src={registerImage} alt="Registration" />
-        </div>
+    <div className="buyer-register-wrapper">
+      <div className="buyer-register-container">
+        {verificationStep === "form" && (
+          <>
+            <div className="buyer-register-header">
+              <h1>Create <span className="buyer-highlight">Buyer</span> Account</h1>
+              <p>Join Saathsource and connect with verified suppliers worldwide</p>
+            </div>
 
-        <div className="form-container">
-          {verificationStep === "form" && (
-            <>
-              <h2>Register Your Account</h2>
-              <form className="register-form" onSubmit={handleSubmit}>
-                <label>
-                  First Name*
-                  <input
-                    type="text"
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    required
-                  />
-                </label>
-
-                <label>
-                  Last Name*
-                  <input
-                    type="text"
-                    name="lastName"
-                    value={formData.lastName}
-                    onChange={handleChange}
-                    required
-                  />
-                </label>
-
-                <label>
-                  Email*
-                  <div className="input-with-button">
+            <form className="buyer-register-form" onSubmit={handleSubmit}>
+              <div className="buyer-form-grid">
+                {/* Left Column */}
+                <div className="buyer-form-column">
+                  <div className="buyer-form-group">
+                    <label>First Name*</label>
                     <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
+                      type="text"
+                      name="firstName"
+                      value={formData.firstName}
+                      onChange={handleChange}
+                      placeholder="Enter your first name"
+                      required
+                    />
+                  </div>
+
+                  <div className="buyer-form-group">
+                    <label>Last Name*</label>
+                    <input
+                      type="text"
+                      name="lastName"
+                      value={formData.lastName}
+                      onChange={handleChange}
+                      placeholder="Enter your last name"
+                      required
+                    />
+                  </div>
+
+                  <div className="buyer-form-group">
+                    <label>Email Address*</label>
+                    <div className="buyer-input-with-verify">
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="your.email@example.com"
+                        required
+                        disabled={emailVerified}
+                        className={emailVerified ? "verified-input" : ""}
+                      />
+                      <button
+                        type="button"
+                        onClick={sendEmailOTP}
+                        disabled={otpLoading || !formData.email || emailVerified}
+                        className={`buyer-verify-btn ${emailVerified ? "verified" : ""}`}
+                      >
+                        {emailVerified ? "✓ Verified" : "Verify Email"}
+                      </button>
+                    </div>
+                    {emailVerified && (
+                      <span className="buyer-verified-badge">Email verified successfully</span>
+                    )}
+                  </div>
+
+                  <div className="buyer-form-group">
+                    <label>Country*</label>
+                    <select
+                      name="country"
+                      value={formData.country}
                       onChange={handleChange}
                       required
-                      disabled={emailVerified}
-                      style={{
-                        backgroundColor: emailVerified ? "#f8f9fa" : "white",
-                        cursor: emailVerified ? "not-allowed" : "text",
-                        opacity: emailVerified ? 0.7 : 1,
-                      }}
-                    />
-                    <button
-                      type="button"
-                      onClick={sendEmailOTP}
-                      disabled={otpLoading || !formData.email || emailVerified}
-                      className="send-otp-btn"
                     >
-                      {emailVerified
-                        ? "✓ Verified"
-                        : otpLoading
-                        ? "Sending..."
-                        : "Send OTP"}
-                    </button>
+                      <option value="">Select your country</option>
+                      {countries.map((country, index) => (
+                        <option key={index} value={country}>
+                          {country}
+                        </option>
+                      ))}
+                    </select>
                   </div>
-                  {emailVerified && (
-                    <small
-                      style={{
-                        color: "#6c757d",
-                        fontSize: "12px",
-                        marginTop: "5px",
-                        display: "block",
-                      }}
+                </div>
+
+                {/* Right Column */}
+                <div className="buyer-form-column">
+                  <div className="buyer-form-group">
+                    <label>Nature of Business*</label>
+                    <select
+                      name="natureOfBusiness"
+                      value={formData.natureOfBusiness}
+                      onChange={handleChange}
+                      required
                     >
-                      Email is verified and cannot be changed
-                    </small>
-                  )}
-                </label>
+                      <option value="">Select business type</option>
+                      {natureOfBusinessesarray.map((business, index) => (
+                        <option key={index} value={business}>
+                          {business}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
-                <label>
-                  Country*
-                  <select
-                    name="country"
-                    value={formData.country}
-                    onChange={handleChange}
-                    required
-                  >
-                    <option value="">Select...</option>
-                    {countries.map((country, index) => (
-                      <option key={index} value={country}>
-                        {country}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-
-                <label>
-                  Nature of Business*
-                  <select
-                    name="natureOfBusiness"
-                    value={formData.natureOfBusiness}
-                    onChange={handleChange}
-                    required
-                  >
-                    <option value="">Select...</option>
-                    {natureOfBusinessesarray.map((business, index) => (
-                      <option key={index} value={business}>
-                        {business}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-
-                <label>
-                  Mobile Number*
-                  <div className="mobile-input-container">
-                    <div className="country-code-selector">
+                  <div className="buyer-form-group">
+                    <label>Mobile Number* (Test Mode)</label>
+                    <div className="buyer-mobile-container">
                       <select
                         name="countryCode"
                         value={formData.countryCode}
                         onChange={handleChange}
-                        className="country-code-select"
+                        className="buyer-country-code"
                         disabled={phoneVerified}
-                        style={{
-                          backgroundColor: phoneVerified ? "#f8f9fa" : "white",
-                          cursor: phoneVerified ? "not-allowed" : "pointer",
-                          opacity: phoneVerified ? 0.7 : 1,
-                        }}
                       >
                         {countryCodes.map((country, index) => (
                           <option key={index} value={country.code}>
@@ -750,8 +745,6 @@ export default function BuyerRegister() {
                           </option>
                         ))}
                       </select>
-                    </div>
-                    <div className="mobile-number-input">
                       <input
                         type="tel"
                         name="mobileNumber"
@@ -760,79 +753,73 @@ export default function BuyerRegister() {
                         placeholder="Enter mobile number"
                         required
                         disabled={phoneVerified}
-                        style={{
-                          backgroundColor: phoneVerified ? "#f8f9fa" : "white",
-                          cursor: phoneVerified ? "not-allowed" : "text",
-                          opacity: phoneVerified ? 0.7 : 1,
-                        }}
+                        className={phoneVerified ? "verified-input" : ""}
                       />
+                      <button
+                        type="button"
+                        onClick={sendPhoneOTP}
+                        disabled={otpLoading || !formData.mobileNumber || phoneVerified}
+                        className={`buyer-verify-btn ${phoneVerified ? "verified" : ""}`}
+                      >
+                        {otpLoading ? "Verifying..." : phoneVerified ? "✓ Verified" : "Verify Phone"}
+                      </button>
                     </div>
-                    <button
-                      type="button"
-                      onClick={sendPhoneOTP}
-                      disabled={
-                        otpLoading || !formData.mobileNumber || phoneVerified
-                      }
-                      className="send-otp-btn"
-                    >
-                      {phoneVerified
-                        ? "✓ Verified"
-                        : otpLoading
-                        ? "Sending..."
-                        : "Send OTP"}
-                    </button>
+                    {phoneVerified && (
+                      <span className="buyer-verified-badge">Phone verified successfully</span>
+                    )}
+                    {!phoneVerified && (
+                      <small className="buyer-hint">Test mode: Just click verify button</small>
+                    )}
                   </div>
-                  {phoneVerified && (
-                    <small
-                      style={{
-                        color: "#6c757d",
-                        fontSize: "12px",
-                        marginTop: "5px",
-                        display: "block",
-                      }}
-                    >
-                      Mobile number is verified and cannot be changed
-                    </small>
-                  )}
-                </label>
 
-                <label>
-                  Password*
-                  <input
-                    type="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                  />
-                </label>
+                  <div className="buyer-form-group">
+                    <label>Password*</label>
+                    <input
+                      type="password"
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      placeholder="Create a strong password"
+                      required
+                    />
+                    <small className="buyer-hint">Min 6 characters, must contain a number</small>
+                  </div>
 
-                <label>
-                  Confirm Password*
-                  <input
-                    type="password"
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    required
-                  />
-                </label>
-                {error && <p style={{ color: "red" }}>{error}</p>}
+                  <div className="buyer-form-group">
+                    <label>Confirm Password*</label>
+                    <input
+                      type="password"
+                      name="confirmPassword"
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                      placeholder="Re-enter your password"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {error && <div className="buyer-error-message">{error}</div>}
+
+              <div className="buyer-form-footer">
                 <button
                   type="submit"
-                  className="submit-btns"
+                  className="buyer-submit-btn"
                   disabled={isLoading}
                 >
-                  {isLoading ? "Processing..." : "Register"}
+                  {isLoading ? "Creating Account..." : "Create Account"}
                 </button>
-              </form>
-            </>
-          )}
+                <p className="buyer-login-link">
+                  Already have an account? <a href="/login">Sign in</a>
+                </p>
+              </div>
+            </form>
+          </>
+        )}
 
-          {verificationStep === "phone" && renderPhoneVerification()}
-          {verificationStep === "email" && renderEmailVerification()}
-          {verificationStep === "complete" && renderCompletion()}
-        </div>
+        {verificationStep === "phone" && renderPhoneVerification()}
+        {verificationStep === "email" && renderEmailVerification()}
+        {verificationStep === "complete" && renderCompletion()}
       </div>
     </div>
   );

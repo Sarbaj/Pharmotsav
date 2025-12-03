@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "../CSS/Contact.css";
+import { API_BASE_URL, API_ENDPOINTS } from "../config/api";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -104,7 +105,7 @@ const Contact = () => {
     setSubmitStatus("");
 
     try {
-      const response = await fetch("http://localhost:4000/api/v1/contact", {
+      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.CONTACT.SUBMIT}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import emailjs from "@emailjs/browser";
 import { addBasicInfo } from "./REDUX/UserSlice";
+import { API_BASE_URL, API_ENDPOINTS } from "../config/api";
 
 export default function ProfileDashboard() {
   const [isCompanyModalOpen, setIsCompanyModalOpen] = useState(false);
@@ -111,7 +112,7 @@ export default function ProfileDashboard() {
 
       // Fetch pending inquiries
       const pendingResponse = await fetch(
-        `http://localhost:4000/api/v1/inquiries/buyer`,
+        `${API_BASE_URL}${API_ENDPOINTS.INQUIRIES.BUYER}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -123,7 +124,7 @@ export default function ProfileDashboard() {
 
       // Fetch recent inquiries
       const recentResponse = await fetch(
-        `http://localhost:4000/api/v1/inquiries/recent`,
+        `${API_BASE_URL}${API_ENDPOINTS.INQUIRIES.RECENT}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -487,7 +488,7 @@ export default function ProfileDashboard() {
       const sellerId = sellerInquiries[0].sellerId;
 
       const response = await fetch(
-        `http://localhost:4000/api/v1/sellers/details/${sellerId}`
+        `${API_BASE_URL}${API_ENDPOINTS.SELLERS.DETAILS}/${sellerId}`
       );
 
       const data = await response.json();
@@ -617,7 +618,7 @@ export default function ProfileDashboard() {
       // Move selected inquiries from pending to recent via API
       try {
         const moveResponse = await fetch(
-          "http://localhost:4000/api/v1/inquiries/move-to-recent",
+          `${API_BASE_URL}${API_ENDPOINTS.INQUIRIES.MOVE_TO_RECENT}`,
           {
             method: "POST",
             headers: {
@@ -702,7 +703,7 @@ export default function ProfileDashboard() {
       };
 
       const response = await fetch(
-        "http://localhost:4000/api/v1/buyers/update-buyer-profile",
+        `${API_BASE_URL}${API_ENDPOINTS.BUYERS.UPDATE_PROFILE}`,
         {
           method: "PATCH",
           headers: {
@@ -724,7 +725,7 @@ export default function ProfileDashboard() {
           emailOtpData.isOtpVerified
         ) {
           const emailResponse = await fetch(
-            "http://localhost:4000/api/v1/buyers/update-buyer-email",
+            `${API_BASE_URL}${API_ENDPOINTS.BUYERS.UPDATE_EMAIL}`,
             {
               method: "PATCH",
               headers: {
@@ -752,7 +753,7 @@ export default function ProfileDashboard() {
           otpData.isOtpVerified
         ) {
           const mobileResponse = await fetch(
-            "http://localhost:4000/api/v1/buyers/update-buyer-mobile",
+            `${API_BASE_URL}${API_ENDPOINTS.BUYERS.UPDATE_MOBILE}`,
             {
               method: "PATCH",
               headers: {
@@ -822,7 +823,7 @@ export default function ProfileDashboard() {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        "http://localhost:4000/api/v1/buyers/change-password-buyer",
+        `${API_BASE_URL}${API_ENDPOINTS.BUYERS.CHANGE_PASSWORD}`,
         {
           method: "POST",
           headers: {
@@ -857,9 +858,9 @@ export default function ProfileDashboard() {
 
   const handleForgotPassword = async (e) => {
     e.preventDefault();
-    try {
+    try{
       const response = await fetch(
-        "http://localhost:4000/api/v1/buyers/forgot-password",
+        `${API_BASE_URL}${API_ENDPOINTS.BUYERS.FORGOT_PASSWORD}`,
         {
           method: "POST",
           headers: {
@@ -894,7 +895,7 @@ export default function ProfileDashboard() {
 
       // Send OTP to current mobile number for verification
       const response = await fetch(
-        "http://localhost:4000/api/v1/otp/buyer/phone/update/initiate",
+        `${API_BASE_URL}${API_ENDPOINTS.OTP.BUYER_PHONE_UPDATE_INITIATE}`,
         {
           method: "POST",
           headers: {
@@ -931,7 +932,7 @@ export default function ProfileDashboard() {
   const verifyOTPForMobileUpdate = async () => {
     try {
       const response = await fetch(
-        "http://localhost:4000/api/v1/otp/buyer/phone/update/verify",
+        `${API_BASE_URL}${API_ENDPOINTS.OTP.BUYER_PHONE_UPDATE_VERIFY}`,
         {
           method: "POST",
           headers: {
@@ -970,7 +971,7 @@ export default function ProfileDashboard() {
 
       // Send OTP to current email for verification
       const response = await fetch(
-        "http://localhost:4000/api/v1/otp/buyer/email/update/initiate",
+        `${API_BASE_URL}${API_ENDPOINTS.OTP.BUYER_EMAIL_UPDATE_INITIATE}`,
         {
           method: "POST",
           headers: {
@@ -1005,7 +1006,7 @@ export default function ProfileDashboard() {
   const verifyOTPForEmailUpdate = async () => {
     try {
       const response = await fetch(
-        "http://localhost:4000/api/v1/otp/buyer/email/update/verify",
+        `${API_BASE_URL}${API_ENDPOINTS.OTP.BUYER_EMAIL_UPDATE_VERIFY}`,
         {
           method: "POST",
           headers: {
@@ -1060,7 +1061,7 @@ export default function ProfileDashboard() {
 
     try {
       const response = await fetch(
-        `http://localhost:4000/api/v1/inquiries/delete/${inquiryId}`,
+        `${API_BASE_URL}${API_ENDPOINTS.INQUIRIES.DELETE}/${inquiryId}`,
         {
           method: "DELETE",
           headers: {

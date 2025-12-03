@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import "../CSS/Product.css";
+import { API_BASE_URL, API_ENDPOINTS } from "../config/api";
 
 const Product = () => {
   const headerRef = useRef(null);
@@ -38,7 +39,7 @@ const Product = () => {
       console.log("Fetching categories from API...");
 
       const response = await fetch(
-        "http://localhost:4000/api/v1/categories/get-all-categories"
+        `${API_BASE_URL}${API_ENDPOINTS.CATEGORIES.GET_ALL}`
       );
 
       if (!response.ok) {
@@ -94,7 +95,7 @@ const Product = () => {
       console.log("Fetching products by category:", categoryId);
 
       const response = await fetch(
-        "http://localhost:4000/api/v1/products/get-products-by-category-full",
+        `${API_BASE_URL}${API_ENDPOINTS.PRODUCTS.GET_BY_CATEGORY_FULL}`,
         {
           method: "POST",
           headers: {
@@ -165,7 +166,7 @@ const Product = () => {
       console.log("Fetching products from API...");
 
       const response = await fetch(
-        "http://localhost:4000/api/v1/products/get-all-products-full"
+        `${API_BASE_URL}${API_ENDPOINTS.PRODUCTS.GET_ALL_FULL}`
       );
 
       if (!response.ok) {
@@ -315,7 +316,7 @@ const Product = () => {
       }
 
       const response = await fetch(
-        "http://localhost:4000/api/v1/inquiries/create-inquiry",
+        `${API_BASE_URL}${API_ENDPOINTS.INQUIRIES.CREATE}`,
         {
           method: "POST",
           headers: {
@@ -385,7 +386,9 @@ const Product = () => {
               onChange={(e) => handleSearch(e.target.value)}
             />
             <button className="search-button">
-              <span className="search-icon">🔍</span>
+              <svg className="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
             </button>
           </div>
         </div>

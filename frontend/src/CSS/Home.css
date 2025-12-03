@@ -34,7 +34,7 @@
   box-sizing: border-box;
 }
 
-.hero {
+.home-hero {
   width: 100%;
   min-height: 110vh;
   background: var(--bg-primary);
@@ -43,12 +43,16 @@
   line-height: 1.6;
   padding: 4rem 0rem 0rem;
   color: var(--text-primary);
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: visible;
+}
+
+body {
+  overflow-x: hidden;
 }
 
 * {
   padding: 0;
-  overflow-x: hidden;
   margin: 0;
   box-sizing: border-box;
 }
@@ -370,7 +374,7 @@ main .container .div1 .btns button:hover {
   }
 }
 /* Hero Section */
-.hero-section {
+.home-hero-section {
   min-height: 100vh;
   background: #ffffff;
   display: flex;
@@ -381,9 +385,10 @@ main .container .div1 .btns button:hover {
   overflow-x: hidden;
   overflow-y: hidden;
   padding: 2rem 0;
+  margin-bottom: 0;
 }
 
-.hero-section::before {
+.home-hero-section::before {
   content: "";
   position: absolute;
   top: 0;
@@ -394,7 +399,7 @@ main .container .div1 .btns button:hover {
   opacity: 0.1;
 }
 
-.hero-content {
+.home-hero-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 4rem;
@@ -407,12 +412,12 @@ main .container .div1 .btns button:hover {
   overflow: visible;
 }
 
-.hero-text {
+.home-hero-text {
   color: #111827;
   overflow: visible;
 }
 
-.hero-title {
+.home-hero-title {
   font-size: 3.5rem;
   font-weight: 800;
   line-height: 1.2;
@@ -420,26 +425,58 @@ main .container .div1 .btns button:hover {
   letter-spacing: -0.02em;
 }
 
-.gradient-text {
+/* B2B Animation Container */
+.home-b2b-container {
+  display: inline;
+  color: #3b82f6;
+  font-weight: 900;
+  perspective: 1000px;
+}
+
+.home-b2b-letter {
+  display: inline-block;
+  font-weight: 900;
+  color: #3b82f6;
+  will-change: transform, color;
+  transform-style: preserve-3d;
+  backface-visibility: visible;
+}
+
+.home-b2b-number {
+  display: inline-block;
+  font-weight: 900;
+  color: #3b82f6;
+  will-change: transform, color;
+  transform-style: preserve-3d;
+  backface-visibility: visible;
+}
+
+.home-gradient-text {
   color: #14db9a;
 }
 
-.hero-subtitle {
+.home-hero-subtitle {
   font-size: 1.25rem;
   color: #4b5563;
   margin-bottom: 2rem;
   line-height: 1.6;
 }
 
-.hero-buttons {
+.home-hero-buttons {
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
+  opacity: 1;
 }
 
-.btn-primary,
-.btn-secondary,
-.btn-outline {
+.home-hero-buttons button {
+  opacity: 1;
+  visibility: visible;
+}
+
+.home-btn-primary,
+.home-btn-secondary,
+.home-btn-outline {
   padding: 0.875rem 2rem;
   border-radius: 0.5rem;
   font-weight: 600;
@@ -452,60 +489,60 @@ main .container .div1 .btns button:hover {
   text-align: center;
 }
 
-.btn-primary {
+.home-btn-primary {
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   color: #ffffff;
   box-shadow: var(--shadow-lg);
 }
 
-.btn-primary:hover {
+.home-btn-primary:hover {
   background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
   transform: translateY(-2px);
   box-shadow: var(--shadow-xl);
 }
 
-.btn-secondary {
+.home-btn-secondary {
   background: transparent;
   color: #0891b2;
   border: 2px solid #0891b2;
 }
 
-.btn-secondary:hover {
+.home-btn-secondary:hover {
   background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
   color: #ffffff;
 }
 
-.btn-outline {
+.home-btn-outline {
   background: transparent;
   color: var(--primary-color);
   border: 2px solid var(--primary-color);
 }
 
-.btn-outline:hover {
+.home-btn-outline:hover {
   background: var(--primary-color);
   color: white;
 }
 
-.btn-large {
+.home-btn-large {
   padding: 1rem 2.5rem;
   font-size: 1.125rem;
 }
 
 /* Hero Visual */
-.hero-visual {
+.home-hero-visual {
   position: relative;
   height: 500px;
   overflow: visible;
 }
 
-.floating-cards {
+.home-floating-cards {
   position: relative;
   width: 100%;
   height: 100%;
   overflow: visible;
 }
 
-.card {
+.home-card {
   position: absolute;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
@@ -515,41 +552,41 @@ main .container .div1 .btns button:hover {
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.card-1 {
+.home-card-1 {
   top: 10%;
   left: 5%;
   z-index: 2;
 }
 
-.card-2 {
+.home-card-2 {
   top: 35%;
   right: 5%;
   z-index: 1;
 }
 
-.card-3 {
+.home-card-3 {
   bottom: 10%;
   left: 35%;
   z-index: 3;
 }
 
-.card-icon {
+.home-card-icon {
   font-size: 2rem;
   margin-bottom: 0.5rem;
 }
-.card-icon img {
+.home-card-icon img {
   width: 150px;
   object-fit: cover;
 }
 
-.card h3 {
+.home-card h3 {
   font-size: 1.125rem;
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 0.25rem;
 }
 
-.card p {
+.home-card p {
   color: var(--text-secondary);
   font-size: 0.875rem;
 }
@@ -782,7 +819,13 @@ main .container .div1 .btns button:hover {
   overflow-y: hidden;
 }
 
-.trust-content {
+.home-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.home-trust-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 4rem;
@@ -792,7 +835,11 @@ main .container .div1 .btns button:hover {
   overflow: visible;
 }
 
-.trust-title {
+.home-trust-text {
+  color: #111827;
+}
+
+.home-trust-title {
   font-size: clamp(2rem, 4vw, 2.8rem);
   font-weight: 800;
   color: #0f172a;
@@ -800,20 +847,20 @@ main .container .div1 .btns button:hover {
   font-family: "Poppins", sans-serif;
 }
 
-.trust-description {
+.home-trust-description {
   font-size: 1.1rem;
   color: #64748b;
   line-height: 1.8;
   margin-bottom: 2rem;
 }
 
-.trust-features {
+.home-trust-features {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
 }
 
-.trust-item {
+.home-trust-item {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -823,7 +870,7 @@ main .container .div1 .btns button:hover {
   transition: all 0.3s ease;
 }
 
-.trust-item:hover {
+.home-trust-item:hover {
   background: linear-gradient(
     135deg,
     rgba(6, 182, 212, 0.1) 0%,
@@ -832,7 +879,7 @@ main .container .div1 .btns button:hover {
   transform: translateX(5px);
 }
 
-.trust-icon {
+.home-trust-icon {
   width: 24px;
   height: 24px;
   background: linear-gradient(135deg, #06b6d4 0%, #10b981 100%);
@@ -846,20 +893,20 @@ main .container .div1 .btns button:hover {
   flex-shrink: 0;
 }
 
-.trust-item span:last-child {
+.home-trust-item span:last-child {
   font-size: 1rem;
   font-weight: 600;
   color: #0f172a;
 }
 
-.trust-visual {
+.home-trust-visual {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
   padding: 2rem;
 }
 
-.trust-badge {
+.home-trust-badge {
   display: flex;
   align-items: center;
   gap: 1.5rem;
@@ -871,31 +918,36 @@ main .container .div1 .btns button:hover {
   overflow: visible;
 }
 
-.trust-badge:hover {
+.home-trust-badge:hover {
   box-shadow: 0 8px 24px rgba(6, 182, 212, 0.15);
   border-color: #06b6d4;
 }
 
-.badge-icon {
+.home-badge-icon {
   width: 60px;
   height: 60px;
-  background: linear-gradient(135deg, #06b6d4 0%, #10b981 100%);
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 2rem;
   flex-shrink: 0;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
 }
 
-.badge-title {
+.home-badge-text {
+  flex: 1;
+}
+
+.home-badge-title {
   font-size: 1.2rem;
   font-weight: 700;
   color: #0f172a;
   font-family: "Poppins", sans-serif;
 }
 
-.badge-subtitle {
+.home-badge-subtitle {
   font-size: 0.9rem;
   color: #64748b;
   margin-top: 0.25rem;
@@ -925,7 +977,7 @@ main .container .div1 .btns button:hover {
   border-radius: 50%;
 }
 
-.cta-content {
+.home-cta-content {
   max-width: 800px;
   margin: 0 auto;
   text-align: center;
@@ -935,7 +987,7 @@ main .container .div1 .btns button:hover {
   padding: 1rem 0;
 }
 
-.cta-title {
+.home-cta-title {
   font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 800;
   color: white;
@@ -943,14 +995,14 @@ main .container .div1 .btns button:hover {
   font-family: "Poppins", sans-serif;
 }
 
-.cta-description {
+.home-cta-description {
   font-size: 1.15rem;
   color: rgba(255, 255, 255, 0.95);
   margin-bottom: 2.5rem;
   line-height: 1.7;
 }
 
-.cta-buttons {
+.home-cta-buttons {
   display: flex;
   gap: 1.5rem;
   justify-content: center;
@@ -960,8 +1012,8 @@ main .container .div1 .btns button:hover {
   margin-top: 1rem;
 }
 
-.btn-cta-primary,
-.btn-cta-secondary {
+.home-btn-cta-primary,
+.home-btn-cta-secondary {
   padding: 1rem 2.5rem;
   border-radius: 8px;
   font-weight: 600;
@@ -975,14 +1027,14 @@ main .container .div1 .btns button:hover {
   margin: 0.5rem;
 }
 
-.btn-cta-primary:hover,
-.btn-cta-secondary:hover {
+.home-btn-cta-primary:hover,
+.home-btn-cta-secondary:hover {
   background: white;
   color: #06b6d4;
   transform: translateY(-3px);
 }
 
-.btn-cta-secondary:hover {
+.home-btn-cta-secondary:hover {
   background: white;
   color: #06b6d4;
   transform: translateY(-2px);
@@ -1003,16 +1055,16 @@ main .container .div1 .btns button:hover {
     padding: 3rem 1rem;
   }
 
-  .trust-content {
+  .home-trust-content {
     grid-template-columns: 1fr;
     gap: 2rem;
   }
 
-  .trust-features {
+  .home-trust-features {
     grid-template-columns: 1fr;
   }
 
-  .trust-badge {
+  .home-trust-badge {
     padding: 1.5rem;
   }
 
@@ -1020,13 +1072,13 @@ main .container .div1 .btns button:hover {
     padding: 3rem 1rem;
   }
 
-  .cta-buttons {
+  .home-cta-buttons {
     flex-direction: column;
     align-items: center;
   }
 
-  .btn-cta-primary,
-  .btn-cta-secondary {
+  .home-btn-cta-primary,
+  .home-btn-cta-secondary {
     width: 100%;
     max-width: 300px;
   }
@@ -1036,4 +1088,304 @@ main .container .div1 .btns button:hover {
   .stats-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* B2B Animation Mobile Responsive */
+@media (max-width: 768px) {
+  .home-hero {
+    padding: 5rem 0 0 0;
+    min-height: auto;
+  }
+
+  .home-hero-section {
+    min-height: auto;
+    padding: 2rem 1rem 3rem 1rem;
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+
+  .home-hero-title {
+    font-size: 2.4rem;
+    line-height: 1.3;
+    margin-bottom: 1rem;
+  }
+
+  .home-b2b-container {
+    margin: 0 0.2rem;
+  }
+
+  .home-hero-content {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 0 1rem;
+    text-align: center;
+    margin-top: 3rem !important;
+  }
+
+  .home-hero-text {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .home-hero-subtitle {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Hide desktop cards, show mobile cards */
+  .home-hero-visual-desktop {
+    display: none !important;
+  }
+
+  .home-hero-visual-mobile {
+    display: block !important;
+    margin: 2rem 0;
+    width: 100%;
+    order: 2;
+  }
+
+  .home-hero-visual-mobile .home-floating-cards {
+    display: flex !important;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 0.5rem;
+    flex-wrap: nowrap;
+    transform: none;
+    position: static;
+  }
+
+  .home-hero-visual-mobile .home-card {
+    position: static !important;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    opacity: 1 !important;
+    visibility: visible !important;
+    flex: 1;
+    min-width: 0;
+    padding: 1rem 0.5rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .home-hero-visual-mobile .home-card-icon {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 0.5rem;
+  }
+
+  .home-hero-visual-mobile .home-card-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+
+  .home-hero-visual-mobile .home-card h3 {
+    font-size: 0.8rem;
+    margin: 0.5rem 0 0.25rem 0;
+    text-align: center;
+  }
+
+  .home-hero-visual-mobile .home-card p {
+    font-size: 0.7rem;
+    margin: 0;
+    text-align: center;
+  }
+
+  .home-hero-buttons {
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+    order: 3;
+    width: 100%;
+    margin-top: 3rem;
+  }
+
+  .home-btn-primary,
+  .home-btn-secondary {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .home-trust {
+    margin-top: 3rem;
+    padding-top: 3rem;
+  }
+}
+
+@media (max-width: 575px) {
+  .home-hero {
+    min-height: auto;
+    padding: 4rem 0 0 0;
+  }
+
+  .home-hero-section {
+    min-height: auto;
+    padding: 1.5rem 0.75rem 2.5rem 0.75rem;
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+
+  .home-hero-title {
+    font-size: 2.4rem;
+    line-height: 1.3;
+    margin-bottom: 1rem;
+  }
+
+  .home-b2b-container {
+    display: inline;
+    margin: 0;
+  }
+
+  .home-b2b-letter,
+  .home-b2b-number {
+    font-size: 1em;
+  }
+
+  .home-hero-content {
+    gap: 1.5rem;
+    padding: 0 0.5rem;
+    text-align: center;
+    margin-top: 0;
+  }
+
+  .home-hero-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .home-hero-subtitle {
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .home-hero-visual-mobile {
+    order: 2;
+    margin: 1.5rem 0;
+  }
+
+  .home-hero-visual-mobile .home-floating-cards {
+    gap: 0.4rem;
+  }
+
+  .home-hero-visual-mobile .home-card {
+    padding: 0.75rem 0.4rem;
+  }
+
+  .home-hero-visual-mobile .home-card-icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .home-hero-visual-mobile .home-card h3 {
+    font-size: 0.75rem;
+  }
+
+  .home-hero-visual-mobile .home-card p {
+    font-size: 0.65rem;
+  }
+
+  .home-btn-primary,
+  .home-btn-secondary {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.95rem;
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .home-hero-buttons {
+    width: 100%;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: center;
+    order: 3;
+    margin-top: 3rem;
+  }
+
+  .home-trust {
+    margin-top: 3rem;
+    padding-top: 3rem;
+  }
+}
+
+@media (max-width: 375px) {
+  .home-hero {
+    padding: 4rem 0 0 0;
+  }
+
+  .home-hero-section {
+    min-height: auto;
+    padding: 1.5rem 0.5rem 2rem 0.5rem;
+    margin-top: 0;
+  }
+
+  .home-hero-title {
+    font-size: 1.5rem;
+    line-height: 1.3;
+  }
+
+  .home-b2b-container {
+    margin: 0;
+  }
+
+  .home-hero-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .home-hero-content {
+    padding: 0 0.25rem;
+    text-align: center;
+    margin-top: 0;
+    gap: 1.25rem;
+  }
+
+  .home-hero-visual-mobile .home-floating-cards {
+    gap: 0.3rem;
+  }
+
+  .home-hero-visual-mobile .home-card {
+    padding: 0.6rem 0.3rem;
+  }
+
+  .home-hero-visual-mobile .home-card-icon {
+    width: 45px;
+    height: 45px;
+  }
+
+  .home-hero-visual-mobile .home-card h3 {
+    font-size: 0.7rem;
+  }
+
+  .home-hero-visual-mobile .home-card p {
+    font-size: 0.6rem;
+  }
+
+  .home-trust {
+    padding-top: 2.5rem;
+    margin-top: 2.5rem;
+  }
+}
+
+/* Fix overflow issues */
+.home-hero-section,
+.home-hero-content,
+.home-hero-text {
+  overflow: visible;
+}
+
+.home-hero-visual {
+  overflow: visible;
+}
+
+/* Mobile Cards - Show between description and buttons */
+.home-hero-visual-mobile {
+  display: none;
 }

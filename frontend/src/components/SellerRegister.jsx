@@ -2,12 +2,11 @@ import React, { useState, useEffect } from "react";
 import "../CSS/SellerRegister.css";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import sellerImage from "../assets/seller-image.png";
+import { API_BASE_URL, API_ENDPOINTS } from "../config/api";
 
 export default function SellerRegister() {
   const navigate = useNavigate();
   const { isLogin } = useSelector((state) => state.user);
-  const imogis = ["👤", "🏢", "📍"];
 
   // Check if user is already logged in
   useEffect(() => {
@@ -16,45 +15,76 @@ export default function SellerRegister() {
 
     if (isLoggedIn) {
       alert("You are already logged in!");
-      navigate("/"); // Redirect to home page
+      navigate("/");
       return;
     }
   }, [isLogin, navigate]);
 
-  const steps = ["Basic Info", "Company Info", "Address"];
-  const [currentStep, setCurrentStep] = useState(0);
+  const steps = [
+    { 
+      id: 1, 
+      title: "Personal Info", 
+      icon: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
+        </svg>
+      )
+    },
+    { 
+      id: 2, 
+      title: "Company Details", 
+      icon: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <rect x="3" y="3" width="18" height="18" rx="2" />
+          <path d="M3 9h18" />
+          <path d="M9 21V9" />
+        </svg>
+      )
+    },
+    { 
+      id: 3, 
+      title: "Address", 
+      icon: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+          <circle cx="12" cy="10" r="3" />
+        </svg>
+      )
+    },
+  ];
 
+  const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
-    countryCode: "+1", // Default to US
+    countryCode: "+1",
     mobileNumber: "",
     password: "",
     confirmPassword: "",
-    country: "",
-    natureOfBusiness: "",
     CompanyName: "",
+    natureOfBusiness: "",
     licenseNumber: "",
     gstNumber: "",
     address: "",
     city: "",
     state: "",
+    country: "",
     pincode: "",
     formattedAddress: "",
     source: "manual",
   });
 
-  // OTP verification states
+  // OTP states
   const [mobileVerified, setMobileVerified] = useState(false);
-  const [showMobileOTP, setShowMobileOTP] = useState(false);
-  const [mobileOtp, setMobileOtp] = useState("");
   const [emailVerified, setEmailVerified] = useState(false);
+  const [showMobileOTP, setShowMobileOTP] = useState(false);
   const [showEmailOTP, setShowEmailOTP] = useState(false);
+  const [mobileOtp, setMobileOtp] = useState("");
   const [emailOtp, setEmailOtp] = useState("");
   const [otpLoading, setOtpLoading] = useState(false);
-  const [otpError, setOtpError] = useState("");
-  const [otpSuccess, setOtpSuccess] = useState("");
+  const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const natureOfBusinesses = [
@@ -66,7 +96,6 @@ export default function SellerRegister() {
     "Other",
   ];
 
-  // Country codes for mobile numbers
   const countryCodes = [
     { code: "+1", country: "US/Canada", flag: "🇺🇸" },
     { code: "+91", country: "India", flag: "🇮🇳" },
@@ -78,90 +107,81 @@ export default function SellerRegister() {
     { code: "+39", country: "Italy", flag: "🇮🇹" },
     { code: "+34", country: "Spain", flag: "🇪🇸" },
     { code: "+61", country: "Australia", flag: "🇦🇺" },
-    { code: "+55", country: "Brazil", flag: "🇧🇷" },
-    { code: "+7", country: "Russia", flag: "🇷🇺" },
-    { code: "+82", country: "South Korea", flag: "🇰🇷" },
-    { code: "+65", country: "Singapore", flag: "🇸🇬" },
-    { code: "+971", country: "UAE", flag: "🇦🇪" },
-    { code: "+966", country: "Saudi Arabia", flag: "🇸🇦" },
-    { code: "+20", country: "Egypt", flag: "🇪🇬" },
-    { code: "+27", country: "South Africa", flag: "🇿🇦" },
-    { code: "+52", country: "Mexico", flag: "🇲🇽" },
-    { code: "+54", country: "Argentina", flag: "🇦🇷" },
   ];
 
-  // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    // Clear OTP error when user types
-    if (otpError) setOtpError("");
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setError("");
   };
 
-  // Send mobile OTP
+  // Send MOBILE OTP only - TEST SYSTEM (No API call)
   const sendMobileOTP = async () => {
     if (!formData.mobileNumber) {
-      setOtpError("Please enter mobile number first");
+      setError("Please enter mobile number first");
       return;
     }
 
     setOtpLoading(true);
-    setOtpError("");
-    setOtpSuccess("");
+    setError("");
 
+    // Simulate API delay
+    setTimeout(() => {
+      alert("TEST MODE: Click 'Verify Phone' button to verify (no OTP needed)");
+      setOtpLoading(false);
+    }, 500);
+
+    /* COMMENTED OUT - Real API call
     try {
       const fullMobileNumber = `${formData.countryCode}${formData.mobileNumber}`;
-      const response = await fetch(
-        "http://localhost:4000/api/v1/otp/initiate",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            mobileNumber: fullMobileNumber,
-            userData: formData,
-          }),
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.OTP.INITIATE}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mobileNumber: fullMobileNumber,
+          userData: formData,
+        }),
+      });
 
       const data = await response.json();
-      console.log("Send OTP Response:", { status: response.status, data });
-
       if (response.ok) {
-        setOtpSuccess("OTP sent successfully to your mobile number");
+        alert("OTP sent to your mobile number!");
         setShowMobileOTP(true);
       } else {
-        // Display the actual error message from backend
-        setOtpError(data.message || data.error || "Failed to send OTP");
+        setError(data.message || "Failed to send OTP");
       }
     } catch (error) {
-      console.error("Send OTP error:", error);
-      setOtpError("Network error. Please check your connection and try again.");
+      setError("Network error. Please try again.");
     } finally {
       setOtpLoading(false);
     }
+    */
   };
 
-  // Verify mobile OTP
+  // Verify MOBILE OTP - TEST SYSTEM (Auto verify)
   const verifyMobileOTP = async () => {
+    setOtpLoading(true);
+    setError("");
+
+    // Simulate verification delay
+    setTimeout(() => {
+      alert("Mobile number verified successfully!");
+      setMobileVerified(true);
+      setShowMobileOTP(false);
+      setMobileOtp("");
+      setOtpLoading(false);
+    }, 500);
+
+    /* COMMENTED OUT - Real API call
     if (!mobileOtp) {
-      setOtpError("Please enter OTP");
+      setError("Please enter OTP");
       return;
     }
 
-    setOtpLoading(true);
-    setOtpError("");
-
     try {
-      const response = await fetch("http://localhost:4000/api/v1/otp/verify", {
+      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.OTP.VERIFY}`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           mobileNumber: `${formData.countryCode}${formData.mobileNumber}`,
           otp: mobileOtp,
@@ -169,80 +189,38 @@ export default function SellerRegister() {
       });
 
       const data = await response.json();
-      console.log("OTP Verification Response:", {
-        status: response.status,
-        data,
-      });
-
       if (response.ok) {
-        setOtpSuccess("Mobile number verified successfully!");
+        alert("Mobile number verified successfully!");
         setMobileVerified(true);
         setShowMobileOTP(false);
-        // Don't auto-proceed - let user continue manually
+        setMobileOtp("");
       } else {
-        // Display the actual error message from backend
-        setOtpError(data.message || data.error || "Verification failed");
+        setError(data.message || "Invalid OTP");
       }
     } catch (error) {
-      console.error("OTP verification error:", error);
-      setOtpError("Network error. Please check your connection and try again.");
+      setError("Network error. Please try again.");
     } finally {
       setOtpLoading(false);
     }
+    */
   };
 
-  // Resend mobile OTP
-  const resendMobileOTP = async () => {
-    setOtpLoading(true);
-    setOtpError("");
-    setOtpSuccess("");
-
-    try {
-      const response = await fetch("http://localhost:4000/api/v1/otp/resend", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          mobileNumber: `${formData.countryCode}${formData.mobileNumber}`,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setOtpSuccess("OTP resent successfully");
-      } else {
-        // Display the actual error message from backend
-        setOtpError(data.message || data.error || "Failed to resend OTP");
-      }
-    } catch (error) {
-      console.error("Resend OTP error:", error);
-      setOtpError("Network error. Please check your connection and try again.");
-    } finally {
-      setOtpLoading(false);
-    }
-  };
-
-  // Email OTP functions
+  // Send EMAIL OTP only
   const sendEmailOTP = async () => {
     if (!formData.email) {
-      setOtpError("Please enter email address first");
+      setError("Please enter email address first");
       return;
     }
 
     setOtpLoading(true);
-    setOtpError("");
-    setOtpSuccess("");
+    setError("");
 
     try {
       const response = await fetch(
-        "http://localhost:4000/api/v1/otp/buyer/email/initiate",
+        `${API_BASE_URL}${API_ENDPOINTS.OTP.SELLER_EMAIL_INITIATE}`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             email: formData.email,
             userData: {
@@ -255,41 +233,35 @@ export default function SellerRegister() {
       );
 
       const data = await response.json();
-
       if (response.ok) {
-        setOtpSuccess("Verification email sent to your email address!");
+        alert("Verification email sent!");
         setShowEmailOTP(true);
       } else {
-        setOtpError(
-          data.message || data.error || "Failed to send verification email"
-        );
+        setError(data.message || "Failed to send verification email");
       }
     } catch (error) {
-      console.error("Send email OTP error:", error);
-      setOtpError("Network error. Please check your connection and try again.");
+      setError("Network error. Please try again.");
     } finally {
       setOtpLoading(false);
     }
   };
 
+  // Verify EMAIL OTP
   const verifyEmailOTP = async () => {
     if (!emailOtp) {
-      setOtpError("Please enter OTP");
+      setError("Please enter OTP");
       return;
     }
 
     setOtpLoading(true);
-    setOtpError("");
-    setOtpSuccess("");
+    setError("");
 
     try {
       const response = await fetch(
-        "http://localhost:4000/api/v1/otp/buyer/email/verify",
+        `${API_BASE_URL}${API_ENDPOINTS.OTP.SELLER_EMAIL_VERIFY}`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             email: formData.email,
             otp: emailOtp,
@@ -298,62 +270,23 @@ export default function SellerRegister() {
       );
 
       const data = await response.json();
-
       if (response.ok) {
-        setOtpSuccess("Email verified successfully!");
+        alert("Email verified successfully!");
         setEmailVerified(true);
         setShowEmailOTP(false);
         setEmailOtp("");
       } else {
-        setOtpError(data.message || data.error || "Invalid OTP");
+        setError(data.message || "Invalid OTP");
       }
     } catch (error) {
-      console.error("Verify email OTP error:", error);
-      setOtpError("Network error. Please check your connection and try again.");
+      setError("Network error. Please try again.");
     } finally {
       setOtpLoading(false);
     }
   };
 
-  const resendEmailOTP = async () => {
-    setOtpLoading(true);
-    setOtpError("");
-    setOtpSuccess("");
-
-    try {
-      const response = await fetch(
-        "http://localhost:4000/api/v1/otp/buyer/email/resend",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: formData.email,
-          }),
-        }
-      );
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setOtpSuccess("Verification email resent successfully!");
-      } else {
-        setOtpError(
-          data.message || data.error || "Failed to resend verification email"
-        );
-      }
-    } catch (error) {
-      console.error("Resend email OTP error:", error);
-      setOtpError("Network error. Please check your connection and try again.");
-    } finally {
-      setOtpLoading(false);
-    }
-  };
-
-  // Validate step before moving next
   const validateStep = () => {
-    if (currentStep === 0) {
+    if (currentStep === 1) {
       if (
         !formData.firstName ||
         !formData.lastName ||
@@ -362,43 +295,45 @@ export default function SellerRegister() {
         !formData.password ||
         !formData.confirmPassword
       ) {
-        return "All fields are required in Basic Info";
+        return "All fields are required";
       }
       if (formData.password !== formData.confirmPassword) {
         return "Passwords do not match";
       }
-      if (!mobileVerified) {
-        return "Please verify your mobile number with OTP";
+      if (formData.password.length < 6) {
+        return "Password must be at least 6 characters";
       }
+      // TEMPORARILY COMMENTED - Mobile verification check (for testing)
+      // if (!mobileVerified) {
+      //   return "Please verify your mobile number";
+      // }
       if (!emailVerified) {
-        return "Please verify your email address with OTP";
+        return "Please verify your email address";
       }
     }
-    if (currentStep === 1) {
+    if (currentStep === 2) {
       if (
         !formData.CompanyName ||
         !formData.natureOfBusiness ||
         !formData.licenseNumber ||
         !formData.gstNumber
       ) {
-        return "All fields are required in Company Info";
+        return "All company fields are required";
       }
     }
-    if (currentStep === 2) {
+    if (currentStep === 3) {
       if (
         !formData.address ||
         !formData.city ||
         !formData.state ||
-        !formData.pincode ||
-        !formData.country
+        !formData.country ||
+        !formData.pincode
       ) {
-        return "All fields are required in Address";
+        return "All address fields are required";
       }
     }
     return "";
   };
-
-  const [error, setError] = useState("");
 
   const handleNext = () => {
     const validationError = validateStep();
@@ -407,7 +342,7 @@ export default function SellerRegister() {
       return;
     }
     setError("");
-    if (currentStep < steps.length - 1) {
+    if (currentStep < 3) {
       setCurrentStep((prev) => prev + 1);
     } else {
       handleSubmit();
@@ -415,20 +350,20 @@ export default function SellerRegister() {
   };
 
   const handlePrevious = () => {
-    if (currentStep > 0) {
+    if (currentStep > 1) {
       setCurrentStep((prev) => prev - 1);
-      setError(""); // Clear any errors when going back
+      setError("");
     }
   };
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
-    setError(""); // Clear any previous errors
+    setError("");
+
     try {
       const dataToSend = { ...formData };
       delete dataToSend.confirmPassword;
 
-      // Ensure location is always in correct format
       dataToSend.location = {
         address: formData.address || "",
         city: formData.city || "",
@@ -440,53 +375,30 @@ export default function SellerRegister() {
         source: formData.source || "manual",
       };
 
-      // 🔥 Remove accidental root city/state/pincode
       delete dataToSend.city;
       delete dataToSend.state;
       delete dataToSend.pincode;
       delete dataToSend.address;
       delete dataToSend.formattedAddress;
 
-      console.log("Sending data:", JSON.stringify(dataToSend, null, 2));
-
       const response = await fetch(
-        "http://localhost:4000/api/v1/sellers/register-seller",
+        `${API_BASE_URL}${API_ENDPOINTS.SELLERS.REGISTER}`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(dataToSend),
         }
       );
-
-      console.log("Registration Response:", {
-        status: response.status,
-        statusText: response.statusText,
-      });
 
       if (response.ok) {
         alert("Seller Registration Successful!");
         navigate("/");
       } else {
-        try {
-          const errorData = await response.json();
-          console.log("Error Data:", errorData);
-          const errorMessage =
-            errorData.message || errorData.error || errorData.success === false
-              ? errorData.message
-              : "Registration failed. Try again.";
-          setError(errorMessage); // Display error in the form instead of alert
-        } catch (parseError) {
-          console.error("Error parsing response:", parseError);
-          setError(
-            `Registration failed with status ${response.status}. Please try again.`
-          );
-        }
+        const errorData = await response.json();
+        setError(errorData.message || "Registration failed. Try again.");
       }
     } catch (err) {
-      console.error(err);
-      setError("Network error. Please check your connection and try again.");
+      setError("Network error. Please check your connection.");
     } finally {
       setIsSubmitting(false);
     }
@@ -498,7 +410,6 @@ export default function SellerRegister() {
         const { latitude, longitude } = position.coords;
 
         try {
-          // Call Google Maps API
           const response = await fetch(
             `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyBHyo1FsE8xNyZEdYaklOo_QYl5-erpOXM`
           );
@@ -509,17 +420,13 @@ export default function SellerRegister() {
             const result = data.results[0];
             const addressComponents = result.address_components;
 
-            // Helper function
             const getComponent = (type) =>
-              addressComponents.find((c) => c.types.includes(type))
-                ?.long_name || "";
+              addressComponents.find((c) => c.types.includes(type))?.long_name || "";
 
             setFormData((prev) => ({
               ...prev,
               formattedAddress: result.formatted_address,
-              address: `${getComponent("street_number")} ${getComponent(
-                "route"
-              )}`.trim(),
+              address: `${getComponent("street_number")} ${getComponent("route")}`.trim(),
               city: getComponent("locality"),
               state: getComponent("administrative_area_level_1"),
               country: getComponent("country"),
@@ -539,95 +446,91 @@ export default function SellerRegister() {
     }
   };
 
-  // Form step UI
-  const renderStep = () => {
+  const renderStepContent = () => {
     switch (currentStep) {
-      case 0:
+      case 1:
         return (
-          <>
-            <label>
-              First Name*{" "}
-              <input
-                type="text"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
-              />
-            </label>
-            <label>
-              Last Name*{" "}
-              <input
-                type="text"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
-              />
-            </label>
-            <label>
-              Email*{" "}
-              <div className="input-with-button">
+          <div className="seller-form-grid">
+            <div className="seller-form-column">
+              <div className="seller-form-group">
+                <label>First Name*</label>
                 <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
+                  type="text"
+                  name="firstName"
+                  value={formData.firstName}
                   onChange={handleChange}
-                  disabled={emailVerified}
-                  style={{
-                    backgroundColor: emailVerified ? "#f8f9fa" : "white",
-                    cursor: emailVerified ? "not-allowed" : "text",
-                    opacity: emailVerified ? 0.7 : 1,
-                  }}
+                  placeholder="Enter your first name"
                 />
-                <button
-                  type="button"
-                  onClick={sendEmailOTP}
-                  disabled={otpLoading || !formData.email || emailVerified}
-                  style={{
-                    padding: "5px 10px",
-                    backgroundColor: emailVerified ? "#28a745" : "#007bff",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "4px",
-                    cursor: emailVerified ? "default" : "pointer",
-                    fontSize: "12px",
-                    opacity: otpLoading ? 0.7 : 1,
-                  }}
-                >
-                  {emailVerified
-                    ? "✓ Verified"
-                    : otpLoading
-                    ? "Sending..."
-                    : "Send OTP"}
-                </button>
               </div>
-              {emailVerified && (
-                <small
-                  style={{
-                    color: "#6c757d",
-                    fontSize: "12px",
-                    marginTop: "5px",
-                    display: "block",
-                  }}
-                >
-                  Email is verified and cannot be changed
-                </small>
-              )}
-            </label>
-            <label>
-              Mobile Number*{" "}
-              <div className="mobile-input-container">
-                <div className="country-code-selector">
+
+              <div className="seller-form-group">
+                <label>Last Name*</label>
+                <input
+                  type="text"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  placeholder="Enter your last name"
+                />
+              </div>
+
+              <div className="seller-form-group">
+                <label>Email Address*</label>
+                <div className="seller-input-with-verify">
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="your.email@example.com"
+                    disabled={emailVerified}
+                    className={emailVerified ? "verified-input" : ""}
+                  />
+                  <button
+                    type="button"
+                    onClick={sendEmailOTP}
+                    disabled={otpLoading || !formData.email || emailVerified}
+                    className={`seller-verify-btn ${emailVerified ? "verified" : ""}`}
+                  >
+                    {emailVerified ? "✓ Verified" : "Verify Email"}
+                  </button>
+                </div>
+                {emailVerified && (
+                  <span className="seller-verified-badge">Email verified successfully</span>
+                )}
+                {showEmailOTP && !emailVerified && (
+                  <div className="seller-otp-box">
+                    <input
+                      type="text"
+                      placeholder="Enter 6-digit OTP"
+                      value={emailOtp}
+                      onChange={(e) => setEmailOtp(e.target.value)}
+                      maxLength="6"
+                      className="seller-otp-input"
+                    />
+                    <button
+                      type="button"
+                      onClick={verifyEmailOTP}
+                      disabled={otpLoading || !emailOtp}
+                      className="seller-verify-otp-btn"
+                    >
+                      {otpLoading ? "Verifying..." : "Verify OTP"}
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="seller-form-column">
+              <div className="seller-form-group">
+                <label>Mobile Number* (Test Mode)</label>
+                <div className="seller-mobile-container">
                   <select
                     name="countryCode"
                     value={formData.countryCode}
                     onChange={handleChange}
-                    className="country-code-select"
+                    className="seller-country-code"
                     disabled={mobileVerified}
-                    style={{
-                      backgroundColor: mobileVerified ? "#f8f9fa" : "white",
-                      cursor: mobileVerified ? "not-allowed" : "pointer",
-                      opacity: mobileVerified ? 0.7 : 1,
-                    }}
                   >
                     {countryCodes.map((country, index) => (
                       <option key={index} value={country.code}>
@@ -635,8 +538,6 @@ export default function SellerRegister() {
                       </option>
                     ))}
                   </select>
-                </div>
-                <div className="mobile-number-input">
                   <input
                     type="tel"
                     name="mobileNumber"
@@ -644,455 +545,184 @@ export default function SellerRegister() {
                     onChange={handleChange}
                     placeholder="Enter mobile number"
                     disabled={mobileVerified}
-                    style={{
-                      backgroundColor: mobileVerified ? "#f8f9fa" : "white",
-                      cursor: mobileVerified ? "not-allowed" : "text",
-                      opacity: mobileVerified ? 0.7 : 1,
-                    }}
+                    className={mobileVerified ? "verified-input" : ""}
                   />
+                  <button
+                    type="button"
+                    onClick={verifyMobileOTP}
+                    disabled={otpLoading || !formData.mobileNumber || mobileVerified}
+                    className={`seller-verify-btn ${mobileVerified ? "verified" : ""}`}
+                  >
+                    {otpLoading ? "Verifying..." : mobileVerified ? "✓ Verified" : "Verify Phone"}
+                  </button>
                 </div>
-              </div>
-              {mobileVerified && (
-                <span style={{ color: "green", fontSize: "12px" }}>
-                  ✓ Verified
-                </span>
-              )}
-              {mobileVerified && (
-                <small
-                  style={{
-                    color: "#6c757d",
-                    fontSize: "12px",
-                    marginTop: "5px",
-                    display: "block",
-                  }}
-                >
-                  Mobile number is verified and cannot be changed
-                </small>
-              )}
-            </label>
-
-            {/* Mobile OTP Section */}
-            {!mobileVerified && (
-              <div
-                style={{
-                  margin: "10px 0",
-                  padding: "10px",
-                  border: "1px solid #ddd",
-                  borderRadius: "5px",
-                }}
-              >
-                <p style={{ fontSize: "14px", marginBottom: "10px" }}>
-                  Verify your mobile number to continue
-                </p>
-
-                {!showMobileOTP ? (
-                  <button
-                    type="button"
-                    onClick={sendMobileOTP}
-                    disabled={otpLoading || !formData.mobileNumber}
-                    style={{
-                      padding: "5px 10px",
-                      backgroundColor: "#007bff",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "3px",
-                      cursor:
-                        otpLoading || !formData.mobileNumber
-                          ? "not-allowed"
-                          : "pointer",
-                      opacity: otpLoading || !formData.mobileNumber ? 0.6 : 1,
-                    }}
-                  >
-                    {otpLoading ? "Sending..." : "Send OTP"}
-                  </button>
-                ) : (
-                  <div>
-                    <input
-                      type="text"
-                      placeholder="Enter 6-digit OTP"
-                      value={mobileOtp}
-                      onChange={(e) => setMobileOtp(e.target.value)}
-                      maxLength="6"
-                      style={{
-                        padding: "8px",
-                        marginRight: "10px",
-                        border: "1px solid #ccc",
-                        borderRadius: "3px",
-                        width: "150px",
-                      }}
-                    />
-                    <button
-                      type="button"
-                      onClick={verifyMobileOTP}
-                      disabled={otpLoading || !mobileOtp}
-                      style={{
-                        padding: "8px 15px",
-                        backgroundColor: "#28a745",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "3px",
-                        cursor:
-                          otpLoading || !mobileOtp ? "not-allowed" : "pointer",
-                        opacity: otpLoading || !mobileOtp ? 0.6 : 1,
-                        marginRight: "10px",
-                      }}
-                    >
-                      {otpLoading ? "Verifying..." : "Verify"}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={resendMobileOTP}
-                      disabled={otpLoading}
-                      style={{
-                        padding: "8px 15px",
-                        backgroundColor: "#6c757d",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "3px",
-                        cursor: otpLoading ? "not-allowed" : "pointer",
-                        opacity: otpLoading ? 0.6 : 1,
-                      }}
-                    >
-                      Resend
-                    </button>
-                  </div>
+                {mobileVerified && (
+                  <span className="seller-verified-badge">Phone verified successfully</span>
                 )}
-
-                {/* OTP Status Messages */}
-                {otpError && (
-                  <div
-                    style={{
-                      color: "red",
-                      fontSize: "12px",
-                      marginTop: "5px",
-                      padding: "8px",
-                      backgroundColor: "#ffe6e6",
-                      border: "1px solid #ffcccc",
-                      borderRadius: "4px",
-                      fontWeight: "500",
-                    }}
-                  >
-                    ⚠️ {otpError}
-                  </div>
-                )}
-                {otpSuccess && (
-                  <div
-                    style={{
-                      color: "green",
-                      fontSize: "12px",
-                      marginTop: "5px",
-                      padding: "8px",
-                      backgroundColor: "#e6ffe6",
-                      border: "1px solid #ccffcc",
-                      borderRadius: "4px",
-                      fontWeight: "500",
-                    }}
-                  >
-                    ✅ {otpSuccess}
-                  </div>
+                {!mobileVerified && (
+                  <small className="seller-hint">Test mode: Just click verify button</small>
                 )}
               </div>
-            )}
 
-            {/* Show success message after OTP verification */}
-            {mobileVerified && (
-              <div
-                style={{
-                  margin: "10px 0",
-                  padding: "10px",
-                  backgroundColor: "#e6ffe6",
-                  border: "1px solid #ccffcc",
-                  borderRadius: "5px",
-                  color: "green",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                }}
-              >
-                ✅ Mobile number verified! You can now proceed to the next step.
+              <div className="seller-form-group">
+                <label>Password*</label>
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Create a strong password"
+                />
+                <small className="seller-hint">Min 6 characters</small>
               </div>
-            )}
 
-            {/* Email OTP Verification Section */}
-            {!emailVerified && (
-              <div
-                style={{
-                  margin: "10px 0",
-                  padding: "15px",
-                  backgroundColor: "#f8f9fa",
-                  border: "1px solid #ddd",
-                  borderRadius: "5px",
-                }}
-              >
-                <p style={{ fontSize: "14px", marginBottom: "10px" }}>
-                  Verify your email address to continue
-                </p>
-
-                {!showEmailOTP ? (
-                  <button
-                    type="button"
-                    onClick={sendEmailOTP}
-                    disabled={otpLoading || !formData.email}
-                    style={{
-                      padding: "5px 10px",
-                      backgroundColor: "#007bff",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "3px",
-                      cursor:
-                        otpLoading || !formData.email
-                          ? "not-allowed"
-                          : "pointer",
-                      opacity: otpLoading || !formData.email ? 0.6 : 1,
-                    }}
-                  >
-                    {otpLoading ? "Sending..." : "Send Email OTP"}
-                  </button>
-                ) : (
-                  <div>
-                    <input
-                      type="text"
-                      placeholder="Enter 6-digit OTP"
-                      value={emailOtp}
-                      onChange={(e) => setEmailOtp(e.target.value)}
-                      maxLength="6"
-                      style={{
-                        padding: "8px",
-                        marginRight: "10px",
-                        border: "1px solid #ccc",
-                        borderRadius: "3px",
-                        width: "150px",
-                      }}
-                    />
-                    <button
-                      type="button"
-                      onClick={verifyEmailOTP}
-                      disabled={otpLoading || !emailOtp}
-                      style={{
-                        padding: "8px 15px",
-                        backgroundColor: "#28a745",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "3px",
-                        cursor:
-                          otpLoading || !emailOtp ? "not-allowed" : "pointer",
-                        opacity: otpLoading || !emailOtp ? 0.6 : 1,
-                      }}
-                    >
-                      {otpLoading ? "Verifying..." : "Verify"}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={resendEmailOTP}
-                      disabled={otpLoading}
-                      style={{
-                        padding: "8px 15px",
-                        backgroundColor: "#6c757d",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "3px",
-                        cursor: otpLoading ? "not-allowed" : "pointer",
-                        opacity: otpLoading ? 0.6 : 1,
-                      }}
-                    >
-                      Resend
-                    </button>
-                  </div>
-                )}
-
-                {/* OTP Status Messages */}
-                {otpError && (
-                  <div
-                    style={{
-                      color: "red",
-                      fontSize: "12px",
-                      marginTop: "5px",
-                      padding: "8px",
-                      backgroundColor: "#ffe6e6",
-                      border: "1px solid #ffcccc",
-                      borderRadius: "4px",
-                      fontWeight: "500",
-                    }}
-                  >
-                    ⚠️ {otpError}
-                  </div>
-                )}
-                {otpSuccess && (
-                  <div
-                    style={{
-                      color: "green",
-                      fontSize: "12px",
-                      marginTop: "5px",
-                      padding: "8px",
-                      backgroundColor: "#e6ffe6",
-                      border: "1px solid #ccffcc",
-                      borderRadius: "4px",
-                      fontWeight: "500",
-                    }}
-                  >
-                    ✅ {otpSuccess}
-                  </div>
-                )}
+              <div className="seller-form-group">
+                <label>Confirm Password*</label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  placeholder="Re-enter your password"
+                />
               </div>
-            )}
-
-            {/* Show success message after email OTP verification */}
-            {emailVerified && (
-              <div
-                style={{
-                  margin: "10px 0",
-                  padding: "10px",
-                  backgroundColor: "#e6ffe6",
-                  border: "1px solid #ccffcc",
-                  borderRadius: "5px",
-                  color: "green",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                }}
-              >
-                ✅ Email address verified successfully!
-              </div>
-            )}
-
-            <label>
-              Password*{" "}
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-              />
-            </label>
-            <label>
-              Confirm Password*{" "}
-              <input
-                type="password"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-              />
-            </label>
-          </>
+            </div>
+          </div>
         );
-      case 1:
-        return (
-          <>
-            <label>
-              Company Name*{" "}
-              <input
-                type="text"
-                name="CompanyName"
-                value={formData.CompanyName}
-                onChange={handleChange}
-              />
-            </label>
-            <label>
-              Nature of Business*
-              <select
-                name="natureOfBusiness"
-                value={formData.natureOfBusiness}
-                onChange={handleChange}
-              >
-                <option value="">Select...</option>
-                {natureOfBusinesses.map((b, i) => (
-                  <option key={i} value={b}>
-                    {b}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              License Number*{" "}
-              <input
-                type="text"
-                name="licenseNumber"
-                value={formData.licenseNumber}
-                onChange={handleChange}
-              />
-            </label>
-            <label>
-              GST Number*{" "}
-              <input
-                type="text"
-                name="gstNumber"
-                value={formData.gstNumber}
-                onChange={handleChange}
-              />
-            </label>
-          </>
-        );
+
       case 2:
         return (
-          <>
-            <label>
-              Address*
-              <input
-                type="text"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                readOnly={formData.source === "google"}
-              />
-            </label>
+          <div className="seller-form-grid">
+            <div className="seller-form-column">
+              <div className="seller-form-group">
+                <label>Company Name*</label>
+                <input
+                  type="text"
+                  name="CompanyName"
+                  value={formData.CompanyName}
+                  onChange={handleChange}
+                  placeholder="Enter company name"
+                />
+              </div>
 
-            <label>
-              City*
-              <input
-                type="text"
-                name="city"
-                value={formData.city}
-                onChange={handleChange}
-                readOnly={formData.source === "google"}
-              />
-            </label>
+              <div className="seller-form-group">
+                <label>Nature of Business*</label>
+                <select
+                  name="natureOfBusiness"
+                  value={formData.natureOfBusiness}
+                  onChange={handleChange}
+                >
+                  <option value="">Select business type</option>
+                  {natureOfBusinesses.map((business, index) => (
+                    <option key={index} value={business}>
+                      {business}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
 
-            <label>
-              State*
-              <input
-                type="text"
-                name="state"
-                value={formData.state}
-                onChange={handleChange}
-                readOnly={formData.source === "google"}
-              />
-            </label>
+            <div className="seller-form-column">
+              <div className="seller-form-group">
+                <label>License Number*</label>
+                <input
+                  type="text"
+                  name="licenseNumber"
+                  value={formData.licenseNumber}
+                  onChange={handleChange}
+                  placeholder="Enter license number"
+                />
+              </div>
 
-            <label>
-              Country*
-              <input
-                type="text"
-                name="country"
-                value={formData.country}
-                onChange={handleChange}
-                readOnly={formData.source === "google"}
-              />
-            </label>
+              <div className="seller-form-group">
+                <label>GST Number*</label>
+                <input
+                  type="text"
+                  name="gstNumber"
+                  value={formData.gstNumber}
+                  onChange={handleChange}
+                  placeholder="Enter GST number"
+                />
+              </div>
+            </div>
+          </div>
+        );
 
-            <label>
-              Pincode*
-              <input
-                type="text"
-                name="pincode"
-                value={formData.pincode}
-                onChange={handleChange}
-                readOnly={formData.source === "google"}
-              />
-            </label>
+      case 3:
+        return (
+          <div className="seller-form-grid">
+            <div className="seller-form-column">
+              <div className="seller-form-group">
+                <label>Address*</label>
+                <input
+                  type="text"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  placeholder="Street address"
+                  readOnly={formData.source === "google"}
+                />
+              </div>
 
-            <label>
-              Formatted Address
-              <input
-                type="text"
-                name="formattedAddress"
-                value={formData.formattedAddress}
-                onChange={handleChange}
-                readOnly={formData.source === "google"}
-              />
-            </label>
+              <div className="seller-form-group">
+                <label>City*</label>
+                <input
+                  type="text"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleChange}
+                  placeholder="City"
+                  readOnly={formData.source === "google"}
+                />
+              </div>
 
-            <button type="button" onClick={handleGetLocation}>
-              📍 Choose My Location
-            </button>
-          </>
+              <div className="seller-form-group">
+                <label>State*</label>
+                <input
+                  type="text"
+                  name="state"
+                  value={formData.state}
+                  onChange={handleChange}
+                  placeholder="State"
+                  readOnly={formData.source === "google"}
+                />
+              </div>
+            </div>
+
+            <div className="seller-form-column">
+              <div className="seller-form-group">
+                <label>Country*</label>
+                <input
+                  type="text"
+                  name="country"
+                  value={formData.country}
+                  onChange={handleChange}
+                  placeholder="Country"
+                  readOnly={formData.source === "google"}
+                />
+              </div>
+
+              <div className="seller-form-group">
+                <label>Pincode*</label>
+                <input
+                  type="text"
+                  name="pincode"
+                  value={formData.pincode}
+                  onChange={handleChange}
+                  placeholder="Pincode"
+                  readOnly={formData.source === "google"}
+                />
+              </div>
+
+              <button
+                type="button"
+                onClick={handleGetLocation}
+                className="seller-location-btn"
+              >
+                📍 Use My Current Location
+              </button>
+            </div>
+          </div>
         );
 
       default:
@@ -1101,89 +731,63 @@ export default function SellerRegister() {
   };
 
   return (
-    <div className="seller-register-container">
-      {/* Left Image Side */}
-      <div className="seller-register-left">
-        <img src={sellerImage} alt="Register Illustration" />
-        <h2>Register as a Seller</h2>
-        <p>to access 1000+ verified buyers and grow your business</p>
-      </div>
+    <div className="seller-register-wrapper">
+      <div className="seller-register-container">
+        <div className="seller-register-header">
+          <h1>Create <span className="seller-highlight">Seller</span> Account</h1>
+          <p>Join Saathsource and connect with verified buyers worldwide</p>
+        </div>
 
-      {/* Right Form Side */}
-      <div className="seller-register-right">
-        {/* Progress Bar */}
-        <div className="progress-container">
-          {steps.map((step, index) => (
-            <div key={index} className="progress-step">
-              <div className={`circle ${index <= currentStep ? "active" : ""}`}>
-                {imogis[index]}
+        {/* Step Progress */}
+        <div className="seller-steps-progress">
+          {steps.map((step) => (
+            <div
+              key={step.id}
+              className={`seller-step-item ${
+                currentStep >= step.id ? "active" : ""
+              } ${currentStep === step.id ? "current" : ""}`}
+            >
+              <div className="seller-step-circle">
+                <div className="seller-step-icon">{step.icon}</div>
               </div>
-              <p>{step}</p>
-              {index < steps.length - 1 && (
-                <div
-                  className={`line ${index < currentStep ? "filled" : ""}`}
-                ></div>
-              )}
+              <span className="seller-step-title">{step.title}</span>
             </div>
           ))}
         </div>
 
-        {/* Form */}
         <form className="seller-register-form">
-          {renderStep()}
-          {error && (
-            <div
-              style={{
-                color: "red",
-                backgroundColor: "#ffe6e6",
-                border: "1px solid #ffcccc",
-                borderRadius: "4px",
-                padding: "10px",
-                margin: "10px 0",
-                fontWeight: "500",
-              }}
-            >
-              ⚠️ {error}
-            </div>
-          )}
-          <div
-            style={{ display: "flex", gap: "10px", justifyContent: "center" }}
-          >
-            {currentStep > 0 && (
+          {renderStepContent()}
+
+          {error && <div className="seller-error-message">{error}</div>}
+
+          <div className="seller-form-actions">
+            {currentStep > 1 && (
               <button
                 type="button"
-                className="submit-btns"
                 onClick={handlePrevious}
-                style={{
-                  backgroundColor: "#6c757d",
-                  color: "white",
-                  border: "none",
-                  padding: "10px 20px",
-                  borderRadius: "5px",
-                  cursor: "pointer",
-                }}
+                className="seller-back-btn"
               >
-                Previous
+                ← Back
               </button>
             )}
             <button
               type="button"
-              className="submit-btns"
               onClick={handleNext}
               disabled={isSubmitting}
-              style={{
-                opacity: isSubmitting ? 0.6 : 1,
-                cursor: isSubmitting ? "not-allowed" : "pointer",
-              }}
+              className="seller-next-btn"
             >
               {isSubmitting
-                ? "Registering..."
-                : currentStep === steps.length - 1
-                ? "Register"
-                : "Next"}
+                ? "Creating Account..."
+                : currentStep === 3
+                ? "Create Account"
+                : "Next →"}
             </button>
           </div>
         </form>
+
+        <p className="seller-login-link">
+          Already have an account? <a href="/login">Sign in</a>
+        </p>
       </div>
     </div>
   );

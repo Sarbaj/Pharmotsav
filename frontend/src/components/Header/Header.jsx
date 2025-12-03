@@ -5,6 +5,7 @@ import "../../CSS/Header.css"; // Assuming you have a CSS file for styling
 import { addBasicInfo, setUserRole } from "../REDUX/UserSlice";
 import { useDispatch } from "react-redux";
 import logo from "../../IMGS/logo.png";
+import { API_BASE_URL, API_ENDPOINTS } from "../../config/api";
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
@@ -192,7 +193,7 @@ export default function Header() {
 
         // Try buyer refresh token first
         response = await fetch(
-          "http://localhost:4000/api/v1/buyers/login-after-refresh",
+          API_ENDPOINTS.BUYER_LOGIN_AFTER_REFRESH,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -210,7 +211,7 @@ export default function Header() {
         } else {
           // If buyer refresh fails, try seller refresh token
           response = await fetch(
-            "http://localhost:4000/api/v1/sellers/login-after-refresh",
+            API_ENDPOINTS.SELLER_LOGIN_AFTER_REFRESH,
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -283,12 +284,12 @@ export default function Header() {
     <header className="header" ref={headerRef}>
       <div className="header-container">
         {/* Logo */}
-        <div className="logo">
+        <Link to="/" className="logo">
           <img src={logo} alt="logo" />
           <h2>
             Saath<span>source</span>
           </h2>
-        </div>
+        </Link>
 
         {/* Center Nav */}
         <nav className="nav-wrapper">
@@ -303,12 +304,16 @@ export default function Header() {
             <NavLink to="/about" className="nav-link">
               About
             </NavLink>
-            <NavLink to="/buyer" className="nav-link">
-              For buyer
-            </NavLink>
-            <NavLink to="/seller" className="nav-link">
-              For seller
-            </NavLink>
+            {!isLogin && (
+              <>
+                <NavLink to="/buyer" className="nav-link">
+                  For buyer
+                </NavLink>
+                <NavLink to="/seller" className="nav-link">
+                  For seller
+                </NavLink>
+              </>
+            )}
             <NavLink to="/contact" className="nav-link">
               Contact
             </NavLink>
@@ -323,18 +328,9 @@ export default function Header() {
           {!isLogin ? (
             <NavLink
               to="/login"
-              style={{
-                textDecoration: "none",
-                color: "#ffffffff",
-                padding: "10px 19px",
-                background: "black",
-                fontFamily: "uppercasefont",
-                borderRadius: "5px",
-                fontSize: "small",
-              }}
               className="btnsignin"
             >
-              Sing-in/Register
+              Sign-in/Register
             </NavLink>
           ) : (
             <div
@@ -425,20 +421,24 @@ export default function Header() {
             >
               About
             </NavLink>
-            <NavLink
-              to="/buyer"
-              className="mobile-nav-link"
-              onClick={() => setIsOpen(false)}
-            >
-              For buyer
-            </NavLink>
-            <NavLink
-              to="/seller"
-              className="mobile-nav-link"
-              onClick={() => setIsOpen(false)}
-            >
-              For seller
-            </NavLink>
+            {!isLogin && (
+              <>
+                <NavLink
+                  to="/buyer"
+                  className="mobile-nav-link"
+                  onClick={() => setIsOpen(false)}
+                >
+                  For buyer
+                </NavLink>
+                <NavLink
+                  to="/seller"
+                  className="mobile-nav-link"
+                  onClick={() => setIsOpen(false)}
+                >
+                  For seller
+                </NavLink>
+              </>
+            )}
             <NavLink
               to="/contact"
               className="mobile-nav-link"

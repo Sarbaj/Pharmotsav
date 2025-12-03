@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../CSS/AdminDashboard.css";
+import { API_BASE_URL, API_ENDPOINTS } from "../config/api";
 
 const AdminDashboard = () => {
   const [adminUser, setAdminUser] = useState(null);
@@ -41,7 +42,7 @@ const AdminDashboard = () => {
     try {
       const token = localStorage.getItem("adminToken");
       const response = await fetch(
-        "http://localhost:4000/api/v1/admin/get-all-buyers",
+        `${API_BASE_URL}${API_ENDPOINTS.ADMIN.GET_ALL_BUYERS}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -63,7 +64,7 @@ const AdminDashboard = () => {
     try {
       const token = localStorage.getItem("adminToken");
       const response = await fetch(
-        "http://localhost:4000/api/v1/admin/get-all-sellers",
+        `${API_BASE_URL}${API_ENDPOINTS.ADMIN.GET_ALL_SELLERS}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -87,7 +88,7 @@ const AdminDashboard = () => {
       setCategoriesLoading(true);
       const token = localStorage.getItem("adminToken");
       const response = await fetch(
-        "http://localhost:4000/api/v1/categories/get-all-categories",
+        `${API_BASE_URL}${API_ENDPOINTS.CATEGORIES.GET_ALL}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -112,7 +113,7 @@ const AdminDashboard = () => {
     try {
       const token = localStorage.getItem("adminToken");
       const response = await fetch(
-        "http://localhost:4000/api/v1/categories/add-category",
+        `${API_BASE_URL}${API_ENDPOINTS.CATEGORIES.ADD}`,
         {
           method: "POST",
           headers: {
@@ -144,7 +145,7 @@ const AdminDashboard = () => {
     try {
       const token = localStorage.getItem("adminToken");
       const response = await fetch(
-        `http://localhost:4000/api/v1/categories/delete-category/${categoryId}`,
+        `${API_BASE_URL}${API_ENDPOINTS.CATEGORIES.DELETE}/${categoryId}`,
         {
           method: "DELETE",
           headers: {
@@ -170,7 +171,7 @@ const AdminDashboard = () => {
     setMessagesLoading(true);
     try {
       const token = localStorage.getItem("adminToken");
-      const response = await fetch("http://localhost:4000/api/v1/contact", {
+      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.CONTACT.GET_ALL}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -192,7 +193,7 @@ const AdminDashboard = () => {
     try {
       const token = localStorage.getItem("adminToken");
       const response = await fetch(
-        "http://localhost:4000/api/v1/contact/stats",
+        `${API_BASE_URL}${API_ENDPOINTS.CONTACT.STATS}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -213,7 +214,7 @@ const AdminDashboard = () => {
     try {
       const token = localStorage.getItem("adminToken");
       const response = await fetch(
-        `http://localhost:4000/api/v1/contact/${messageId}`,
+        `${API_BASE_URL}${API_ENDPOINTS.CONTACT.UPDATE}/${messageId}`,
         {
           method: "PUT",
           headers: {
@@ -245,7 +246,7 @@ const AdminDashboard = () => {
     try {
       const token = localStorage.getItem("adminToken");
       const response = await fetch(
-        "http://localhost:4000/api/v1/admin/notifications",
+        `${API_BASE_URL}${API_ENDPOINTS.ADMIN.NOTIFICATIONS}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -270,7 +271,7 @@ const AdminDashboard = () => {
     try {
       const token = localStorage.getItem("adminToken");
       const response = await fetch(
-        `http://localhost:4000/api/v1/admin/notifications/${notificationId}/mark-read`,
+        `${API_BASE_URL}${API_ENDPOINTS.ADMIN.MARK_NOTIFICATION_READ}/${notificationId}`,
         {
           method: "PUT",
           headers: {
@@ -293,7 +294,7 @@ const AdminDashboard = () => {
     try {
       const token = localStorage.getItem("adminToken");
       const response = await fetch(
-        "http://localhost:4000/api/v1/admin/notifications/mark-all-read",
+        `${API_BASE_URL}${API_ENDPOINTS.ADMIN.MARK_ALL_NOTIFICATIONS_READ}`,
         {
           method: "PUT",
           headers: {
@@ -317,7 +318,7 @@ const AdminDashboard = () => {
       setLoading(true);
       const token = localStorage.getItem("adminToken");
       const response = await fetch(
-        `http://localhost:4000/api/v1/admin/approve-seller/${sellerId}`,
+        `${API_BASE_URL}${API_ENDPOINTS.ADMIN.APPROVE_SELLER}/${sellerId}`,
         {
           method: "PUT",
           headers: {

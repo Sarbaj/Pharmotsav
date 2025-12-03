@@ -578,6 +578,10 @@
     padding: 2rem 1rem;
   }
 
+  .about-container .home-intro .container {
+    margin-top: 5rem;
+  }
+
   .about-container .intro-title {
     font-size: 1.5rem;
     padding: 0 0.5rem;

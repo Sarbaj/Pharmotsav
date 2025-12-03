@@ -3,6 +3,7 @@ import "../CSS/SellerDashboard.css";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { addBasicInfo } from "./REDUX/UserSlice";
+import { API_BASE_URL, API_ENDPOINTS } from "../config/api";
 
 export default function SellerDashboard() {
   const [isCompanyModalOpen, setIsCompanyModalOpen] = useState(false);
@@ -105,7 +106,7 @@ export default function SellerDashboard() {
     try {
       setCategoriesLoading(true);
       const response = await fetch(
-        "http://localhost:4000/api/v1/categories/get-all-categories"
+        `${API_BASE_URL}${API_ENDPOINTS.CATEGORIES.GET_ALL}`
       );
       const data = await response.json();
 
@@ -174,7 +175,7 @@ export default function SellerDashboard() {
     try {
       setInquiriesLoading(true);
       const response = await fetch(
-        `http://localhost:4000/api/v1/inquiries/seller-recent`,
+        `${API_BASE_URL}${API_ENDPOINTS.INQUIRIES.SELLER_RECENT}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -257,7 +258,7 @@ export default function SellerDashboard() {
       setBuyerLoading(true);
 
       const response = await fetch(
-        `http://localhost:4000/api/v1/buyers/details/${buyerId}`
+        `${API_BASE_URL}${API_ENDPOINTS.BUYERS.DETAILS}/${buyerId}`
       );
 
       const data = await response.json();
@@ -521,7 +522,7 @@ export default function SellerDashboard() {
 
         // Send to backend API
         const response = await fetch(
-          "http://localhost:4000/api/v1/products/add-product",
+          `${API_BASE_URL}${API_ENDPOINTS.PRODUCTS.ADD}`,
           {
             method: "POST",
             headers: {
@@ -677,7 +678,7 @@ export default function SellerDashboard() {
 
       // Send to backend API
       const response = await fetch(
-        "http://localhost:4000/api/v1/products/add-product",
+        `${API_BASE_URL}${API_ENDPOINTS.PRODUCTS.ADD}`,
         {
           method: "POST",
           headers: {
@@ -748,7 +749,7 @@ export default function SellerDashboard() {
       };
 
       const response = await fetch(
-        "http://localhost:4000/api/v1/sellers/update-seller-profile",
+        `${API_BASE_URL}${API_ENDPOINTS.SELLERS.UPDATE_PROFILE}`,
         {
           method: "PATCH",
           headers: {
@@ -770,7 +771,7 @@ export default function SellerDashboard() {
           emailOtpData.isOtpVerified
         ) {
           const emailResponse = await fetch(
-            "http://localhost:4000/api/v1/sellers/update-seller-email",
+            `${API_BASE_URL}${API_ENDPOINTS.SELLERS.UPDATE_EMAIL}`,
             {
               method: "PATCH",
               headers: {
@@ -798,7 +799,7 @@ export default function SellerDashboard() {
           otpData.isOtpVerified
         ) {
           const mobileResponse = await fetch(
-            "http://localhost:4000/api/v1/sellers/update-seller-mobile",
+            `${API_BASE_URL}${API_ENDPOINTS.SELLERS.UPDATE_MOBILE}`,
             {
               method: "PATCH",
               headers: {
@@ -871,7 +872,7 @@ export default function SellerDashboard() {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        "http://localhost:4000/api/v1/sellers/change-password-seller",
+        `${API_BASE_URL}${API_ENDPOINTS.SELLERS.CHANGE_PASSWORD}`,
         {
           method: "POST",
           headers: {
@@ -909,7 +910,7 @@ export default function SellerDashboard() {
 
     try {
       const response = await fetch(
-        "http://localhost:4000/api/v1/sellers/forgot-password",
+        `${API_BASE_URL}${API_ENDPOINTS.SELLERS.FORGOT_PASSWORD}`,
         {
           method: "POST",
           headers: {
@@ -943,7 +944,7 @@ export default function SellerDashboard() {
 
       // Send OTP to current mobile number for verification
       const response = await fetch(
-        "http://localhost:4000/api/v1/otp/seller/phone/update/initiate",
+        `${API_BASE_URL}${API_ENDPOINTS.OTP.SELLER_PHONE_UPDATE_INITIATE}`,
         {
           method: "POST",
           headers: {
@@ -980,7 +981,7 @@ export default function SellerDashboard() {
   const verifyOTPForMobileUpdate = async () => {
     try {
       const response = await fetch(
-        "http://localhost:4000/api/v1/otp/seller/phone/update/verify",
+        `${API_BASE_URL}${API_ENDPOINTS.OTP.SELLER_PHONE_UPDATE_VERIFY}`,
         {
           method: "POST",
           headers: {
@@ -1019,7 +1020,7 @@ export default function SellerDashboard() {
 
       // Send OTP to current email for verification
       const response = await fetch(
-        "http://localhost:4000/api/v1/otp/seller/email/update/initiate",
+        `${API_BASE_URL}${API_ENDPOINTS.OTP.SELLER_EMAIL_UPDATE_INITIATE}`,
         {
           method: "POST",
           headers: {
@@ -1054,7 +1055,7 @@ export default function SellerDashboard() {
   const verifyOTPForEmailUpdate = async () => {
     try {
       const response = await fetch(
-        "http://localhost:4000/api/v1/otp/seller/email/update/verify",
+        `${API_BASE_URL}${API_ENDPOINTS.OTP.SELLER_EMAIL_UPDATE_VERIFY}`,
         {
           method: "POST",
           headers: {
@@ -1119,129 +1120,110 @@ export default function SellerDashboard() {
   return (
     <div className="seller-dashboard">
       <section className="sd-header">
-        <div className="sd-user">
-          <div className="sd-user-meta">
-            <h2 className="sd-name">
-              {userdata ? userdata.firstName : "Loading"}
-            </h2>
-            <p className="sd-role">
-              {userdata ? userdata.natureOfBusiness : "Loading"}
-            </p>
+        {/* Top Section: Profile and Buttons */}
+        <div className="sd-header-top">
+          <div className="sd-user">
+            <div className="sd-user-avatar">
+              {userdata ? 
+                `${userdata.firstName?.charAt(0) || ''}${userdata.lastName?.charAt(0) || ''}`.toUpperCase() 
+                : 'S'}
+            </div>
+            <div className="sd-user-meta">
+              <h2 className="sd-name">
+                {userdata ? `${userdata.firstName} ${userdata.lastName || ''}` : "Loading"}
+              </h2>
+              <p className="sd-role">
+                {userdata ? userdata.natureOfBusiness : "Loading"}
+              </p>
 
-            <div className="sd-tags">
-              <span className="sd-tag sd-tag--accent">Seller</span>
+              <div className="sd-tags">
+                <span className="sd-tag">Verified Seller</span>
+                <span className="sd-tag sd-tag--accent">Business</span>
+              </div>
             </div>
           </div>
-
-          {/* Compact Profile Info */}
-          <div className="sd-profile-compact">
-            <div className="sd-profile-row">
-              <div className="sd-profile-item">
-                <span className="sd-profile-label">Company:</span>
-                <span className="sd-profile-value">
-                  {userdata?.CompanyName || "Not provided"}
-                </span>
-              </div>
-              <div className="sd-profile-item">
-                <span className="sd-profile-label">Email:</span>
-                <span className="sd-profile-value">
-                  {userdata?.email || "Not provided"}
-                </span>
-              </div>
-              <div className="sd-profile-item">
-                <span className="sd-profile-label">Phone:</span>
-                <span className="sd-profile-value">
-                  {userdata?.mobileNumber || "Not provided"}
-                </span>
-              </div>
-            </div>
-
-            <div className="sd-profile-row">
-              <div className="sd-profile-item">
-                <span className="sd-profile-label">License:</span>
-                <span className="sd-profile-value">
-                  {userdata?.licenseNumber || "Not provided"}
-                </span>
-              </div>
-              <div className="sd-profile-item">
-                <span className="sd-profile-label">GST:</span>
-                <span className="sd-profile-value">
-                  {userdata?.gstNumber || "Not provided"}
-                </span>
-              </div>
-              <div className="sd-profile-item">
-                <span className="sd-profile-label">Status:</span>
-                <span
-                  className={`sd-profile-status sd-status-${
-                    userdata?.status || "pending"
-                  }`}
+          
+          <div className="sd-actions">
+            <button
+              className="sd-btn sd-btn--primary"
+              onClick={openProfileUpdateModal}
+            >
+              Update Profile
+            </button>
+            {userdata?.status === "approved" && (
+              <>
+                <button
+                  className="sd-btn sd-btn--success"
+                  onClick={() => setIsProductModalOpen(true)}
                 >
-                  {userdata?.status || "Pending"}
-                </span>
-              </div>
-            </div>
-
-            <div className="sd-profile-row">
-              <div className="sd-profile-item sd-profile-item-full">
-                <span className="sd-profile-label">Location:</span>
-                <span className="sd-profile-value">
-                  {userdata?.location?.formattedAddress ||
-                    `${userdata?.location?.address || ""}, ${
-                      userdata?.location?.city || ""
-                    }, ${userdata?.location?.state || ""}, ${
-                      userdata?.location?.country || ""
-                    }` ||
-                    "Not provided"}
-                </span>
-              </div>
-            </div>
+                  Add Product
+                </button>
+                <button
+                  className="sd-btn sd-btn--secondary"
+                  onClick={() => setIsExcelModalOpen(true)}
+                >
+                  Upload Excel
+                </button>
+              </>
+            )}
+            <button
+              className="sd-btn sd-btn--logout"
+              onClick={() => {
+                localStorage.clear();
+                window.location.href = '/';
+              }}
+            >
+              Logout
+            </button>
           </div>
         </div>
-        <div className="sd-actions">
-          <button
-            className="sd-btn sd-btn--ghost sd-update-profile-btn"
-            onClick={openProfileUpdateModal}
-          >
-            <span className="sd-btn-icon">✏️</span>
-            Update Profile
-          </button>
-          {userdata?.status === "approved" ? (
-            <>
-              <button
-                className="sd-btn sd-btn--primary sd-add-product-btn"
-                onClick={() => setIsProductModalOpen(true)}
-              >
-                <span className="sd-btn-icon">+</span>
-                Add Product
-              </button>
-              <button
-                className="sd-btn sd-btn--secondary sd-excel-upload-btn"
-                onClick={() => setIsExcelModalOpen(true)}
-              >
-                <span className="sd-btn-icon">📊</span>
-                Upload Excel
-              </button>
-            </>
-          ) : (
-            <div className="sd-pending-approval">
-              <div className="sd-pending-icon">⏳</div>
-              <div className="sd-pending-content">
-                <h3 className="sd-pending-title">Account Pending Approval</h3>
-                <p className="sd-pending-message">
-                  Your seller account is currently under review. You'll be able
-                  to add products and manage your inventory once your account is
-                  approved.
-                </p>
-                <div className="sd-pending-status">
-                  <span className="sd-status-badge sd-status-pending">
-                    {userdata?.status || "Pending"}
-                  </span>
-                </div>
-              </div>
+
+        {/* Bottom Section: Company Information */}
+        <div className="sd-company-details">
+          <h3 className="sd-company-title">Company Information</h3>
+          <div className="sd-company-grid">
+            <div className="sd-company-item">
+              <label>Company</label>
+              <p>{userdata?.CompanyName || "Not provided"}</p>
             </div>
-          )}
+            <div className="sd-company-item">
+              <label>Email</label>
+              <p>{userdata?.email || "Not provided"}</p>
+            </div>
+            <div className="sd-company-item">
+              <label>Phone</label>
+              <p>{userdata?.mobileNumber || "Not provided"}</p>
+            </div>
+            <div className="sd-company-item">
+              <label>License</label>
+              <p>{userdata?.licenseNumber || "Not provided"}</p>
+            </div>
+            <div className="sd-company-item">
+              <label>GST Number</label>
+              <p>{userdata?.gstNumber || "Not provided"}</p>
+            </div>
+            <div className="sd-company-item">
+              <label>Status</label>
+              <p className={`sd-status-badge sd-status-${userdata?.status || "pending"}`}>
+                {userdata?.status || "Pending"}
+              </p>
+            </div>
+          </div>
         </div>
       </section>
+
+      {/* Pending Approval Message */}
+      {userdata?.status !== "approved" && (
+        <div className="sd-pending-approval">
+          <div className="sd-pending-icon">⏳</div>
+          <div className="sd-pending-content">
+            <h3 className="sd-pending-title">Account Pending Approval</h3>
+            <p className="sd-pending-message">
+              Your seller account is currently under review. You'll be able to add products and manage your inventory once your account is approved.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Inquiries Section - Integrated into first card */}
       <div className="sd-inquiries-section">
@@ -2361,7 +2343,7 @@ export default function SellerDashboard() {
       {/* Password Change Modal */}
       {isPasswordChangeModalOpen && (
         <div className="sd-modal-overlay">
-          <div className="sd-modal">
+          <div className="sd-modal sd-password-change-modal">
             <div className="sd-modal-header">
               <h3 className="sd-modal-title">Change Password</h3>
               <button
@@ -2383,6 +2365,7 @@ export default function SellerDashboard() {
                       currentPassword: e.target.value,
                     }))
                   }
+                  placeholder="Enter your current password"
                   required
                 />
               </label>
@@ -2397,7 +2380,9 @@ export default function SellerDashboard() {
                       newPassword: e.target.value,
                     }))
                   }
+                  placeholder="Enter new password (min 6 characters)"
                   required
+                  minLength="6"
                 />
               </label>
               <label>
@@ -2411,6 +2396,7 @@ export default function SellerDashboard() {
                       confirmPassword: e.target.value,
                     }))
                   }
+                  placeholder="Re-enter new password"
                   required
                 />
               </label>
@@ -2434,7 +2420,7 @@ export default function SellerDashboard() {
       {/* Forgot Password Modal */}
       {isForgotPasswordModalOpen && (
         <div className="sd-modal-overlay">
-          <div className="sd-modal">
+          <div className="sd-modal sd-forgot-password-modal">
             <div className="sd-modal-header">
               <h3 className="sd-modal-title">Forgot Password</h3>
               <button
@@ -2445,6 +2431,12 @@ export default function SellerDashboard() {
               </button>
             </div>
             <form className="sd-form" onSubmit={handleForgotPassword}>
+              <div className="sd-forgot-password-info">
+                <span className="sd-forgot-password-info-icon">ℹ️</span>
+                <p className="sd-forgot-password-info-text">
+                  Enter your registered email address and we'll send you a link to reset your password.
+                </p>
+              </div>
               <label>
                 <span>Email Address</span>
                 <input
@@ -2456,6 +2448,7 @@ export default function SellerDashboard() {
                       email: e.target.value,
                     }))
                   }
+                  placeholder="Enter your registered email"
                   required
                 />
               </label>

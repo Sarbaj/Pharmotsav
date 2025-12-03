@@ -21,6 +21,24 @@
   box-sizing: border-box;
 }
 
+@media (max-width: 768px) {
+  .profile-dashboard {
+    padding: 6rem 1rem;
+    width: 100vw;
+    margin: 0;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 560px) {
+  .profile-dashboard {
+    padding: 5rem 0.75rem;
+    width: 100vw;
+    margin: 0;
+    overflow-x: hidden;
+  }
+}
+
 /* Header */
 .pd-header {
   display: flex;
@@ -881,26 +899,138 @@
   }
 }
 
+@media (max-width: 768px) {
+  .pd-header {
+    margin: 0 0.5rem;
+    padding: 1.5rem;
+    width: calc(100% - 1rem);
+    box-sizing: border-box;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .pd-user {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+  }
+
+  .pd-user-avatar {
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    align-self: center;
+  }
+
+  .pd-user-meta {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .pd-name {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .pd-role {
+    text-align: center;
+  }
+
+  .pd-tags {
+    justify-content: center;
+    margin-top: 0.75rem;
+  }
+
+  .pd-actions {
+    width: 100%;
+    gap: 0.75rem;
+  }
+
+  .pd-btn {
+    width: 100%;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
+  }
+}
+
 @media (max-width: 560px) {
   .pd-header {
     flex-direction: column;
-    align-items: stretch;
+    align-items: center;
+    text-align: center;
+    margin: 0 0.5rem;
+    padding: 1.25rem;
+    width: calc(100% - 1rem);
+    gap: 1rem;
   }
+
+  .pd-user {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+  }
+
+  .pd-user-avatar {
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    align-self: center;
+  }
+
+  .pd-user-meta {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .pd-name {
+    font-size: 1.4rem;
+    text-align: center;
+  }
+
+  .pd-role {
+    text-align: center;
+  }
+
+  .pd-tags {
+    justify-content: center;
+    margin-top: 0.75rem;
+  }
+
   .pd-modal {
     align-items: end;
-    padding: 12px;
+    padding: 0;
   }
   .pd-dialog {
     width: 100%;
-    max-height: 88vh;
+    max-height: 90vh;
     border-radius: 16px 16px 0 0;
-    padding: 14px;
+    padding: 1rem;
   }
   .pd-dialog-head h3 {
-    font-size: 16px;
+    font-size: 1.1rem;
   }
   .pd-icon-btn {
-    font-size: 24px;
+    font-size: 1.5rem;
+    width: 36px;
+    height: 36px;
+  }
+
+  .pd-actions {
+    width: 100%;
+  }
+
+  .pd-btn {
+    width: 100%;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.9rem;
   }
 }
 
@@ -1017,7 +1147,7 @@
 }
 
 .pd-seller-details-btn {
-  background: var(--pd-accent);
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   color: white;
   border: none;
   padding: 0.5rem 1rem;
@@ -1027,12 +1157,13 @@
   cursor: pointer;
   transition: all 0.3s ease;
   white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
 }
 
 .pd-seller-details-btn:hover:not(:disabled) {
-  background: #4338ca;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 }
 
 .pd-seller-details-btn:disabled {

@@ -60,27 +60,50 @@ const registerSeller = asyncHandler(async (req, res) => {
     throw new ApiError(401, "All fields are required");
   }
 
-  // Check if mobile number is verified via OTP
-  const otpRecord = await OTP.findOne({
-    mobileNumber,
+  // Check if email is verified via OTP
+  const emailOtpRecord = await OTP.findOne({
+    email,
     isVerified: true,
+    verificationType: "email",
   });
 
-  if (!otpRecord) {
+  if (!emailOtpRecord) {
     throw new ApiError(
       400,
-      "Mobile number must be verified with OTP before registration"
+      "Email must be verified with OTP before registration"
     );
   }
 
-  // Check if OTP is still valid (not expired)
-  if (new Date() > otpRecord.otpExpiry) {
-    await OTP.findByIdAndDelete(otpRecord._id);
+  // Check if email OTP is still valid (not expired)
+  if (new Date() > emailOtpRecord.otpExpiry) {
+    await OTP.findByIdAndDelete(emailOtpRecord._id);
     throw new ApiError(
       400,
-      "OTP verification has expired. Please verify your mobile number again."
+      "Email OTP verification has expired. Please verify your email again."
     );
   }
+
+  // TEMPORARILY COMMENTED - Mobile OTP check (for testing)
+  // const mobileOtpRecord = await OTP.findOne({
+  //   mobileNumber,
+  //   isVerified: true,
+  // });
+
+  // if (!mobileOtpRecord) {
+  //   throw new ApiError(
+  //     400,
+  //     "Mobile number must be verified with OTP before registration"
+  //   );
+  // }
+
+  // // Check if mobile OTP is still valid (not expired)
+  // if (new Date() > mobileOtpRecord.otpExpiry) {
+  //   await OTP.findByIdAndDelete(mobileOtpRecord._id);
+  //   throw new ApiError(
+  //     400,
+  //     "Mobile OTP verification has expired. Please verify your mobile number again."
+  //   );
+  // }
 
   const normalizedLocation = normalizedLocationfunc(location);
   if (!normalizedLocation) {
@@ -125,8 +148,12 @@ const registerSeller = asyncHandler(async (req, res) => {
     // Don't fail registration if welcome SMS fails
   }
 
-  // Clean up OTP record after successful registration
-  await OTP.findByIdAndDelete(otpRecord._id);
+  // Clean up OTP records after successful registration
+  await OTP.findByIdAndDelete(emailOtpRecord._id);
+  // TEMPORARILY COMMENTED - Mobile OTP cleanup (for testing)
+  // if (mobileOtpRecord) {
+  //   await OTP.findByIdAndDelete(mobileOtpRecord._id);
+  // }
 
   //see if seller is created or not
   const newSeller = await Seller.findById(seller._id).select(

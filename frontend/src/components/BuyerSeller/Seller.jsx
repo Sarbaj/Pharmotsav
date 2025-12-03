@@ -32,7 +32,7 @@ function Seller() {
           }
         });
       },
-      { threshold: 0.3 }
+      { threshold: 0.2, rootMargin: "0px 0px -50px 0px" }
     );
 
     stepsRef.current.forEach((el) => {
@@ -203,27 +203,44 @@ function Seller() {
       <div className="seller-container">
         {/* Hero Section */}
         <div className="seller-hero">
-          <div className="hero-content">
-            <div className="hero-text">
-              <h1>What can sellers do on SaathSource?</h1>
-              <p className="hero-subtitle">
+          <div className="seller-hero-content">
+            <div className="seller-hero-text">
+              <h1 className="seller-hero-title">What can <span className="seller-highlight">sellers</span> do on SaathSource?</h1>
+              <p className="seller-hero-subtitle">
                 Showcase your products to verified buyers worldwide. Expand your
                 market reach, increase sales, and build lasting business
                 relationships through our comprehensive B2B platform.
               </p>
-              <button className="cta-button" onClick={handleSignUp}>
+              
+              {/* Mobile Hero Graphic - shown between subtitle and CTA */}
+              <div className="seller-hero-image-mobile">
+                <div className="seller-hero-graphic">
+                  <img src={whatseller} alt="What can sellers do" className="seller-hero-main-image" />
+                  <div className="seller-question-marks">
+                    <span className="seller-question-mark q1">?</span>
+                    <span className="seller-question-mark q2">?</span>
+                    <span className="seller-question-mark q3">?</span>
+                    <span className="seller-question-mark q4">?</span>
+                    <span className="seller-question-mark q5">?</span>
+                  </div>
+                </div>
+              </div>
+              
+              <button className="seller-cta-button" onClick={handleSignUp}>
                 Start Selling Today
               </button>
             </div>
-            <div className="hero-image">
-              <div className="hero-graphic">
-                <img src={whatseller} alt="What can sellers do" className="hero-main-image" />
-                <div className="question-marks">
-                  <span className="question-mark q1">?</span>
-                  <span className="question-mark q2">?</span>
-                  <span className="question-mark q3">?</span>
-                  <span className="question-mark q4">?</span>
-                  <span className="question-mark q5">?</span>
+            
+            {/* Desktop Hero Graphic */}
+            <div className="seller-hero-image seller-hero-image-desktop">
+              <div className="seller-hero-graphic">
+                <img src={whatseller} alt="What can sellers do" className="seller-hero-main-image" />
+                <div className="seller-question-marks">
+                  <span className="seller-question-mark q1">?</span>
+                  <span className="seller-question-mark q2">?</span>
+                  <span className="seller-question-mark q3">?</span>
+                  <span className="seller-question-mark q4">?</span>
+                  <span className="seller-question-mark q5">?</span>
                 </div>
               </div>
             </div>
@@ -231,23 +248,23 @@ function Seller() {
         </div>
 
         {/* Process Section */}
-        <div className="process-section">
-          <div className="section-header">
-            <h2>Showcase, Manage and Respond</h2>
-            <p className="section-subtitle">Streamlined Selling Experience</p>
+        <div className="seller-process-section">
+          <div className="seller-section-header">
+            <h2 className="seller-section-title">Showcase, Manage and Respond</h2>
+            <p className="seller-section-subtitle">Streamlined Selling Experience</p>
           </div>
 
-          <div className="steps-container">
+          <div className="seller-steps-container">
             {sellerSteps.map((step, index) => (
               <div
                 key={index}
                 ref={(el) => (stepsRef.current[index] = el)}
-                className={`step-card ${
+                className={`seller-step-card ${
                   index % 2 === 0 ? "left-align" : "right-align"
                 }`}
               >
-                <div className="step-number">{step.step}</div>
-                <div className="step-image">
+                <div className="seller-step-number">{step.step}</div>
+                <div className="seller-step-image">
                   <img src={step.image} alt={`Step ${step.step}`} />
                 </div>
               </div>
@@ -256,13 +273,13 @@ function Seller() {
         </div>
 
         {/* Benefits Section */}
-        <div className="benefits-section">
-          <div className="benefits-content">
-            <h2>Why Choose SaathSource for Selling?</h2>
-            <div className="benefits-grid">
+        <div className="seller-benefits-section">
+          <div className="seller-benefits-content">
+            <h2 className="seller-benefits-title">Why Choose SaathSource for Selling?</h2>
+            <div className="seller-benefits-grid">
               {sellerBenefits.map((benefit, index) => (
-                <div key={index} className="benefit-item" ref={(el) => (benefitCardsRef.current[index] = el)}>
-                  <div className="benefit-image">
+                <div key={index} className="seller-benefit-item" ref={(el) => (benefitCardsRef.current[index] = el)}>
+                  <div className="seller-benefit-image">
                     <img src={benefit.image} alt={benefit.title} />
                   </div>
                   <h3>{benefit.title}</h3>
@@ -274,39 +291,39 @@ function Seller() {
         </div>
 
         {/* Success Stories Section */}
-        <div className="success-section">
-          <div className="success-content">
-            <h2>Success Stories</h2>
-            <p className="section-subtitle">
+        <div className="seller-success-section">
+          <div className="seller-success-content">
+            <h2 className="seller-success-title">Success Stories</h2>
+            <p className="seller-success-subtitle">
               Join thousands of successful sellers on our platform
             </p>
-            <div className="stats-grid">
-              <div className="stat-item">
-                <div className="stat-number" data-value="10000+" ref={(el) => (statNumbersRef.current[0] = el)}>0</div>
-                <div className="stat-label">Active Sellers</div>
+            <div className="seller-stats-grid">
+              <div className="seller-stat-item">
+                <div className="seller-stat-number" data-value="10000+" ref={(el) => (statNumbersRef.current[0] = el)}>0</div>
+                <div className="seller-stat-label">Active Sellers</div>
               </div>
 
-              <div className="stat-item">
-                <div className="stat-number" data-value="150+" ref={(el) => (statNumbersRef.current[1] = el)}>0</div>
-                <div className="stat-label">Countries Reached</div>
+              <div className="seller-stat-item">
+                <div className="seller-stat-number" data-value="150+" ref={(el) => (statNumbersRef.current[1] = el)}>0</div>
+                <div className="seller-stat-label">Countries Reached</div>
               </div>
-              <div className="stat-item">
-                <div className="stat-number" data-value="95%" ref={(el) => (statNumbersRef.current[2] = el)}>0</div>
-                <div className="stat-label">Customer Satisfaction</div>
+              <div className="seller-stat-item">
+                <div className="seller-stat-number" data-value="95%" ref={(el) => (statNumbersRef.current[2] = el)}>0</div>
+                <div className="seller-stat-label">Customer Satisfaction</div>
               </div>
             </div>
           </div>
         </div>
 
         {/* CTA Section */}
-        <div className="cta-section">
-          <div className="cta-content">
-            <h2>Ready to Grow Your Business?</h2>
-            <p>
+        <div className="seller-cta-section">
+          <div className="seller-cta-content">
+            <h2 className="seller-cta-title">Ready to Grow Your Business?</h2>
+            <p className="seller-cta-text">
               Join our community of successful sellers and start reaching buyers
               worldwide today.
             </p>
-            <button className="cta-button large" onClick={handleSignUp}>
+            <button className="seller-cta-button large" onClick={handleSignUp}>
               Become a Seller
             </button>
           </div>

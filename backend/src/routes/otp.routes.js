@@ -10,6 +10,9 @@ import {
   verifyBuyerEmailOTP,
   resendBuyerPhoneOTP,
   resendBuyerEmailOTP,
+  initiateSellerEmailOTP,
+  verifySellerEmailOTP,
+  resendSellerEmailOTP,
   initiateBuyerPhoneOTPForUpdate,
   initiateBuyerEmailOTPForUpdate,
   verifyBuyerPhoneOTPForUpdate,
@@ -28,11 +31,20 @@ import {
 
 const router = express.Router();
 
-// Seller OTP routes (existing)
+// Seller phone OTP routes (for registration)
 router.post("/initiate", otpRateLimiter, initiateOTP);
 router.post("/verify", otpVerifyRateLimiter, verifyOTP);
 router.post("/resend", otpRateLimiter, resendOTP);
 router.get("/status/:mobileNumber", getOTPStatus);
+
+// Seller email OTP routes (for registration)
+router.post(
+  "/seller/email/initiate",
+  emailOtpRateLimiter,
+  initiateSellerEmailOTP
+);
+router.post("/seller/email/verify", otpVerifyRateLimiter, verifySellerEmailOTP);
+router.post("/seller/email/resend", emailOtpRateLimiter, resendSellerEmailOTP);
 
 // Buyer phone OTP routes
 router.post(
