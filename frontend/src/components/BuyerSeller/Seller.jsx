@@ -1,16 +1,27 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "../../CSS/Seller.css";
 import "../../CSS/Buyer.css";
 import { useEffect, useRef } from "react";
 
+gsap.registerPlugin(ScrollTrigger);
+
 import sellerregister from "../../assets/seller-image.png";
 import productcatelog from "../../assets/productcatelog.png";
-import querysubmission from "../../assets/querysubmission.png";
 import respondeinquires from "../../assets/respondeinquires.png";
+import builddeals from "../../assets/builddeals.png";
+import whatseller from "../../assets/whatseller.png";
+import globalreach from "../../assets/globalreach.webp";
+import sales from "../../assets/sales.webp";
+import timee from "../../assets/timee.webp";
+import varibuyer from "../../assets/varibuyer.webp";
 function Seller() {
   const stepsRef = useRef([]);
+  const benefitCardsRef = useRef([]);
+  const statNumbersRef = useRef([]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -26,6 +37,69 @@ function Seller() {
 
     stepsRef.current.forEach((el) => {
       if (el) observer.observe(el);
+    });
+
+    // Benefit cards GSAP animation
+    benefitCardsRef.current.forEach((card, index) => {
+      if (card) {
+        gsap.from(card, {
+          scrollTrigger: {
+            trigger: card,
+            start: "top 85%",
+            toggleActions: "play none none reverse",
+          },
+          opacity: 0,
+          scale: 0.9,
+          y: 30,
+          duration: 0.6,
+          delay: index * 0.15,
+          ease: "power2.out",
+        });
+      }
+    });
+
+    // Animated counting for stats
+    statNumbersRef.current.forEach((stat, index) => {
+      if (stat) {
+        const finalValue = stat.getAttribute('data-value');
+        const isPercentage = finalValue.includes('%');
+        const hasPlus = finalValue.includes('+');
+        const numericValue = parseInt(finalValue.replace(/[^0-9]/g, ''));
+        
+        const counter = { value: 0 };
+        
+        gsap.to(counter, {
+          value: numericValue,
+          scrollTrigger: {
+            trigger: stat,
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
+          duration: 2.5,
+          delay: index * 0.3,
+          ease: "power2.out",
+          onUpdate: function() {
+            const currentValue = Math.floor(counter.value);
+            if (isPercentage) {
+              stat.textContent = currentValue + '%';
+            } else if (numericValue >= 1000) {
+              const thousands = Math.floor(currentValue / 1000);
+              const remainder = currentValue % 1000;
+              if (remainder === 0) {
+                stat.textContent = thousands + ',000' + (hasPlus ? '+' : '');
+              } else {
+                stat.textContent = thousands + ',' + remainder.toString().padStart(3, '0') + (hasPlus ? '+' : '');
+              }
+            } else {
+              stat.textContent = currentValue + (hasPlus ? '+' : '');
+            }
+          },
+          onComplete: function() {
+            // Ensure final value is displayed correctly
+            stat.textContent = finalValue;
+          }
+        });
+      }
     });
 
     return () => {
@@ -62,11 +136,11 @@ function Seller() {
     },
     {
       step: "03",
-      image: querysubmission,
+      image: respondeinquires,
     },
     {
       step: "04",
-      image: respondeinquires,
+      image: builddeals,
     },
   ];
 
@@ -99,25 +173,25 @@ function Seller() {
 
   const sellerBenefits = [
     {
-      icon: "🌍",
+      image: globalreach,
       title: "Global Reach",
       description:
         "Access buyers from around the world and expand your market presence internationally",
     },
     {
-      icon: "📈",
+      image: sales,
       title: "Increased Sales",
       description:
         "Boost your sales with our platform's advanced matching algorithms and buyer discovery",
     },
     {
-      icon: "⏰",
+      image: timee,
       title: "Time Efficient",
       description:
         "Save time with automated lead generation and streamlined communication tools",
     },
     {
-      icon: "🛡️",
+      image: varibuyer,
       title: "Verified Buyers",
       description:
         "Connect only with verified and serious buyers to ensure quality business relationships",
@@ -143,17 +217,13 @@ function Seller() {
             </div>
             <div className="hero-image">
               <div className="hero-graphic">
-                <div className="floating-card card-1">
-                  <span className="card-icon">💊</span>
-                  <span className="card-text">APIs & Raw Materials</span>
-                </div>
-                <div className="floating-card card-2">
-                  <span className="card-icon">🏭</span>
-                  <span className="card-text">Manufacturing</span>
-                </div>
-                <div className="floating-card card-3">
-                  <span className="card-icon">🔬</span>
-                  <span className="card-text">Research & Development</span>
+                <img src={whatseller} alt="What can sellers do" className="hero-main-image" />
+                <div className="question-marks">
+                  <span className="question-mark q1">?</span>
+                  <span className="question-mark q2">?</span>
+                  <span className="question-mark q3">?</span>
+                  <span className="question-mark q4">?</span>
+                  <span className="question-mark q5">?</span>
                 </div>
               </div>
             </div>
@@ -185,33 +255,16 @@ function Seller() {
           </div>
         </div>
 
-        {/* Features Section */}
-        <div className="features-section">
-          <div className="features-content">
-            <h2>Powerful Tools for Sellers</h2>
-            <p className="section-subtitle">
-              Everything you need to succeed in the global pharmaceutical market
-            </p>
-            <div className="features-grid">
-              {sellerFeatures.map((feature, index) => (
-                <div key={index} className="feature-item">
-                  <div className="feature-icon">{feature.icon}</div>
-                  <h3>{feature.title}</h3>
-                  <p>{feature.description}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
         {/* Benefits Section */}
         <div className="benefits-section">
           <div className="benefits-content">
             <h2>Why Choose SaathSource for Selling?</h2>
             <div className="benefits-grid">
               {sellerBenefits.map((benefit, index) => (
-                <div key={index} className="benefit-item">
-                  <div className="benefit-icon">{benefit.icon}</div>
+                <div key={index} className="benefit-item" ref={(el) => (benefitCardsRef.current[index] = el)}>
+                  <div className="benefit-image">
+                    <img src={benefit.image} alt={benefit.title} />
+                  </div>
                   <h3>{benefit.title}</h3>
                   <p>{benefit.description}</p>
                 </div>
@@ -229,16 +282,16 @@ function Seller() {
             </p>
             <div className="stats-grid">
               <div className="stat-item">
-                <div className="stat-number">10,000+</div>
+                <div className="stat-number" data-value="10000+" ref={(el) => (statNumbersRef.current[0] = el)}>0</div>
                 <div className="stat-label">Active Sellers</div>
               </div>
 
               <div className="stat-item">
-                <div className="stat-number">150+</div>
+                <div className="stat-number" data-value="150+" ref={(el) => (statNumbersRef.current[1] = el)}>0</div>
                 <div className="stat-label">Countries Reached</div>
               </div>
               <div className="stat-item">
-                <div className="stat-number">95%</div>
+                <div className="stat-number" data-value="95%" ref={(el) => (statNumbersRef.current[2] = el)}>0</div>
                 <div className="stat-label">Customer Satisfaction</div>
               </div>
             </div>

@@ -2,15 +2,15 @@
   --sd-bg: transparent;
   --sd-surface: #ffffff;
   --sd-surface-2: #ffffff;
-  --sd-border: #1f2a36;
-  --sd-accent: #4f46e5;
-  --sd-accent-2: #06b6d4;
-  --sd-text: #000000;
-  --sd-text-dim: #000000;
+  --sd-border: #e5e7eb;
+  --sd-accent: #14db9a;
+  --sd-accent-2: #00b894;
+  --sd-text: #1f2937;
+  --sd-text-dim: #6b7280;
   --sd-success: #16a34a;
   --sd-danger: #ef4444;
   --sd-warning: #d97706;
-  --sd-shadow: 0 10px 30px rgba(0, 0, 0, 0.35),
+  --sd-shadow: 0 10px 30px rgba(0, 0, 0, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.02);
 }
 
@@ -639,7 +639,7 @@
   gap: 0.5rem;
   padding: 0.5rem 1rem;
   font-size: 0.9rem;
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: linear-gradient(135deg, #14db9a, #00b894);
   color: white;
   border: none;
   border-radius: 8px;
@@ -708,7 +708,7 @@
 
 /* Secondary Button */
 .sd-btn--secondary {
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: linear-gradient(135deg, #14db9a, #00b894);
   color: white;
   border: none;
 }
@@ -1942,8 +1942,8 @@
   align-items: center;
   gap: 16px;
   padding: 24px;
-  background: #f0f9ff;
-  border: 2px solid #0ea5e9;
+  background: #ecfdf5;
+  border: 2px solid #14db9a;
   border-radius: 12px;
   text-align: center;
 }

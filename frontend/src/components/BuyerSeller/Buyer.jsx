@@ -1,4 +1,6 @@
 import React, { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import "../../CSS/Buyer.css";
@@ -6,10 +8,18 @@ import buyerRegister from "../../assets/buyerRegister.png";
 import productexploration from "../../assets/productexploration.png";
 import querysubmission from "../../assets/querysubmission.png";
 import communication from "../../assets/com.png";
+import savetime from "../../assets/savetime.webp";
+import savemoney from "../../assets/savemoney.webp";
+import verified from "../../assets/verified.webp";
+import direct from "../../assets/direct.webp";
+import whatbuy from "../../assets/wahtbuy.png";
+
+gsap.registerPlugin(ScrollTrigger);
 
 function Buyer() {
   const navigate = useNavigate();
   const stepsRef = useRef([]);
+  const benefitCardsRef = useRef([]);
   const { isLogin } = useSelector((state) => state.user);
 
   const handleSignUp = () => {
@@ -48,6 +58,25 @@ function Buyer() {
       if (el) observer.observe(el);
     });
 
+    // Benefit cards GSAP animation
+    benefitCardsRef.current.forEach((card, index) => {
+      if (card) {
+        gsap.from(card, {
+          scrollTrigger: {
+            trigger: card,
+            start: "top 85%",
+            toggleActions: "play none none reverse",
+          },
+          opacity: 0,
+          scale: 0.9,
+          y: 30,
+          duration: 0.6,
+          delay: index * 0.15,
+          ease: "power2.out",
+        });
+      }
+    });
+
     return () => {
       stepsRef.current.forEach((el) => {
         if (el) observer.unobserve(el);
@@ -74,17 +103,17 @@ function Buyer() {
           </div>
           <div className="hero-image">
             <div className="hero-graphic">
-              <div className="floating-card card-1">
-                <span className="card-icon">💊</span>
-                <span className="card-text">Pharmaceuticals</span>
-              </div>
-              <div className="floating-card card-2">
-                <span className="card-icon">🏥</span>
-                <span className="card-text">Healthcare</span>
-              </div>
-              <div className="floating-card card-3">
-                <span className="card-icon">🔬</span>
-                <span className="card-text">Medical Equipment</span>
+              <img
+                src={whatbuy}
+                alt="What can buyers do"
+                className="hero-main-image"
+              />
+              <div className="question-marks">
+                <span className="question-mark q1">?</span>
+                <span className="question-mark q2">?</span>
+                <span className="question-mark q3">?</span>
+                <span className="question-mark q4">?</span>
+                <span className="question-mark q5">?</span>
               </div>
             </div>
           </div>
@@ -123,25 +152,45 @@ function Buyer() {
         <div className="benefits-content">
           <h2>Why Choose SaathSource?</h2>
           <div className="benefits-grid">
-            <div className="benefit-item">
-              <div className="benefit-icon">⚡</div>
+            <div
+              className="benefit-item"
+              ref={(el) => (benefitCardsRef.current[0] = el)}
+            >
+              <div className="benefit-image">
+                <img src={savetime} alt="Save Time" />
+              </div>
               <h3>Save Time</h3>
               <p>
                 Quick access to verified suppliers without endless searching
               </p>
             </div>
-            <div className="benefit-item">
-              <div className="benefit-icon">💰</div>
+            <div
+              className="benefit-item"
+              ref={(el) => (benefitCardsRef.current[1] = el)}
+            >
+              <div className="benefit-image">
+                <img src={savemoney} alt="Save Money" />
+              </div>
               <h3>Save Money</h3>
               <p>Multiple sellers available, More quantity - more discount</p>
             </div>
-            <div className="benefit-item">
-              <div className="benefit-icon">🛡️</div>
+            <div
+              className="benefit-item"
+              ref={(el) => (benefitCardsRef.current[2] = el)}
+            >
+              <div className="benefit-image">
+                <img src={verified} alt="Verified Suppliers" />
+              </div>
               <h3>Verified Suppliers</h3>
               <p>All sellers are verified and trusted partners</p>
             </div>
-            <div className="benefit-item">
-              <div className="benefit-icon">📞</div>
+            <div
+              className="benefit-item"
+              ref={(el) => (benefitCardsRef.current[3] = el)}
+            >
+              <div className="benefit-image">
+                <img src={direct} alt="Direct Communication" />
+              </div>
               <h3>Direct Communication</h3>
               <p>Connect directly with suppliers for better negotiations</p>
             </div>

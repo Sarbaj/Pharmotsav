@@ -351,6 +351,7 @@ export default function Header() {
                     ? "buyer-profile"
                     : "seller-profile"
                 }
+                className="profile-nav-link"
                 onClick={() => {
                   console.log(
                     "Profile link clicked - Role:",
@@ -360,37 +361,13 @@ export default function Header() {
                   );
                 }}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor" // to inherit text color or CSS color
-                  width="28"
-                  height="28"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M15.75 7.5a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 19.5a8.25 8.25 0 0115 0"
-                  />
-                </svg>
+                <div className="nav-avatar">
+                  {UserInfo ? 
+                    `${UserInfo.firstName?.charAt(0) || ''}${UserInfo.lastName?.charAt(0) || ''}`.toUpperCase() 
+                    : 'U'}
+                </div>
+                <span className="nav-dashboard-text">My Dashboard</span>
               </Link>
-              <button
-                style={{
-                  textDecoration: "none",
-                  color: "#ffffffff",
-                  padding: "10px 19px",
-                  background: "black",
-                  fontFamily: "uppercasefont",
-                  borderRadius: "5px",
-                  fontSize: "small",
-                }}
-                onClick={() => HadleLogout()}
-              >
-                Logout
-              </button>
             </div>
           )}
         </div>
@@ -495,15 +472,6 @@ export default function Header() {
                   >
                     {isAdmin ? "Admin Dashboard" : "Profile"}
                   </Link>
-                  <button
-                    className="mobile-logout-btn"
-                    onClick={() => {
-                      HadleLogout();
-                      setIsOpen(false);
-                    }}
-                  >
-                    Logout
-                  </button>
                 </div>
               )}
             </div>

@@ -1152,9 +1152,14 @@ export default function ProfileDashboard() {
     <div className="profile-dashboard">
       <section className="pd-header">
         <div className="pd-user">
+          <div className="pd-user-avatar">
+            {userdata ? 
+              `${userdata.firstName?.charAt(0) || ''}${userdata.lastName?.charAt(0) || ''}`.toUpperCase() 
+              : 'U'}
+          </div>
           <div className="pd-user-meta">
             <h2 className="pd-name">
-              {userdata ? userdata.firstName : "Loading"}
+              {userdata ? `${userdata.firstName} ${userdata.lastName || ''}` : "Loading"}
             </h2>
             <p className="pd-role">
               {userdata ? userdata.natureOfBuisness : "Loading"}
@@ -1191,6 +1196,15 @@ export default function ProfileDashboard() {
             onClick={openProfileUpdateModal}
           >
             Update Profile
+          </button>
+          <button
+            className="pd-btn pd-btn--logout"
+            onClick={() => {
+              localStorage.clear();
+              window.location.href = '/';
+            }}
+          >
+            Logout
           </button>
         </div>
       </section>

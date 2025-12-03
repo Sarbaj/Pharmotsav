@@ -148,8 +148,8 @@
 }
 
 .circle.active {
-  background: #28a745;
-  border-color: #28a745;
+  background: linear-gradient(135deg, #14db9a 0%, #00b894 100%);
+  border-color: #14db9a;
   color: #fff;
 }
 
@@ -170,7 +170,7 @@
 }
 
 .line.filled {
-  background: #28a745;
+  background: linear-gradient(135deg, #14db9a 0%, #00b894 100%);
 }
 
 /* Form */
@@ -201,7 +201,7 @@
 
 .seller-register-form input:focus,
 .seller-register-form select:focus {
-  border-color: #28a745;
+  border-color: #14db9a;
   outline: none;
 }
 
@@ -211,7 +211,7 @@
   padding: 0.8rem 1.2rem;
   border: none;
   border-radius: 0.5rem;
-  background: #28a745;
+  background: linear-gradient(135deg, #14db9a 0%, #00b894 100%);
   color: #fff;
   font-size: 1rem;
   cursor: pointer;
@@ -221,17 +221,17 @@
 
 .submit-btns:hover,
 .seller-register-form button:hover {
-  background: #1e7e34;
+  background: linear-gradient(135deg, #00b894 0%, #14db9a 100%);
 }
 
 /* Location button */
 .seller-register-form button[type="button"] {
-  background: #007bff;
+  background: linear-gradient(135deg, #14db9a 0%, #00b894 100%);
   font-size: 0.9rem;
 }
 
 .seller-register-form button[type="button"]:hover {
-  background: #0056b3;
+  background: linear-gradient(135deg, #00b894 0%, #14db9a 100%);
 }
 
 /* Error */

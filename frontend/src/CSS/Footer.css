@@ -101,7 +101,7 @@
 }
 
 .social-link:hover {
-  background: linear-gradient(45deg, #14db9a, #00b894);
+  background: linear-gradient(45deg, #06b6d4, #0891b2);
   transform: translateY(-3px);
 }
 
@@ -127,7 +127,7 @@
   left: 0;
   width: 30px;
   height: 3px;
-  background: linear-gradient(45deg, #14db9a, #00b894);
+  background: linear-gradient(45deg, #3b82f6, #2563eb);
   border-radius: 2px;
 }
 
@@ -225,7 +225,7 @@
 }
 
 .bottom-link:hover {
-  color: #14db9a;
+  color: #06b6d4;
 }
 
 /* Responsive Design */

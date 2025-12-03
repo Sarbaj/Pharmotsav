@@ -92,21 +92,22 @@
 
 .btn.signin {
   background-color: #fff;
-  color: #1f2937;
+  color: #0891b2;
+  border: 2px solid #0891b2;
 }
 
 .btn.signin:hover {
-  background-color: #f3f4f6;
+  background-color: #ecfeff;
 }
 
 .btn.get-started {
-  background-color: #111827;
+  background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
   color: #fff;
   border: none;
 }
 
 .btn.get-started:hover {
-  background-color: #1f2937;
+  background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
 }
 
 /* Mobile menu toggle */
@@ -168,18 +169,18 @@
   display: block;
   width: 100%;
   padding: 12px 20px;
-  background-color: #111827;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: #ffffff;
   text-decoration: none;
   text-align: center;
   border-radius: 6px;
   font-family: uppercasefont;
   font-weight: 500;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .mobile-login-btn:hover {
-  background-color: #1f2937;
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
 }
 
 .mobile-user-section {
@@ -303,4 +304,38 @@
 
 .user-icon:hover {
   color: #2563eb;
+}
+
+/* Navigation Avatar and Dashboard Link */
+.profile-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: #1f2937;
+  transition: color 0.2s ease-in-out;
+}
+
+.profile-nav-link:hover {
+  color: #2563eb;
+}
+
+.nav-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: white;
+  font-family: "Poppins", sans-serif;
+}
+
+.nav-dashboard-text {
+  font-family: uppercasefont;
+  font-weight: 500;
+  font-style: normal;
 }

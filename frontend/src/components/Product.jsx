@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { gsap } from "gsap";
 import "../CSS/Product.css";
 
 const Product = () => {
+  const headerRef = useRef(null);
+  
   const [allProducts, setAllProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -219,6 +222,22 @@ const Product = () => {
   useEffect(() => {
     fetchCategories();
     fetchProducts();
+    
+    // Header animation
+    if (headerRef.current) {
+      gsap.set(headerRef.current.children, {
+        opacity: 0,
+        y: -30,
+      });
+      
+      gsap.to(headerRef.current.children, {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        stagger: 0.2,
+        ease: "power3.out",
+      });
+    }
   }, []);
 
   // Filter and search functionality (only for search and sort, category filtering is done via API)
@@ -345,7 +364,7 @@ const Product = () => {
     <div className="product-container">
       {/* Header Section */}
       <div className="product-header">
-        <div className="header-content">
+        <div className="header-content" ref={headerRef}>
           <h1 className="main-title">Find Pharmaceutical Products</h1>
           <p className="main-subtitle">
             Discover high-quality APIs, excipients, and pharmaceutical materials
@@ -511,93 +530,32 @@ const Product = () => {
                     <h3 className="product-name">{product.name}</h3>
                     <p className="product-description">{product.description}</p>
 
-                    {(() => {
-                      const typeSpec =
-                        product.specification &&
-                        product.specification.find(
-                          (spec) =>
-                            spec &&
-                            typeof spec.key === "string" &&
-                            spec.key.toLowerCase() === "type"
-                        );
-
-                      const otherSpecs =
-                        product.specification &&
-                        product.specification.filter(
-                          (spec) =>
-                            !(
-                              spec &&
-                              typeof spec.key === "string" &&
-                              spec.key.toLowerCase() === "type"
-                            )
-                        );
-
-                      return (
-                        <div className="product-details">
-                          <div className="detail-item">
-                            <span className="detail-label">Supplier:</span>
-                            <span className="detail-value">
-                              {product.supplier}
-                            </span>
-                          </div>
-                          {product.sellerCity && (
-                            <div className="detail-item">
-                              <span className="detail-label">Location:</span>
-                              <span className="detail-value">
-                                {product.sellerCity}
-                              </span>
-                            </div>
-                          )}
-                          {typeSpec && (
-                            <div className="detail-item">
-                              <span className="detail-label">Type:</span>
-                              <span className="detail-value">{typeSpec.value}</span>
-                            </div>
-                          )}
-
-                          {otherSpecs && otherSpecs.length > 0 && (
-                            <>
-                              {product.showAllSpecs &&
-                                otherSpecs.map((spec, index) => (
-                                  <div key={index} className="detail-item">
-                                    <span className="detail-label">
-                                      {spec.key}:
-                                    </span>
-                                    <span className="detail-value">
-                                      {spec.value}
-                                    </span>
-                                  </div>
-                                ))}
-
-                              <div className="detail-item">
-                                <button
-                                  className="see-more-btn"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    openProductModal(product);
-                                  }}
-                                >
-                                  See More Details
-                                </button>
-                              </div>
-                            </>
-                          )}
-
-                          {!product.specification ||
-                            (product.specification.length === 0 && (
-                              <div className="detail-item">
-                                <span className="detail-label">Min Order:</span>
-                                <span className="detail-value">
-                                  {product.minOrder}
-                                </span>
-                              </div>
-                            ))}
+                    <div className="product-details">
+                      <div className="detail-item">
+                        <span className="detail-value">
+                          <strong>Supplier:</strong> {product.supplier}
+                        </span>
+                      </div>
+                      {product.sellerCity && (
+                        <div className="detail-item">
+                          <span className="detail-value">
+                            <strong>Location:</strong> {product.sellerCity}
+                          </span>
                         </div>
-                      );
-                    })()}
+                      )}
+                    </div>
                   </div>
 
                   <div className="product-footer">
+                    <button
+                      className="see-more-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openProductModal(product);
+                      }}
+                    >
+                      See Details
+                    </button>
                     <button
                       className="inquire-button"
                       onClick={(e) => {
@@ -670,18 +628,16 @@ const Product = () => {
               <div className="product-modal-details">
                 {selectedProduct.sellerCity && (
                   <div className="product-modal-detail-row">
-                    <span className="detail-label">Location:</span>
                     <span className="detail-value">
-                      {selectedProduct.sellerCity}
+                      <strong>Location</strong> - {selectedProduct.sellerCity}
                     </span>
                   </div>
                 )}
 
                 {selectedProduct.minOrder && (
                   <div className="product-modal-detail-row">
-                    <span className="detail-label">Min Order:</span>
                     <span className="detail-value">
-                      {selectedProduct.minOrder}
+                      <strong>Min Order</strong> - {selectedProduct.minOrder}
                     </span>
                   </div>
                 )}
@@ -689,10 +645,12 @@ const Product = () => {
                 {Array.isArray(selectedProduct.specification) &&
                   selectedProduct.specification.length > 0 && (
                     <div className="product-modal-specs">
+                      <h4 className="specs-title">Specifications</h4>
                       {selectedProduct.specification.map((spec, index) => (
                         <div key={index} className="product-modal-detail-row">
-                          <span className="detail-label">{spec.key}:</span>
-                          <span className="detail-value">{spec.value}</span>
+                          <span className="detail-value">
+                            <strong>{spec.key}</strong> - {spec.value}
+                          </span>
                         </div>
                       ))}
                     </div>
