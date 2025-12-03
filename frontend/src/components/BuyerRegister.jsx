@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import "../CSS/BuyerRegister.css";
-import registerImage from "../assets/BuyerRegister.png"; // Replace with your actual image path
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { API_ENDPOINTS } from "../config/api";
