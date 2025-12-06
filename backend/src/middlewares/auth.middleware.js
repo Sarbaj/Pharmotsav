@@ -26,7 +26,13 @@ export const verifyJwtBuyer = asyncHandler(async (req, res, next) => {
     req.buyer = buyer;
     next();
   } catch (error) {
-    throw new ApiError(500, error?.message || "invalid Token");
+    // Check if error is JWT related
+    if (error.name === "TokenExpiredError") {
+      throw new ApiError(401, "jwt expired");
+    } else if (error.name === "JsonWebTokenError") {
+      throw new ApiError(401, "invalid jwt");
+    }
+    throw new ApiError(401, error?.message || "invalid Token");
   }
 });
 
@@ -51,7 +57,13 @@ export const verifyJwtSeller = asyncHandler(async (req, res, next) => {
     req.seller = seller;
     next();
   } catch (error) {
-    throw new ApiError(500, error?.message || "invalid Token");
+    // Check if error is JWT related
+    if (error.name === "TokenExpiredError") {
+      throw new ApiError(401, "jwt expired");
+    } else if (error.name === "JsonWebTokenError") {
+      throw new ApiError(401, "invalid jwt");
+    }
+    throw new ApiError(401, error?.message || "invalid Token");
   }
 });
 
@@ -78,7 +90,13 @@ export const verifyJwtAdmin = asyncHandler(async (req, res, next) => {
     req.admin = admin;
     next();
   } catch (error) {
-    throw new ApiError(500, error?.message || "invalid Token");
+    // Check if error is JWT related
+    if (error.name === "TokenExpiredError") {
+      throw new ApiError(401, "jwt expired");
+    } else if (error.name === "JsonWebTokenError") {
+      throw new ApiError(401, "invalid jwt");
+    }
+    throw new ApiError(401, error?.message || "invalid Token");
   }
 });
 
@@ -114,6 +132,12 @@ export const verifyJwtMember = asyncHandler(async (req, res, next) => {
     // If neither buyer nor seller found
     throw new ApiError(401, "wrong jwt");
   } catch (error) {
-    throw new ApiError(500, error?.message || "invalid Token");
+    // Check if error is JWT related
+    if (error.name === "TokenExpiredError") {
+      throw new ApiError(401, "jwt expired");
+    } else if (error.name === "JsonWebTokenError") {
+      throw new ApiError(401, "invalid jwt");
+    }
+    throw new ApiError(401, error?.message || "invalid Token");
   }
 });

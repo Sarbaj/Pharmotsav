@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import emailjs from "@emailjs/browser";
 import { addBasicInfo } from "./REDUX/UserSlice";
 import { API_BASE_URL, API_ENDPOINTS } from "../config/api";
+import { fetchWithAuth, getAuthHeaders, handleLogout } from "../utils/apiUtils";
 
 export default function ProfileDashboard() {
   const [isCompanyModalOpen, setIsCompanyModalOpen] = useState(false);
@@ -60,6 +61,27 @@ export default function ProfileDashboard() {
 
   const { UserInfo } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // CRITICAL: Authentication and role check
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const userData = localStorage.getItem("user");
+    const userRole = localStorage.getItem("role");
+
+    // Redirect to login if no token or user data
+    if (!token || !userData) {
+      navigate("/login");
+      return;
+    }
+
+    // CRITICAL: Check if the logged-in user is actually a buyer
+    if (userRole !== "buyer") {
+      console.warn("Seller trying to access buyer dashboard, redirecting...");
+      navigate("/seller-profile");
+      return;
+    }
+  }, [navigate]);
 
   // Function to update user data in both Redux store and localStorage
   const updateUserData = (newUserData) => {
@@ -107,28 +129,25 @@ export default function ProfileDashboard() {
         setInquiries([]);
         setPendingInquiries([]);
         setRecentInquiries([]);
+        handleLogout();
         return;
       }
 
       // Fetch pending inquiries
-      const pendingResponse = await fetch(
+      const pendingResponse = await fetchWithAuth(
         `${API_ENDPOINTS.INQUIRIES.BUYER}`,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: getAuthHeaders(),
         }
       );
 
       console.log("Pending response status:", pendingResponse.status);
 
       // Fetch recent inquiries
-      const recentResponse = await fetch(
+      const recentResponse = await fetchWithAuth(
         `${API_ENDPOINTS.INQUIRIES.RECENT}`,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: getAuthHeaders(),
         }
       );
 
@@ -487,7 +506,7 @@ export default function ProfileDashboard() {
       // Get seller ID from the first inquiry (all inquiries in this group have same seller)
       const sellerId = sellerInquiries[0].sellerId;
 
-      const response = await fetch(
+      const response = await fetchWithAuth(
         `${API_ENDPOINTS.SELLERS.DETAILS}/${sellerId}`
       );
 
@@ -771,15 +790,11 @@ export default function ProfileDashboard() {
     }
 
     try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(
+      const response = await fetchWithAuth(
         `${API_ENDPOINTS.BUYERS.CHANGE_PASSWORD}`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+          headers: getAuthHeaders(),
           body: JSON.stringify({
             oldPassword: passwordData.currentPassword,
             newPassword: passwordData.newPassword,
@@ -1018,13 +1033,11 @@ export default function ProfileDashboard() {
     }
 
     try {
-      const response = await fetch(
+      const response = await fetchWithAuth(
         `${API_ENDPOINTS.INQUIRIES.DELETE}/${inquiryId}`,
         {
           method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+          headers: getAuthHeaders(),
         }
       );
 

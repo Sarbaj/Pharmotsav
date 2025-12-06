@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../CSS/AdminDashboard.css";
 import { API_BASE_URL, API_ENDPOINTS } from "../config/api";
+import { fetchWithAuth, getAuthHeaders, handleAdminLogout } from "../utils/apiUtils";
 
 const AdminDashboard = () => {
   const [adminUser, setAdminUser] = useState(null);

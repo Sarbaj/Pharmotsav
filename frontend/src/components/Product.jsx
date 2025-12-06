@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import "../CSS/Product.css";
 import { API_BASE_URL, API_ENDPOINTS } from "../config/api";
+import { fetchWithAuth, getAuthHeaders } from "../utils/apiUtils";
 
 const Product = () => {
   const headerRef = useRef(null);
@@ -312,17 +313,15 @@ const Product = () => {
 
       if (!buyerId) {
         alert("Please login as a buyer to make inquiries");
+        window.location.href = "/login";
         return;
       }
 
-      const response = await fetch(
+      const response = await fetchWithAuth(
         `${API_ENDPOINTS.INQUIRIES.CREATE}`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+          headers: getAuthHeaders(),
           body: JSON.stringify({
             productId: product.id,
           }),
@@ -338,7 +337,11 @@ const Product = () => {
       }
     } catch (error) {
       console.error("Error creating inquiry:", error);
-      alert("Failed to create inquiry. Please try again.");
+      if (error.message === "Session expired. Please login again.") {
+        alert(error.message);
+      } else {
+        alert("Failed to create inquiry. Please try again.");
+      }
     }
   };
 

@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { addBasicInfo } from "./REDUX/UserSlice";
 import { API_BASE_URL, API_ENDPOINTS } from "../config/api";
+import { fetchWithAuth, getAuthHeaders, handleLogout } from "../utils/apiUtils";
 
 export default function SellerDashboard() {
   const [isCompanyModalOpen, setIsCompanyModalOpen] = useState(false);
@@ -78,9 +79,18 @@ export default function SellerDashboard() {
     // Check if seller is logged in
     const token = localStorage.getItem("token");
     const userData = localStorage.getItem("user");
+    const userRole = localStorage.getItem("role");
 
+    // Redirect to login if no token or user data
     if (!token || !userData) {
       navigate("/login");
+      return;
+    }
+
+    // CRITICAL: Check if the logged-in user is actually a seller
+    if (userRole !== "seller") {
+      console.warn("Buyer trying to access seller dashboard, redirecting...");
+      navigate("/buyer-profile");
       return;
     }
 
@@ -174,12 +184,10 @@ export default function SellerDashboard() {
   const fetchSellerInquiries = async () => {
     try {
       setInquiriesLoading(true);
-      const response = await fetch(
+      const response = await fetchWithAuth(
         `${API_ENDPOINTS.INQUIRIES.SELLER_RECENT}`,
         {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+          headers: getAuthHeaders(),
         }
       );
 
@@ -257,7 +265,7 @@ export default function SellerDashboard() {
     try {
       setBuyerLoading(true);
 
-      const response = await fetch(
+      const response = await fetchWithAuth(
         `${API_ENDPOINTS.BUYERS.DETAILS}/${buyerId}`
       );
 
@@ -521,7 +529,7 @@ export default function SellerDashboard() {
         formData.append("productImage", product.productImage.file);
 
         // Send to backend API
-        const response = await fetch(
+        const response = await fetchWithAuth(
           `${API_ENDPOINTS.PRODUCTS.ADD}`,
           {
             method: "POST",
@@ -677,7 +685,7 @@ export default function SellerDashboard() {
       });
 
       // Send to backend API
-      const response = await fetch(
+      const response = await fetchWithAuth(
         `${API_ENDPOINTS.PRODUCTS.ADD}`,
         {
           method: "POST",

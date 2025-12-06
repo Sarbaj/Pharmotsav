@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import "../CSS/SellerProfile.css";
 import { API_BASE_URL, API_ENDPOINTS } from "../config/api";
+import { fetchWithAuth, getAuthHeaders, handleLogout } from "../utils/apiUtils";
 
 function SellerProfile() {
   const [inquiries, setInquiries] = useState([]);
@@ -83,12 +84,10 @@ function SellerProfile() {
         return;
       }
 
-      const response = await fetch(
+      const response = await fetchWithAuth(
         `${API_ENDPOINTS.INQUIRIES.SELLER}`,
         {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+          headers: getAuthHeaders(),
         }
       );
 
@@ -123,7 +122,7 @@ function SellerProfile() {
     try {
       setBuyerLoading(true);
 
-      const response = await fetch(
+      const response = await fetchWithAuth(
         `${API_ENDPOINTS.BUYERS.DETAILS}/${buyerId}`
       );
 
