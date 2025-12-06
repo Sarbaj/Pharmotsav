@@ -59,6 +59,9 @@ export default function ProfileDashboard() {
     isOtpVerified: false,
   });
 
+  // Sidebar state - ONLY ADDITION
+  const [activeTab, setActiveTab] = useState("profile"); // "profile", "pending", "recent"
+
   const { UserInfo } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -721,17 +724,14 @@ export default function ProfileDashboard() {
         natureOfBusiness: profileUpdateData.natureOfBusiness,
       };
 
-      const response = await fetch(
-        `${API_ENDPOINTS.BUYERS.UPDATE_PROFILE}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(basicProfileData),
-        }
-      );
+      const response = await fetch(`${API_ENDPOINTS.BUYERS.UPDATE_PROFILE}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(basicProfileData),
+      });
 
       const data = await response.json();
 
@@ -826,9 +826,11 @@ export default function ProfileDashboard() {
     // NOTE: Forgot password endpoint doesn't exist for buyers in backend
     // Only sellers have /api/v1/sellers/forgot-password
     // If you need this feature, add it to backend first
-    alert("Forgot password feature not available for buyers yet. Please contact support.");
+    alert(
+      "Forgot password feature not available for buyers yet. Please contact support."
+    );
     setIsForgotPasswordModalOpen(false);
-    
+
     /* COMMENTED OUT - Backend route doesn't exist
     try{
       const response = await fetch(
@@ -1122,120 +1124,340 @@ export default function ProfileDashboard() {
 
   return (
     <div className="profile-dashboard">
-      <section className="pd-header">
-        <div className="pd-user">
-          <div className="pd-user-avatar">
-            {userdata ? 
-              `${userdata.firstName?.charAt(0) || ''}${userdata.lastName?.charAt(0) || ''}`.toUpperCase() 
-              : 'U'}
-          </div>
-          <div className="pd-user-meta">
-            <h2 className="pd-name">
-              {userdata ? `${userdata.firstName} ${userdata.lastName || ''}` : "Loading"}
-            </h2>
-            <p className="pd-role">
-              {userdata ? userdata.natureOfBuisness : "Loading"}
-            </p>
-
-            <div className="pd-tags">
-              <span className="pd-tag">Verified</span>
-              <span className="pd-tag pd-tag--accent">Business</span>
-            </div>
-          </div>
-
-          {/* Company Details Section */}
-          <div className="pd-company-details">
-            <h3 className="pd-company-title">Company Information</h3>
-            <div className="pd-company-grid">
-              <div className="pd-company-item">
-                <label>Email</label>
-                <p>{userdata?.email || "Not provided"}</p>
-              </div>
-              <div className="pd-company-item">
-                <label>Phone</label>
-                <p>{userdata?.mobileNumber || "Not provided"}</p>
-              </div>
-              <div className="pd-company-item">
-                <label>Country</label>
-                <p>{userdata?.country || "Not provided"}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="pd-actions">
+      {/* Sidebar - NEW ADDITION */}
+      <aside className="pd-sidebar">
+        <nav className="pd-sidebar-nav">
           <button
-            className="pd-btn pd-btn--primary"
-            onClick={openProfileUpdateModal}
+            className={`pd-sidebar-btn ${
+              activeTab === "profile" ? "active" : ""
+            }`}
+            onClick={() => setActiveTab("profile")}
           >
-            Update Profile
+            <svg
+              className="pd-sidebar-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <span>My Profile</span>
           </button>
           <button
-            className="pd-btn pd-btn--logout"
-            onClick={() => {
-              localStorage.clear();
-              window.location.href = '/';
-            }}
+            className={`pd-sidebar-btn ${
+              activeTab === "pending" ? "active" : ""
+            }`}
+            onClick={() => setActiveTab("pending")}
           >
-            Logout
-          </button>
-        </div>
-      </section>
-
-      {/* Pending Inquiries Section */}
-      <div className="pd-inquiries-section">
-        <div className="pd-inquiries-header">
-          <h3 className="pd-inquiries-title">Pending Inquiries</h3>
-          <div className="pd-inquiries-controls">
-            <div className="pd-total-inquiries">
-              <span className="pd-total-number">
-                {filteredPendingInquiries.length}
+            <svg
+              className="pd-sidebar-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"></path>
+              <rect x="9" y="3" width="6" height="4" rx="1"></rect>
+            </svg>
+            <span>Pending Inquiries</span>
+            {pendingInquiries.length > 0 && (
+              <span className="pd-sidebar-badge">
+                {pendingInquiries.length}
               </span>
-              <span className="pd-total-label">Pending</span>
-            </div>
-            <div className="pd-date-filter">
-              <label htmlFor="dateFilter">Filter by:</label>
-              <select
-                id="dateFilter"
-                value={dateFilter}
-                onChange={(e) => setDateFilter(e.target.value)}
-                className="pd-filter-select"
-              >
-                <option value="all">All Time</option>
-                <option value="today">Today</option>
-                <option value="week">This Week</option>
-                <option value="month">This Month</option>
-              </select>
-            </div>
-          </div>
-        </div>
+            )}
+          </button>
+          <button
+            className={`pd-sidebar-btn ${
+              activeTab === "recent" ? "active" : ""
+            }`}
+            onClick={() => setActiveTab("recent")}
+          >
+            <svg
+              className="pd-sidebar-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+            <span>Recent Inquiries</span>
+            {recentInquiries.length > 0 && (
+              <span className="pd-sidebar-badge">{recentInquiries.length}</span>
+            )}
+          </button>
+        </nav>
+      </aside>
+      {/* Main Content - WRAPPED EXISTING CONTENT */}
+      <div className="pd-main-content">
+        {/* Profile Section - SHOW/HIDE BASED ON TAB */}
+        {activeTab === "profile" && (
+          <section className="pd-header">
+            <div className="pd-profile-container">
+              {/* Avatar and Basic Info - Centered */}
+              <div className="pd-profile-top">
+                <div className="pd-user-avatar">
+                  {userdata
+                    ? `${userdata.firstName?.charAt(0) || ""}${
+                        userdata.lastName?.charAt(0) || ""
+                      }`.toUpperCase()
+                    : "U"}
+                </div>
+                <h2 className="pd-name">
+                  {userdata
+                    ? `${userdata.firstName} ${userdata.lastName || ""}`
+                    : "Loading"}
+                </h2>
+                <p className="pd-role">
+                  {userdata
+                    ? userdata.natureOfBusiness || userdata.natureOfBuisness
+                    : "Loading"}
+                </p>
+                <div className="pd-tags">
+                  <span className="pd-tag">Verified</span>
+                  <span className="pd-tag pd-tag--accent">Business</span>
+                </div>
+              </div>
 
-        <div className="pd-inquiries-list">
-          {Object.entries(groupInquiriesBySeller(filteredPendingInquiries)).map(
-            ([sellerName, sellerInquiries]) => (
-              <div key={sellerName} className="pd-seller-group">
-                <div
-                  className="pd-seller-header pd-seller-header-clickable"
-                  onClick={() => toggleInquiryDropdown(sellerName, "pending")}
+              {/* Personal and Business Info - Two Columns */}
+              <div className="pd-info-grid">
+                {/* Personal Information */}
+                <div className="pd-info-section">
+                  <h3 className="pd-info-title">Personal Information</h3>
+                  <div className="pd-info-items">
+                    <div className="pd-info-item">
+                      <label>First Name</label>
+                      <p>{userdata?.firstName || "Not provided"}</p>
+                    </div>
+                    <div className="pd-info-item">
+                      <label>Last Name</label>
+                      <p>{userdata?.lastName || "Not provided"}</p>
+                    </div>
+                    <div className="pd-info-item">
+                      <label>Email</label>
+                      <p>{userdata?.email || "Not provided"}</p>
+                    </div>
+                    <div className="pd-info-item">
+                      <label>Mobile Number</label>
+                      <p>{userdata?.mobileNumber || "Not provided"}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Business Information */}
+                <div className="pd-info-section">
+                  <h3 className="pd-info-title">Business Information</h3>
+                  <div className="pd-info-items">
+                    <div className="pd-info-item">
+                      <label>Country</label>
+                      <p>{userdata?.country || "Not provided"}</p>
+                    </div>
+                    <div className="pd-info-item">
+                      <label>Nature of Business</label>
+                      <p>
+                        {userdata?.natureOfBusiness ||
+                          userdata?.natureOfBuisness ||
+                          "Not provided"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="pd-actions">
+                <button
+                  className="pd-btn pd-btn--primary"
+                  onClick={openProfileUpdateModal}
                 >
-                  <div className="pd-seller-info">
-                    <div className="pd-seller-title-row">
-                      <h4 className="pd-seller-name">{sellerName}</h4>
-                      <div className="pd-inquiry-toggle">
-                        <span className="pd-toggle-icon">
-                          {isInquiryExpanded(sellerName, "pending") ? "▼" : "▶"}
-                        </span>
+                  Update Profile
+                </button>
+                <button
+                  className="pd-btn pd-btn--logout"
+                  onClick={() => {
+                    localStorage.clear();
+                    window.location.href = "/";
+                  }}
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Pending Inquiries Section - SHOW/HIDE BASED ON TAB */}
+        {activeTab === "pending" && (
+          <div className="pd-inquiries-section">
+            <div className="pd-inquiries-header">
+              <h3 className="pd-inquiries-title">Pending Inquiries</h3>
+              <div className="pd-inquiries-controls">
+                <div className="pd-total-inquiries">
+                  <span className="pd-total-number">
+                    {filteredPendingInquiries.length}
+                  </span>
+                  <span className="pd-total-label">Pending</span>
+                </div>
+                <div className="pd-date-filter">
+                  <label htmlFor="dateFilter">Filter by:</label>
+                  <select
+                    id="dateFilter"
+                    value={dateFilter}
+                    onChange={(e) => setDateFilter(e.target.value)}
+                    className="pd-filter-select"
+                  >
+                    <option value="all">All Time</option>
+                    <option value="today">Today</option>
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div className="pd-inquiries-list">
+              {Object.entries(
+                groupInquiriesBySeller(filteredPendingInquiries)
+              ).map(([sellerName, sellerInquiries]) => (
+                <div key={sellerName} className="pd-seller-group">
+                  <div
+                    className="pd-seller-header pd-seller-header-clickable"
+                    onClick={() => toggleInquiryDropdown(sellerName, "pending")}
+                  >
+                    <div className="pd-seller-info">
+                      <div className="pd-seller-title-row">
+                        <h4 className="pd-seller-name">{sellerName}</h4>
+                        <div className="pd-inquiry-toggle">
+                          <span className="pd-toggle-icon">
+                            {isInquiryExpanded(sellerName, "pending")
+                              ? "▼"
+                              : "▶"}
+                          </span>
+                        </div>
+                      </div>
+                      <span className="pd-product-count">
+                        {sellerInquiries.length} product(s)
+                      </span>
+                      <p className="pd-expand-hint">
+                        {isInquiryExpanded(sellerName, "pending")
+                          ? "Click to collapse"
+                          : "Click to expand products"}
+                      </p>
+                    </div>
+                    <div className="pd-seller-actions">
+                      <button
+                        className="pd-seller-details-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSellerClick(sellerInquiries);
+                        }}
+                        disabled={sellerLoading}
+                      >
+                        {sellerLoading ? "Loading..." : "See Seller Details"}
+                      </button>
+                      <button
+                        className="pd-send-mail-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSendMail(sellerInquiries);
+                        }}
+                      >
+                        Send Mail
+                      </button>
+                    </div>
+                  </div>
+                  {isInquiryExpanded(sellerName, "pending") && (
+                    <div className="pd-inquiry-dropdown">
+                      <div className="pd-seller-products">
+                        {sellerInquiries.map((inquiry) => (
+                          <div key={inquiry.id} className="pd-inquiry-item">
+                            <div
+                              className="pd-inquiry-content pd-clickable"
+                              onClick={() => handleProductClick(inquiry)}
+                            >
+                              <h5 className="pd-product-name">
+                                {inquiry.productName}
+                              </h5>
+                              <p className="pd-inquiry-date">
+                                {new Date(inquiry.date).toLocaleDateString()}
+                              </p>
+                            </div>
+                            <div className="pd-inquiry-actions">
+                              <button
+                                className="pd-delete-btn"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDeleteInquiry(
+                                    inquiry.id,
+                                    inquiry.inquiryId
+                                  );
+                                }}
+                                title="Delete inquiry"
+                              >
+                                🗑️
+                              </button>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
-                    <span className="pd-product-count">
-                      {sellerInquiries.length} product(s)
-                    </span>
-                    <p className="pd-expand-hint">
-                      {isInquiryExpanded(sellerName, "pending")
-                        ? "Click to collapse"
-                        : "Click to expand products"}
-                    </p>
-                  </div>
-                  <div className="pd-seller-actions">
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Recent Inquiries Section - SHOW/HIDE BASED ON TAB */}
+        {activeTab === "recent" && (
+          <div className="pd-inquiries-section">
+            <div className="pd-inquiries-header">
+              <h3 className="pd-inquiries-title">Recent Inquiries</h3>
+              <div className="pd-inquiries-controls">
+                <div className="pd-total-inquiries">
+                  <span className="pd-total-number">
+                    {filteredRecentInquiries.length}
+                  </span>
+                  <span className="pd-total-label">Recent</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="pd-inquiries-list">
+              {Object.entries(
+                groupInquiriesBySeller(filteredRecentInquiries)
+              ).map(([sellerName, sellerInquiries]) => (
+                <div key={sellerName} className="pd-seller-group">
+                  <div
+                    className="pd-seller-header pd-seller-header-clickable"
+                    onClick={() => toggleInquiryDropdown(sellerName, "recent")}
+                  >
+                    <div className="pd-seller-info">
+                      <div className="pd-seller-title-row">
+                        <h4 className="pd-seller-name">{sellerName}</h4>
+                        <div className="pd-inquiry-toggle">
+                          <span className="pd-toggle-icon">
+                            {isInquiryExpanded(sellerName, "recent")
+                              ? "▼"
+                              : "▶"}
+                          </span>
+                        </div>
+                      </div>
+                      <span className="pd-product-count">
+                        {sellerInquiries.length} product(s)
+                      </span>
+                      <p className="pd-expand-hint">
+                        {isInquiryExpanded(sellerName, "recent")
+                          ? "Click to collapse"
+                          : "Click to expand products"}
+                      </p>
+                    </div>
                     <button
                       className="pd-seller-details-btn"
                       onClick={(e) => {
@@ -1246,138 +1468,37 @@ export default function ProfileDashboard() {
                     >
                       {sellerLoading ? "Loading..." : "See Seller Details"}
                     </button>
-                    <button
-                      className="pd-send-mail-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleSendMail(sellerInquiries);
-                      }}
-                    >
-                      Send Mail
-                    </button>
                   </div>
-                </div>
-                {isInquiryExpanded(sellerName, "pending") && (
-                  <div className="pd-inquiry-dropdown">
-                    <div className="pd-seller-products">
-                      {sellerInquiries.map((inquiry) => (
-                        <div key={inquiry.id} className="pd-inquiry-item">
+                  {isInquiryExpanded(sellerName, "recent") && (
+                    <div className="pd-inquiry-dropdown">
+                      <div className="pd-seller-products">
+                        {sellerInquiries.map((inquiry) => (
                           <div
-                            className="pd-inquiry-content pd-clickable"
+                            key={inquiry.id}
+                            className="pd-inquiry-item pd-clickable"
                             onClick={() => handleProductClick(inquiry)}
                           >
-                            <h5 className="pd-product-name">
-                              {inquiry.productName}
-                            </h5>
-                            <p className="pd-inquiry-date">
-                              {new Date(inquiry.date).toLocaleDateString()}
-                            </p>
+                            <div className="pd-inquiry-content">
+                              <h5 className="pd-product-name">
+                                {inquiry.productName}
+                              </h5>
+                              <p className="pd-inquiry-date">
+                                {new Date(inquiry.date).toLocaleDateString()}
+                              </p>
+                            </div>
                           </div>
-                          <div className="pd-inquiry-actions">
-                            <button
-                              className="pd-delete-btn"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDeleteInquiry(
-                                  inquiry.id,
-                                  inquiry.inquiryId
-                                );
-                              }}
-                              title="Delete inquiry"
-                            >
-                              🗑️
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )
-          )}
-        </div>
-      </div>
-
-      {/* Recent Inquiries Section */}
-      <div className="pd-inquiries-section">
-        <div className="pd-inquiries-header">
-          <h3 className="pd-inquiries-title">Recent Inquiries</h3>
-          <div className="pd-inquiries-controls">
-            <div className="pd-total-inquiries">
-              <span className="pd-total-number">
-                {filteredRecentInquiries.length}
-              </span>
-              <span className="pd-total-label">Recent</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="pd-inquiries-list">
-          {Object.entries(groupInquiriesBySeller(filteredRecentInquiries)).map(
-            ([sellerName, sellerInquiries]) => (
-              <div key={sellerName} className="pd-seller-group">
-                <div
-                  className="pd-seller-header pd-seller-header-clickable"
-                  onClick={() => toggleInquiryDropdown(sellerName, "recent")}
-                >
-                  <div className="pd-seller-info">
-                    <div className="pd-seller-title-row">
-                      <h4 className="pd-seller-name">{sellerName}</h4>
-                      <div className="pd-inquiry-toggle">
-                        <span className="pd-toggle-icon">
-                          {isInquiryExpanded(sellerName, "recent") ? "▼" : "▶"}
-                        </span>
+                        ))}
                       </div>
                     </div>
-                    <span className="pd-product-count">
-                      {sellerInquiries.length} product(s)
-                    </span>
-                    <p className="pd-expand-hint">
-                      {isInquiryExpanded(sellerName, "recent")
-                        ? "Click to collapse"
-                        : "Click to expand products"}
-                    </p>
-                  </div>
-                  <button
-                    className="pd-seller-details-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleSellerClick(sellerInquiries);
-                    }}
-                    disabled={sellerLoading}
-                  >
-                    {sellerLoading ? "Loading..." : "See Seller Details"}
-                  </button>
+                  )}
                 </div>
-                {isInquiryExpanded(sellerName, "recent") && (
-                  <div className="pd-inquiry-dropdown">
-                    <div className="pd-seller-products">
-                      {sellerInquiries.map((inquiry) => (
-                        <div
-                          key={inquiry.id}
-                          className="pd-inquiry-item pd-clickable"
-                          onClick={() => handleProductClick(inquiry)}
-                        >
-                          <div className="pd-inquiry-content">
-                            <h5 className="pd-product-name">
-                              {inquiry.productName}
-                            </h5>
-                            <p className="pd-inquiry-date">
-                              {new Date(inquiry.date).toLocaleDateString()}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )
-          )}
-        </div>
-      </div>
-
+              ))}
+            </div>
+          </div>
+        )}
+      </div>{" "}
+      {/* Close pd-main-content */}
+      {/* Modals - OUTSIDE MAIN CONTENT */}
       {isCompanyModalOpen && (
         <div
           className="pd-modal"
@@ -1443,7 +1564,6 @@ export default function ProfileDashboard() {
           </div>
         </div>
       )}
-
       {isPasswordModalOpen && (
         <div
           className="pd-modal"
@@ -1491,7 +1611,6 @@ export default function ProfileDashboard() {
           </div>
         </div>
       )}
-
       {/* Product Info Modal */}
       {isProductModalOpen && selectedProduct && (
         <div
@@ -1621,7 +1740,6 @@ export default function ProfileDashboard() {
           </div>
         </div>
       )}
-
       {/* Seller Details Modal */}
       {isSellerModalOpen && selectedSeller && (
         <div
@@ -1739,7 +1857,6 @@ export default function ProfileDashboard() {
           </div>
         </div>
       )}
-
       {/* Email Selection Modal */}
       {isEmailModalOpen && currentSellerGroup && (
         <div
@@ -1818,7 +1935,6 @@ export default function ProfileDashboard() {
           </div>
         </div>
       )}
-
       {/* Profile Update Modal */}
       {isProfileUpdateModalOpen && (
         <div
@@ -2077,7 +2193,6 @@ export default function ProfileDashboard() {
           </div>
         </div>
       )}
-
       {/* Password Change Modal */}
       {isPasswordChangeModalOpen && (
         <div
@@ -2158,7 +2273,6 @@ export default function ProfileDashboard() {
           </div>
         </div>
       )}
-
       {/* Forgot Password Modal */}
       {isForgotPasswordModalOpen && (
         <div
@@ -2215,4 +2329,3 @@ export default function ProfileDashboard() {
     </div>
   );
 }
-
