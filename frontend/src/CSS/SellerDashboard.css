@@ -15,9 +15,230 @@
   top: 8vh;
   font-family: uppercasefont;
   background: #f8fafc;
-  min-height: 100vh;
-  padding: 8rem 4rem;
+  min-height: calc(100vh - 8vh);
+  padding: 0;
+  margin: 0;
   box-sizing: border-box;
+  display: flex;
+  gap: 0;
+}
+
+/* Sidebar Styles */
+.sd-sidebar {
+  width: 280px;
+  background: #ffffff;
+  border-right: 1px solid #e5e7eb;
+  padding: 0;
+  margin-top: 5rem;
+  min-height: calc(100vh - 8vh);
+  height: 100%;
+  flex-shrink: 0;
+}
+
+.sd-sidebar-nav {
+  padding: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sd-sidebar-btn {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border: none;
+  background: none;
+  color: #6b7280;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  border-left: 4px solid transparent;
+  font-family: uppercasefont;
+}
+
+.sd-sidebar-btn:hover {
+  background: #f8fafc;
+  color: #111827;
+}
+
+.sd-sidebar-btn.active {
+  background: linear-gradient(90deg, rgba(20, 219, 154, 0.08) 0%, transparent 100%);
+  color: #14db9a;
+  border-left: 4px solid #14db9a;
+}
+
+.sd-sidebar-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.sd-sidebar-badge {
+  margin-left: auto;
+  background: #14db9a;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.6rem;
+  border-radius: 12px;
+  min-width: 24px;
+  text-align: center;
+}
+
+.sd-main-content {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  overflow-y: auto;
+  min-height: 100%;
+  border-radius: 0;
+}
+
+.sd-products-section {
+  background: #ffffff;
+  border: 2px solid #f1f5f9;
+  border-radius: 0;
+  padding: 3rem;
+  margin: 4rem 4rem 2rem 4rem;
+  min-height: 100%;
+}
+
+.sd-products-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #f1f5f9;
+}
+
+.sd-products-header-left {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.sd-products-header h2 {
+  font-size: 1.75rem;
+  color: #111827;
+  margin: 0;
+}
+
+.sd-products-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.sd-products-count {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #f8fafc;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+}
+
+.sd-count-number {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #14db9a;
+}
+
+.sd-count-label {
+  font-size: 0.9rem;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.sd-products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.sd-product-card {
+  background: #ffffff;
+  border: 2px solid #f1f5f9;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.sd-product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  border-color: #14db9a;
+}
+
+.sd-product-image {
+  width: 100%;
+  height: 200px;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.sd-product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sd-product-no-image {
+  font-size: 4rem;
+  opacity: 0.3;
+}
+
+.sd-product-info {
+  padding: 1.5rem;
+}
+
+.sd-product-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.sd-no-products {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.sd-no-products-icon {
+  font-size: 5rem;
+  opacity: 0.3;
+  margin-bottom: 1rem;
+}
+
+.sd-no-products h3 {
+  font-size: 1.5rem;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.sd-no-products p {
+  color: #6b7280;
+  font-size: 1rem;
+}
+
+.sd-products-placeholder h2 {
+  color: #111827;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.sd-products-placeholder p {
+  color: #6b7280;
+  font-size: 1.1rem;
 }
 
 /* Header */
@@ -27,12 +248,12 @@
   gap: 2rem;
   background: #ffffff;
   border: 2px solid #f1f5f9;
-  border-radius: 20px;
+  border-radius: 0;
   padding: 3rem;
+  margin: 4rem 4rem 2rem 4rem;
   color: var(--sd-text);
-  position: relative;
-  bottom: 1rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  min-height: 100%;
 }
 
 /* Header Top Section */
@@ -73,7 +294,8 @@
 }
 
 .sd-name {
-  font-size: 1.75rem;
+  margin: 0;
+  font-size: 2rem;
   font-weight: 700;
   color: var(--sd-text);
   margin: 0 0 0.5rem 0;
@@ -81,9 +303,9 @@
 }
 
 .sd-role {
-  font-size: 1rem;
+  margin: 0.5rem 0 1rem 0;
+  font-size: 1.125rem;
   color: var(--sd-text-dim);
-  margin: 0 0 1rem 0;
 }
 
 .sd-tags {
@@ -109,7 +331,8 @@
 }
 
 /* Company Details Section - Enhanced */
-.sd-company-details {
+/* Information Sections */
+.sd-info-section {
   width: 100%;
   padding: 2rem;
   background: #f8fafc;
@@ -119,42 +342,27 @@
   transition: all 0.3s ease;
 }
 
-.sd-company-details:hover {
+.sd-info-section:hover {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   transform: translateY(-2px);
 }
 
-.sd-company-title {
+.sd-section-title {
   font-size: 1.4rem;
   font-weight: 700;
   color: var(--sd-text);
   margin-bottom: 1.75rem;
-  font-family: "Poppins", sans-serif;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
   padding-bottom: 1rem;
   border-bottom: 2px solid #e2e8f0;
 }
 
-.sd-company-title::before {
-  content: "";
-  width: 28px;
-  height: 28px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2310b981' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 21h18'/%3E%3Cpath d='M9 8h1'/%3E%3Cpath d='M9 12h1'/%3E%3Cpath d='M9 16h1'/%3E%3Cpath d='M14 8h1'/%3E%3Cpath d='M14 12h1'/%3E%3Cpath d='M14 16h1'/%3E%3Cpath d='M6 3v18h12V3z'/%3E%3C/svg%3E");
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  flex-shrink: 0;
-}
-
-.sd-company-grid {
+.sd-info-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.25rem;
 }
 
-.sd-company-item {
+.sd-info-item {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -165,21 +373,21 @@
   transition: all 0.3s ease;
 }
 
-.sd-company-item:hover {
+.sd-info-item:hover {
   border-color: var(--sd-accent);
   box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
   transform: translateY(-1px);
 }
 
-.sd-company-item label {
-  font-size: 0.75rem;
-  font-weight: 700;
+.sd-info-item label {
+  font-size: 0.875rem;
+  font-weight: 600;
   color: var(--sd-text-dim);
   text-transform: uppercase;
   letter-spacing: 0.8px;
 }
 
-.sd-company-item p {
+.sd-info-item p {
   font-size: 1rem;
   color: var(--sd-text);
   margin: 0;
@@ -277,20 +485,22 @@
 
 /* Inquiries Section - Integrated */
 .sd-inquiries-section {
-  margin-top: 2rem;
-  background: rgba(234, 230, 230, 0.144);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--sd-border);
-  border-radius: 16px;
-  padding: 1.5rem;
-  box-shadow: var(--sd-shadow);
+  margin: 4rem 4rem 2rem 4rem;
+  background: #ffffff;
+  border: 2px solid #f1f5f9;
+  border-radius: 0;
+  padding: 0.25rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  min-height: 100%;
 }
 
 .sd-inquiries-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: 2rem;
   margin-bottom: 1.5rem;
+  padding: 2rem;
   padding-bottom: 1rem;
   border-bottom: 2px solid var(--sd-border);
 }
@@ -371,6 +581,7 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  padding: 2rem;
 }
 
 .sd-inquiry-item {
@@ -545,6 +756,51 @@
   justify-content: flex-end;
 }
 
+/* Profile Page Buttons - Unique Styles */
+.sd-profile-btn {
+  appearance: none;
+  border: 2px solid;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 600;
+  transition: 180ms ease;
+  cursor: pointer;
+  font-family: uppercasefont;
+  white-space: nowrap;
+}
+
+.sd-profile-btn:focus-visible {
+  outline: 2px solid var(--sd-accent);
+  outline-offset: 2px;
+}
+
+.sd-profile-btn:hover {
+  transform: translateY(-2px);
+}
+
+.sd-profile-btn--update {
+  background: #dcfce7;
+  color: #16a34a;
+  border-color: #bbf7d0;
+}
+
+.sd-profile-btn--update:hover {
+  background: #bbf7d0;
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+}
+
+.sd-profile-btn--logout {
+  background: #fee2e2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+.sd-profile-btn--logout:hover {
+  background: #fef2f2;
+  border-color: #dc2626;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
 /* Modal Styles */
 /* Modal Overlay */
 .sd-modal-overlay {
@@ -589,15 +845,14 @@
 }
 
 .sd-dialog {
-  width: min(680px, 92vw);
+  width: min(650px, 92vw);
   background: #ffffff;
-  border: 2px solid #f1f5f9;
-  border-radius: 20px;
-  padding: 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 20px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   max-height: 90vh;
-  overflow: hidden;
-  animation: slideUp 0.3s ease;
+  overflow: auto;
 }
 
 @keyframes slideUp {
@@ -615,40 +870,36 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 2rem;
-  border-bottom: 2px solid #f1f5f9;
-  background: white;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .sd-dialog-head h3 {
-  font-size: 1.75rem;
-  font-weight: 700;
+  font-size: 1.1rem;
+  font-weight: 600;
   color: var(--sd-text);
   margin: 0;
-  font-family: "Poppins", sans-serif;
 }
 
 .sd-icon-btn {
-  width: 44px;
-  height: 44px;
-  background: #f1f5f9;
+  background: transparent;
   border: none;
-  border-radius: 50%;
   color: var(--sd-text);
-  font-size: 1.75rem;
+  font-size: 20px;
   cursor: pointer;
   line-height: 1;
+  padding: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 4px;
   transition: all 0.2s ease;
-  font-weight: 300;
 }
 
 .sd-icon-btn:hover {
-  background: #fecaca;
+  background: #fee2e2;
   color: #dc2626;
-  transform: rotate(90deg);
 }
 
 .sd-icon-btn:focus-visible {
@@ -713,35 +964,44 @@
 /* Form Styles */
 .sd-form {
   display: grid;
-  gap: 1.5rem;
-  padding: 2rem;
-  background: white;
+  gap: 12px;
 }
 
 .sd-form label {
   display: grid;
-  gap: 0.5rem;
+  gap: 3px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--sd-text-dim);
 }
 
-.sd-form label span {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--sd-text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+
+
+.sd-email-actions,
+.sd-mobile-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.sd-email-actions input,
+.sd-mobile-actions input {
+  flex: 1;
 }
 
 .sd-form input,
 .sd-form select,
 .sd-form textarea {
-  padding: 0.875rem 1rem;
-  border: 2px solid #e5e7eb;
-  border-radius: 10px;
-  background: white;
+  padding: 4px 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  background: #f9fafb;
   color: var(--sd-text);
-  font-size: 1rem;
+  font-size: 0.75rem;
   font-family: uppercasefont;
   transition: all 0.2s ease;
+  height: auto;
+  line-height: 1.2;
 }
 
 .sd-form input:focus,
@@ -762,37 +1022,58 @@
 .sd-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 8px;
 }
 
 .sd-actions-inline {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  gap: 8px;
   margin-top: 16px;
 }
 
+/* Modal actions - no top spacing */
+.sd-dialog .sd-actions-inline,
+.sd-profile-update-modal .sd-actions-inline,
+.sd-password-change-modal .sd-actions-inline,
+.sd-forgot-password-modal .sd-actions-inline {
+  margin-top: 0;
+  padding-top: 0;
+}
+
 .sd-btn {
-  padding: 0.875rem 1.75rem;
-  border: none;
-  border-radius: 10px;
-  font-size: 1rem;
+  appearance: none;
+  border: 1px solid var(--sd-border);
+  background: #ffffff;
+  color: var(--sd-text);
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 0.75rem;
   font-weight: 600;
+  transition: 180ms ease;
   cursor: pointer;
-  transition: all 0.2s ease;
   font-family: uppercasefont;
   white-space: nowrap;
 }
 
+.sd-btn:focus-visible {
+  outline: 2px solid var(--sd-accent);
+  outline-offset: 2px;
+}
+
+.sd-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.08);
+}
+
 .sd-btn--primary {
-  background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
-  color: white;
-  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+  background: #dcfce7;
+  color: #16a34a;
+  border: 2px solid #bbf7d0;
 }
 
 .sd-btn--primary:hover {
+  background: #bbf7d0;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
 }
 
 .sd-btn--success {
@@ -830,13 +1111,13 @@
 }
 
 .sd-btn--ghost {
-  background: transparent;
-  color: var(--sd-text-dim);
+  background: #f1f5f9;
+  color: var(--sd-text);
   border: 2px solid #e2e8f0;
 }
 
 .sd-btn--ghost:hover {
-  background: #f8fafc;
+  background: #e2e8f0;
   transform: translateY(-2px);
 }
 
@@ -932,17 +1213,11 @@
   gap: 0.5rem;
   padding: 0.5rem 1rem;
   font-size: 0.9rem;
-  background: linear-gradient(135deg, #14db9a, #00b894);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
 }
 
-.sd-add-spec-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+.sd-btn-icon {
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 
 .sd-specification-item {
@@ -1465,82 +1740,98 @@
   }
 }
 
-@media (max-width: 768px) {
+/* Responsive Sidebar and Layout */
+@media (max-width: 1024px) {
   .seller-dashboard {
-    padding: 6rem 0;
-    width: 100vw;
-    margin: 0;
-    box-sizing: border-box;
+    flex-direction: column;
   }
 
-  .sd-header {
-    margin: 0 1rem;
-    padding: 1.5rem;
-    width: calc(100% - 2rem);
-    box-sizing: border-box;
+  .sd-sidebar {
+    width: 100%;
+    min-height: auto;
+    margin-top: 0;
+    border-right: none;
+    border-bottom: 1px solid #e5e7eb;
   }
 
-  .sd-inquiries-section,
-  .sd-excel-products-section {
-    margin: 1rem;
+  .sd-sidebar-nav {
+    flex-direction: row;
+    overflow-x: auto;
     padding: 1rem;
-    width: calc(100% - 2rem);
-    box-sizing: border-box;
+    margin-top: 4rem;
+    gap: 0;
+    justify-content: center;
   }
 
-  .sd-user-avatar {
-    width: 80px;
-    height: 80px;
-    font-size: 2rem;
+  .sd-sidebar-btn {
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    min-width: 120px;
+    max-width: 150px;
+    text-align: center;
+    border-left: none;
+    border-bottom: 4px solid transparent;
+    position: relative;
   }
 
-  .sd-name {
-    font-size: 1.5rem;
+  .sd-sidebar-btn.active {
+    border-left: none;
+    border-bottom: 4px solid var(--sd-accent);
   }
 
-  .sd-company-details {
+  .sd-sidebar-badge {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
     margin-left: 0;
-    margin-top: 1.5rem;
-    padding: 1.5rem;
-    width: 100%;
   }
 
-  .sd-company-title {
-    font-size: 1.2rem;
-  }
-
-  .sd-company-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
-  .sd-actions {
-    width: 100%;
-    gap: 0.75rem;
-  }
-
-  .sd-btn {
-    width: 100%;
-    padding: 0.75rem 1.5rem;
-    font-size: 0.95rem;
+  .sd-main-content {
+    padding: 0;
   }
 }
 
-@media (max-width: 560px) {
-  .seller-dashboard {
-    padding: 5rem 0;
-    width: 100vw;
-    margin: 0;
-    overflow-x: hidden;
+@media (max-width: 768px) {
+  .sd-sidebar-nav {
+    padding: 0.75rem;
+    margin-top: 4rem;
+    gap: 0.5rem;
+  }
+
+  .sd-sidebar-btn {
+    min-width: 100px;
+    font-size: 0.875rem;
+    padding: 1rem 0.5rem;
+  }
+
+  .sd-sidebar-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .sd-sidebar-badge {
+    top: 0.25rem;
+    right: 0.25rem;
+  }
+
+  .sd-main-content {
+    padding: 0;
   }
 
   .sd-header {
+    padding: 0;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+  }
+
+  .sd-header-top {
     flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
-    margin: 0 0.75rem;
-    padding: 1.25rem;
-    width: calc(100% - 1.5rem);
+    padding: 2rem 1rem;
   }
 
   .sd-user {
@@ -1550,40 +1841,181 @@
   }
 
   .sd-user-avatar {
-    width: 70px;
-    height: 70px;
-    font-size: 1.75rem;
+    width: 100px;
+    height: 100px;
+    font-size: 2rem;
   }
 
   .sd-user-meta {
-    width: 100%;
     align-items: center;
   }
 
   .sd-name {
-    font-size: 1.3rem;
+    font-size: 1.5rem;
+  }
+
+  .sd-role {
+    font-size: 1rem;
   }
 
   .sd-tags {
     justify-content: center;
   }
 
-  .sd-company-details {
-    margin: 0;
-    padding: 1.25rem;
+  .sd-actions {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .sd-profile-btn {
     width: 100%;
   }
 
-  .sd-company-grid {
+  .sd-info-section {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+
+  .sd-info-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
 
   .sd-inquiries-section,
-  .sd-excel-products-section {
-    margin: 0.75rem;
+  .sd-products-section {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .sd-inquiries-list {
     padding: 1rem;
-    width: calc(100% - 1.5rem);
+  }
+
+  .sd-products-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .sd-products-header-left {
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .sd-products-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .sd-products-actions .sd-btn {
+    width: 100%;
+  }
+
+  .sd-products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .sd-products-count {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 560px) {
+  .sd-sidebar-nav {
+    padding: 0.5rem;
+    margin-top: 4rem;
+    gap: 0.25rem;
+  }
+
+  .sd-sidebar-btn {
+    flex: 1;
+    min-width: 90px;
+    max-width: 120px;
+    padding: 0.75rem 0.25rem;
+    font-size: 0.75rem;
+  }
+
+  .sd-sidebar-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .sd-sidebar-badge {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    min-width: 20px;
+  }
+
+  .sd-header {
+    padding: 0;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+  }
+
+  .sd-header-top {
+    padding: 1.5rem 1rem;
+    gap: 1.5rem;
+  }
+
+  .sd-user-avatar {
+    width: 80px;
+    height: 80px;
+    font-size: 1.75rem;
+  }
+
+  .sd-name {
+    font-size: 1.3rem;
+  }
+
+  .sd-role {
+    font-size: 0.95rem;
+  }
+
+  .sd-info-section {
+    margin: 0.75rem;
+    padding: 1.25rem;
+  }
+
+  .sd-section-title {
+    font-size: 1.2rem;
+  }
+
+  .sd-inquiries-section,
+  .sd-products-section {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+  
+  .sd-inquiries-list {
+    padding: 1rem;
+  }
+
+  .sd-products-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .sd-products-header h2 {
+    font-size: 1.3rem;
+  }
+
+  .sd-products-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .sd-product-card {
+    max-width: 100%;
+  }
+
+  .sd-products-actions .sd-btn {
+    font-size: 0.9rem;
+    padding: 0.75rem 1rem;
   }
 
   .sd-inquiries-title,
@@ -1591,6 +2023,7 @@
     font-size: 1.2rem;
   }
 
+  /* Modal Responsive */
   .sd-modal {
     align-items: end;
     padding: 0;
@@ -1599,8 +2032,13 @@
   .sd-dialog {
     width: 100%;
     max-height: 90vh;
-    border-radius: 16px 16px 0 0;
-    padding: 1rem;
+    border-radius: 12px 12px 0 0;
+    padding: 20px;
+    overflow-y: auto;
+  }
+
+  .sd-dialog-head {
+    margin-bottom: 12px;
   }
 
   .sd-dialog-head h3 {
@@ -1608,18 +2046,188 @@
   }
 
   .sd-icon-btn {
-    font-size: 1.5rem;
-    width: 36px;
-    height: 36px;
+    font-size: 20px;
   }
 
-  .sd-actions {
+  .sd-form {
+    gap: 10px;
+    padding: 0;
+  }
+
+  .sd-form label {
+    font-size: 0.75rem;
+    width: 100%;
+  }
+
+  .sd-form input,
+  .sd-form select,
+  .sd-form textarea {
+    font-size: 0.8rem;
+    padding: 5px 8px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .sd-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .sd-actions-inline {
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .sd-actions-inline .sd-btn {
     width: 100%;
   }
 
   .sd-btn {
     width: 100%;
-    padding: 0.75rem 1.25rem;
+    padding: 4px 10px;
+    font-size: 0.75rem;
+  }
+
+  .sd-otp-input-group {
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .sd-otp-input-group input {
+    width: 100%;
+  }
+
+  .sd-otp-input-group .sd-btn {
+    width: 100%;
+  }
+  
+  .sd-profile-update-modal,
+  .sd-password-change-modal,
+  .sd-forgot-password-modal {
+    width: 100% !important;
+    max-height: 90vh;
+    border-radius: 12px 12px 0 0;
+    padding: 20px;
+  }
+
+  .sd-form-section {
+    padding: 1rem;
+    width: 100%;
+  }
+
+  .sd-section-title {
+    font-size: 1.1rem;
+  }
+
+  .sd-email-actions,
+  .sd-mobile-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .sd-email-actions .sd-btn,
+  .sd-mobile-actions .sd-btn {
+    width: 100%;
+  }
+
+  /* Product Modal Responsive */
+  .sd-product-dialog {
+    max-height: 85vh;
+  }
+
+  .sd-product-form {
+    gap: 1rem;
+  }
+
+  .sd-specifications-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .sd-add-spec-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+  }
+
+  .sd-specifications-list {
+    gap: 0.75rem;
+  }
+
+  .sd-specification-item {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .sd-spec-inputs {
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .sd-spec-inputs label {
+    width: 100%;
+  }
+
+  .sd-spec-inputs input {
+    width: 100%;
+  }
+
+  .sd-spec-remove-btn {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  /* Excel Modal Responsive */
+  .sd-excel-upload-section {
+    padding: 1rem;
+  }
+
+  .sd-excel-products-list {
+    gap: 0.75rem;
+  }
+
+  .sd-excel-product-item {
+    padding: 0.75rem;
+  }
+
+  /* Inquiries Responsive */
+  .sd-inquiries-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .sd-inquiries-controls {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.75rem;
+  }
+
+  .sd-date-filter {
+    width: 100%;
+  }
+
+  .sd-filter-select {
+    width: 100%;
+  }
+
+  .sd-inquiry-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .sd-inquiry-actions {
+    width: 100%;
+  }
+
+  .sd-inquiry-actions .sd-btn {
+    width: 100%;
     font-size: 0.9rem;
   }
 }
@@ -2439,35 +3047,75 @@
 
 /* Enhanced Profile Update Modal Styles */
 .sd-profile-update-modal {
-  width: min(850px, 95vw) !important;
+  width: min(650px, 95vw) !important;
   max-height: 90vh;
   overflow-y: auto;
-  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-  border: none;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+}
+
+/* Modal-specific button overrides - ONLY for modals */
+.sd-dialog .sd-btn,
+.sd-profile-update-modal .sd-btn,
+.sd-password-change-modal .sd-btn,
+.sd-forgot-password-modal .sd-btn {
+  padding: 6px 12px !important;
+  font-size: 0.75rem !important;
+  border-width: 1px !important;
+}
+
+.sd-dialog .sd-btn--primary,
+.sd-dialog .sd-btn--success,
+.sd-dialog .sd-btn--secondary,
+.sd-dialog .sd-btn--ghost,
+.sd-dialog .sd-btn--logout {
+  padding: 6px 12px !important;
+  font-size: 0.75rem !important;
+  border-width: 1px !important;
+}
+
+/* Modal-specific input overrides - Force small inputs */
+.sd-dialog input,
+.sd-dialog select,
+.sd-dialog textarea,
+.sd-profile-update-modal input,
+.sd-profile-update-modal select,
+.sd-profile-update-modal textarea,
+.sd-password-change-modal input,
+.sd-password-change-modal select,
+.sd-password-change-modal textarea,
+.sd-forgot-password-modal input,
+.sd-forgot-password-modal select,
+.sd-forgot-password-modal textarea {
+  padding: 6px 10px !important;
+  font-size: 1rem !important;
+  height: auto !important;
+  line-height: 1.3 !important;
 }
 
 .sd-profile-update-section {
-  margin-top: 16px;
-  padding-top: 16px;
+  margin-top: 10px;
+  padding-top: 10px;
   border-top: 1px solid #e2e8f0;
 }
 
 .sd-profile-update-section h4 {
-  margin: 0 0 12px 0;
-  font-size: 14px;
+  margin: 0 0 6px 0;
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--sd-text);
 }
 
 /* OTP Section with Modern Design */
 .sd-otp-section {
-  margin-top: 1rem;
-  padding: 1.25rem;
-  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
-  border-radius: 12px;
-  border: 2px solid #10b981;
-  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.15);
+  margin-top: 6px;
+  padding: 8px;
+  background: #ecfdf5;
+  border-radius: 4px;
+  border: 1px solid #10b981;
   animation: slideIn 0.3s ease-out;
 }
 
@@ -2484,60 +3132,61 @@
 
 .sd-otp-input-group {
   display: flex;
-  gap: 0.75rem;
+  gap: 5px;
   align-items: center;
-  margin-top: 0.5rem;
+  margin-top: 5px;
 }
 
 .sd-otp-input-group input {
   flex: 1;
-  padding: 0.875rem 1rem;
-  border: 2px solid #10b981;
-  border-radius: 10px;
-  font-size: 1rem;
+  padding: 4px 8px;
+  border: 1px solid #10b981;
+  border-radius: 4px;
+  font-size: 0.7rem;
   font-weight: 500;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   text-align: center;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
+  height: auto;
+  line-height: 1.2;
 }
 
 .sd-otp-input-group input:focus {
   outline: none;
   border-color: #059669;
-  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2);
-  transform: scale(1.02);
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.1);
 }
 
 .sd-otp-input-group button {
-  padding: 0.875rem 1.75rem;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  padding: 4px 10px !important;
+  background: #10b981;
   color: white;
   border: none;
-  border-radius: 10px;
+  border-radius: 4px;
+  font-size: 0.7rem !important;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+  transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .sd-otp-input-group button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+  background: #059669;
+  transform: translateY(-1px);
 }
 
 .sd-otp-verified {
   color: #065f46;
-  font-size: 0.95rem;
+  font-size: 0.7rem;
   font-weight: 600;
-  margin: 0.75rem 0 0 0;
+  margin: 5px 0 0 0;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1rem 1.25rem;
-  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-  border-radius: 10px;
-  border: 2px solid #10b981;
-  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+  gap: 5px;
+  padding: 5px 8px;
+  background: #d1fae5;
+  border-radius: 4px;
+  border: 1px solid #10b981;
   animation: bounceIn 0.5s ease-out;
 }
 
@@ -2558,67 +3207,30 @@
 .sd-otp-verified::before {
   content: "✓";
   font-weight: bold;
-  font-size: 1.5rem;
+  font-size: 0.75rem;
   color: #10b981;
   background: white;
-  width: 32px;
-  height: 32px;
+  width: 16px;
+  height: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
 }
 
 /* Password Options Section */
 .sd-password-options {
-  margin-top: 2rem;
-  padding: 1.75rem;
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-  border-radius: 16px;
-  border: 2px solid #e2e8f0;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
 }
 
 .sd-password-options h4 {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--sd-text);
-  margin: 0 0 1.25rem 0;
-  font-family: "Poppins", sans-serif;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.sd-password-options h4::before {
-  content: "🔐";
-  font-size: 1.5rem;
-}
-
-.sd-password-options .sd-actions-inline {
-  gap: 1rem;
-}
-
-.sd-password-options .sd-btn--ghost {
-  background: white;
-  border: 2px solid #e2e8f0;
-  color: var(--sd-text);
-  padding: 0.875rem 1.5rem;
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
-
-.sd-password-options .sd-btn--ghost:hover {
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-  border-color: var(--sd-accent);
-  color: var(--sd-accent);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(79, 70, 229, 0.15);
-  margin: 0 0 12px 0;
-  font-size: 14px;
+  margin: 0 0 8px 0;
+  font-size: 0.85rem;
   font-weight: 600;
   color: var(--sd-text);
+}
 }
 
 .sd-form select {
@@ -2682,37 +3294,17 @@
 
 /* Enhanced Change Password Modal */
 .sd-password-change-modal {
-  width: min(550px, 95vw) !important;
-  background: linear-gradient(135deg, #ffffff 0%, #fef3c7 5%, #ffffff 100%);
-  border: none;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  width: min(500px, 95vw) !important;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  padding: 20px;
 }
 
-.sd-password-change-modal .sd-modal-header {
-  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-  border-bottom: 2px solid #f59e0b;
-}
 
-.sd-password-change-modal .sd-modal-title::before {
-  content: "🔒";
-  margin-right: 0.75rem;
-  font-size: 1.5rem;
-}
 
-.sd-password-change-modal .sd-form label {
-  position: relative;
-}
 
-.sd-password-change-modal .sd-form input[type="password"] {
-  padding-right: 3rem;
-  border: 2px solid #e2e8f0;
-  transition: all 0.3s ease;
-}
-
-.sd-password-change-modal .sd-form input[type="password"]:focus {
-  border-color: #f59e0b;
-  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1);
-}
 
 .sd-password-strength {
   margin-top: 0.5rem;
@@ -2746,31 +3338,22 @@
 /* Enhanced Forgot Password Modal */
 .sd-forgot-password-modal {
   width: min(500px, 95vw) !important;
-  background: linear-gradient(135deg, #ffffff 0%, #dbeafe 5%, #ffffff 100%);
-  border: none;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  padding: 20px;
 }
 
-.sd-forgot-password-modal .sd-modal-header {
-  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-  border-bottom: 2px solid #3b82f6;
-}
 
-.sd-forgot-password-modal .sd-modal-title::before {
-  content: "📧";
-  margin-right: 0.75rem;
-  font-size: 1.5rem;
-}
-
-.sd-forgot-password-modal .sd-form {
-  padding: 2.5rem 2rem;
-}
 
 .sd-forgot-password-info {
-  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-  border: 2px solid #3b82f6;
-  border-radius: 12px;
-  padding: 1.25rem;
+  background: #eff6ff;
+  border: 1px solid #3b82f6;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 0.8rem;
+  margin-bottom: 10px;
   margin-bottom: 1.5rem;
   display: flex;
   align-items: flex-start;
@@ -2889,15 +3472,7 @@
   transform: translateY(-1px);
 }
 
-.sd-form label span {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--sd-text);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 0.5rem;
-  display: block;
-}
+
 
 /* Enhanced Action Buttons */
 .sd-actions-inline {

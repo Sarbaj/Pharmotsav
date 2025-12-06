@@ -596,37 +596,21 @@ const getLoginAfterRefresh = asyncHandler(async (req, res) => {
 
 //get seller all products
 const getSellerAllProducts = asyncHandler(async (req, res) => {
-  const sellerId = new mongoose.Types.ObjectId(req.seller?._id);
+  const sellerId = req.seller?._id;
 
-  const products = await Seller.aggregate([
-    {
-      $match: {
-        _id: sellerId,
-      },
-    },
-    {
-      $lookup: {
-        from: "products",
-        localField: "product",
-        foreignField: "_id",
-        as: "productDetails",
-      },
-    },
-    {
-      $unwind: "$productDetails",
-    },
-    {
-      $project: {
-        _id: "$productDetails._id",
-        name: "$productDetails.productName",
-        image: "$productDetails.productImage",
-      },
-    },
-  ]);
+  const products = await Product.find({ sellerId: sellerId })
+    .select('_id productName productImage')
+    .lean();
+
+  const formattedProducts = products.map(product => ({
+    _id: product._id,
+    name: product.productName,
+    image: product.productImage
+  }));
 
   return res
     .status(200)
-    .json(new ApiResponce(200, "product featched successfully..", products));
+    .json(new ApiResponce(200, "product featched successfully..", formattedProducts));
 });
 
 //approve seller status

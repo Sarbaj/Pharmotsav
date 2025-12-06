@@ -29,6 +29,7 @@ export const API_ENDPOINTS = {
     CHANGE_PASSWORD: `${API_BASE_URL}/api/v1/sellers/change-password-seller`,
     FORGOT_PASSWORD: `${API_BASE_URL}/api/v1/sellers/forgot-password`,
     DETAILS: `${API_BASE_URL}/api/v1/sellers/details`,
+    MY_PRODUCTS: `${API_BASE_URL}/api/v1/sellers/my-products`,
   },
 
   // OTP

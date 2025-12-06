@@ -57,6 +57,13 @@ export default function SellerDashboard() {
     isOtpVerified: false,
   });
 
+  // Sidebar tab state
+  const [activeTab, setActiveTab] = useState("profile");
+
+  // Products state
+  const [products, setProducts] = useState([]);
+  const [productsLoading, setProductsLoading] = useState(false);
+
   const { UserInfo } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -115,9 +122,7 @@ export default function SellerDashboard() {
   const fetchCategories = async () => {
     try {
       setCategoriesLoading(true);
-      const response = await fetch(
-        `${API_ENDPOINTS.CATEGORIES.GET_ALL}`
-      );
+      const response = await fetch(`${API_ENDPOINTS.CATEGORIES.GET_ALL}`);
       const data = await response.json();
 
       if (data.success && data.data) {
@@ -259,6 +264,43 @@ export default function SellerDashboard() {
       setInquiriesLoading(false);
     }
   };
+
+  // Fetch seller products
+  const fetchSellerProducts = async () => {
+    try {
+      setProductsLoading(true);
+      console.log("Fetching products from:", API_ENDPOINTS.SELLERS.MY_PRODUCTS);
+      const response = await fetchWithAuth(
+        `${API_ENDPOINTS.SELLERS.MY_PRODUCTS}`,
+        {
+          headers: getAuthHeaders(),
+        }
+      );
+
+      const data = await response.json();
+      console.log("Products response:", data);
+
+      if (data.success && data.data) {
+        console.log("Setting products:", data.data);
+        setProducts(data.data);
+      } else {
+        console.log("No products found or error");
+        setProducts([]);
+      }
+    } catch (error) {
+      console.error("Error fetching seller products:", error);
+      setProducts([]);
+    } finally {
+      setProductsLoading(false);
+    }
+  };
+
+  // Fetch products when seller user is available
+  useEffect(() => {
+    if (sellerUser) {
+      fetchSellerProducts();
+    }
+  }, [sellerUser]);
 
   // Handle buyer details click
   const handleBuyerClick = async (buyerId) => {
@@ -529,16 +571,13 @@ export default function SellerDashboard() {
         formData.append("productImage", product.productImage.file);
 
         // Send to backend API
-        const response = await fetchWithAuth(
-          `${API_ENDPOINTS.PRODUCTS.ADD}`,
-          {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-            body: formData,
-          }
-        );
+        const response = await fetchWithAuth(`${API_ENDPOINTS.PRODUCTS.ADD}`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: formData,
+        });
 
         const data = await response.json();
 
@@ -685,16 +724,13 @@ export default function SellerDashboard() {
       });
 
       // Send to backend API
-      const response = await fetchWithAuth(
-        `${API_ENDPOINTS.PRODUCTS.ADD}`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: formData,
-        }
-      );
+      const response = await fetchWithAuth(`${API_ENDPOINTS.PRODUCTS.ADD}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: formData,
+      });
 
       const data = await response.json();
 
@@ -756,17 +792,14 @@ export default function SellerDashboard() {
         location: userdata.location, // Keep current location
       };
 
-      const response = await fetch(
-        `${API_ENDPOINTS.SELLERS.UPDATE_PROFILE}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(basicProfileData),
-        }
-      );
+      const response = await fetch(`${API_ENDPOINTS.SELLERS.UPDATE_PROFILE}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(basicProfileData),
+      });
 
       const data = await response.json();
 
@@ -879,20 +912,17 @@ export default function SellerDashboard() {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(
-        `${API_ENDPOINTS.SELLERS.CHANGE_PASSWORD}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            currentPassword: passwordData.currentPassword,
-            newPassword: passwordData.newPassword,
-          }),
-        }
-      );
+      const response = await fetch(`${API_ENDPOINTS.SELLERS.CHANGE_PASSWORD}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          currentPassword: passwordData.currentPassword,
+          newPassword: passwordData.newPassword,
+        }),
+      });
 
       const data = await response.json();
 
@@ -917,18 +947,15 @@ export default function SellerDashboard() {
     e.preventDefault();
 
     try {
-      const response = await fetch(
-        `${API_ENDPOINTS.SELLERS.FORGOT_PASSWORD}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: forgotPasswordData.email,
-          }),
-        }
-      );
+      const response = await fetch(`${API_ENDPOINTS.SELLERS.FORGOT_PASSWORD}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: forgotPasswordData.email,
+        }),
+      });
 
       const data = await response.json();
 
@@ -1127,480 +1154,654 @@ export default function SellerDashboard() {
 
   return (
     <div className="seller-dashboard">
-      <section className="sd-header">
-        {/* Top Section: Profile and Buttons */}
-        <div className="sd-header-top">
-          <div className="sd-user">
-            <div className="sd-user-avatar">
-              {userdata ? 
-                `${userdata.firstName?.charAt(0) || ''}${userdata.lastName?.charAt(0) || ''}`.toUpperCase() 
-                : 'S'}
-            </div>
-            <div className="sd-user-meta">
-              <h2 className="sd-name">
-                {userdata ? `${userdata.firstName} ${userdata.lastName || ''}` : "Loading"}
-              </h2>
-              <p className="sd-role">
-                {userdata ? userdata.natureOfBusiness : "Loading"}
-              </p>
-
-              <div className="sd-tags">
-                <span className="sd-tag">Verified Seller</span>
-                <span className="sd-tag sd-tag--accent">Business</span>
-              </div>
-            </div>
-          </div>
-          
-          <div className="sd-actions">
-            <button
-              className="sd-btn sd-btn--primary"
-              onClick={openProfileUpdateModal}
+      <aside className="sd-sidebar">
+        <nav className="sd-sidebar-nav">
+          <button
+            className={`sd-sidebar-btn ${
+              activeTab === "profile" ? "active" : ""
+            }`}
+            onClick={() => setActiveTab("profile")}
+          >
+            <svg
+              className="sd-sidebar-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
             >
-              Update Profile
-            </button>
-            {userdata?.status === "approved" && (
-              <>
-                <button
-                  className="sd-btn sd-btn--success"
-                  onClick={() => setIsProductModalOpen(true)}
-                >
-                  Add Product
-                </button>
-                <button
-                  className="sd-btn sd-btn--secondary"
-                  onClick={() => setIsExcelModalOpen(true)}
-                >
-                  Upload Excel
-                </button>
-              </>
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <span>My Profile</span>
+          </button>
+          <button
+            className={`sd-sidebar-btn ${
+              activeTab === "products" ? "active" : ""
+            }`}
+            onClick={() => setActiveTab("products")}
+          >
+            <svg
+              className="sd-sidebar-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+            </svg>
+            <span>My Products</span>
+          </button>
+          <button
+            className={`sd-sidebar-btn ${
+              activeTab === "inquiries" ? "active" : ""
+            }`}
+            onClick={() => setActiveTab("inquiries")}
+          >
+            <svg
+              className="sd-sidebar-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+            </svg>
+            <span>Recent Inquiries</span>
+            {inquiries.length > 0 && (
+              <span className="sd-sidebar-badge">{inquiries.length}</span>
             )}
-            <button
-              className="sd-btn sd-btn--logout"
-              onClick={() => {
-                localStorage.clear();
-                window.location.href = '/';
-              }}
-            >
-              Logout
-            </button>
-          </div>
-        </div>
+          </button>
+        </nav>
+      </aside>
+      <div className="sd-main-content">
+        {activeTab === "profile" && (
+          <section className="sd-header">
+            {/* Top Section: Profile and Buttons */}
+            <div className="sd-header-top">
+              <div className="sd-user">
+                <div className="sd-user-avatar">
+                  {userdata
+                    ? `${userdata.firstName?.charAt(0) || ""}${
+                        userdata.lastName?.charAt(0) || ""
+                      }`.toUpperCase()
+                    : "S"}
+                </div>
+                <div className="sd-user-meta">
+                  <h2 className="sd-name">
+                    {userdata
+                      ? `${userdata.firstName} ${userdata.lastName || ""}`
+                      : "Loading"}
+                  </h2>
+                  <p className="sd-role">
+                    {userdata ? userdata.natureOfBusiness : "Loading"}
+                  </p>
 
-        {/* Bottom Section: Company Information */}
-        <div className="sd-company-details">
-          <h3 className="sd-company-title">Company Information</h3>
-          <div className="sd-company-grid">
-            <div className="sd-company-item">
-              <label>Company</label>
-              <p>{userdata?.CompanyName || "Not provided"}</p>
-            </div>
-            <div className="sd-company-item">
-              <label>Email</label>
-              <p>{userdata?.email || "Not provided"}</p>
-            </div>
-            <div className="sd-company-item">
-              <label>Phone</label>
-              <p>{userdata?.mobileNumber || "Not provided"}</p>
-            </div>
-            <div className="sd-company-item">
-              <label>License</label>
-              <p>{userdata?.licenseNumber || "Not provided"}</p>
-            </div>
-            <div className="sd-company-item">
-              <label>GST Number</label>
-              <p>{userdata?.gstNumber || "Not provided"}</p>
-            </div>
-            <div className="sd-company-item">
-              <label>Status</label>
-              <p className={`sd-status-badge sd-status-${userdata?.status || "pending"}`}>
-                {userdata?.status || "Pending"}
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Pending Approval Message */}
-      {userdata?.status !== "approved" && (
-        <div className="sd-pending-approval">
-          <div className="sd-pending-icon">⏳</div>
-          <div className="sd-pending-content">
-            <h3 className="sd-pending-title">Account Pending Approval</h3>
-            <p className="sd-pending-message">
-              Your seller account is currently under review. You'll be able to add products and manage your inventory once your account is approved.
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Inquiries Section - Integrated into first card */}
-      <div className="sd-inquiries-section">
-        <div className="sd-inquiries-header">
-          <h3 className="sd-inquiries-title">Recent Inquiries</h3>
-          <div className="sd-inquiries-controls">
-            <div className="sd-total-inquiries">
-              <span className="sd-total-number">
-                {filteredInquiries.length}
-              </span>
-              <span className="sd-total-label">Inquiries</span>
-            </div>
-            <div className="sd-date-filter">
-              <label htmlFor="dateFilter">Filter by:</label>
-              <select
-                id="dateFilter"
-                value={dateFilter}
-                onChange={(e) => setDateFilter(e.target.value)}
-                className="sd-filter-select"
-              >
-                <option value="all">All Time</option>
-                <option value="today">Today</option>
-                <option value="week">This Week</option>
-                <option value="month">This Month</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div className="sd-inquiries-list">
-          {inquiriesLoading ? (
-            <div className="sd-loading">
-              <div className="sd-spinner"></div>
-              <p>Loading inquiries...</p>
-            </div>
-          ) : filteredInquiries.length > 0 ? (
-            filteredInquiries.map((buyerGroup) => (
-              <div key={buyerGroup.buyerId} className="sd-inquiry-item">
-                <div
-                  className="sd-inquiry-header sd-inquiry-header-clickable"
-                  onClick={() => toggleInquiryDropdown(buyerGroup.buyerId)}
-                >
-                  <div className="sd-inquiry-buyer">
-                    <div className="sd-inquiry-title-row">
-                      <h4 className="sd-buyer-name">{buyerGroup.buyerName}</h4>
-                      <div className="sd-inquiry-toggle">
-                        <span className="sd-toggle-icon">
-                          {isInquiryExpanded(buyerGroup.buyerId) ? "▼" : "▶"}
-                        </span>
-                      </div>
-                    </div>
-                    <p className="sd-buyer-info">
-                      {buyerGroup.totalProducts} product
-                      {buyerGroup.totalProducts !== 1 ? "s" : ""} • Latest:{" "}
-                      {new Date(buyerGroup.latestDate).toLocaleDateString()}
-                    </p>
-                    <p className="sd-expand-hint">
-                      {isInquiryExpanded(buyerGroup.buyerId)
-                        ? "Click to collapse"
-                        : "Click to expand products"}
-                    </p>
-                  </div>
-                  <div className="sd-inquiry-actions">
-                    <button
-                      className="sd-btn sd-btn-secondary"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleBuyerClick(buyerGroup.buyerId);
-                      }}
-                      disabled={buyerLoading}
-                    >
-                      {buyerLoading ? "Loading..." : "View Buyer Details"}
-                    </button>
+                  <div className="sd-tags">
+                    <span className="sd-tag">Verified Seller</span>
+                    <span className="sd-tag sd-tag--accent">Business</span>
                   </div>
                 </div>
+              </div>
 
-                {isInquiryExpanded(buyerGroup.buyerId) && (
-                  <div className="sd-inquiry-dropdown">
-                    <div className="sd-products-list">
-                      {buyerGroup.products.map((product, index) => (
-                        <div
-                          key={`${buyerGroup.buyerId}-${product.id}-${index}`}
-                          className="sd-product-item"
-                        >
-                          <div className="sd-product-header">
-                            <h5 className="sd-product-name">
-                              {product.productName}
-                            </h5>
-                            <span
-                              className={`sd-status-badge sd-status-${product.status.toLowerCase()}`}
-                            >
-                              {product.status}
-                            </span>
-                          </div>
+              <div className="sd-actions">
+                <button
+                  className="sd-profile-btn sd-profile-btn--update"
+                  onClick={openProfileUpdateModal}
+                >
+                  Update Profile
+                </button>
+                <button
+                  className="sd-profile-btn sd-profile-btn--logout"
+                  onClick={() => {
+                    localStorage.clear();
+                    window.location.href = "/";
+                  }}
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
 
-                          <div className="sd-product-details">
-                            <div className="sd-info-item">
-                              <label>Date</label>
-                              <p>
-                                {new Date(product.date).toLocaleDateString()}
-                              </p>
+            {/* Personal Information Section */}
+            <div className="sd-info-section">
+              <h3 className="sd-section-title">Personal Information</h3>
+              <div className="sd-info-grid">
+                <div className="sd-info-item">
+                  <label>First Name</label>
+                  <p>{userdata?.firstName || "Not provided"}</p>
+                </div>
+                <div className="sd-info-item">
+                  <label>Last Name</label>
+                  <p>{userdata?.lastName || "Not provided"}</p>
+                </div>
+                <div className="sd-info-item">
+                  <label>Email</label>
+                  <p>{userdata?.email || "Not provided"}</p>
+                </div>
+                <div className="sd-info-item">
+                  <label>Mobile Number</label>
+                  <p>{userdata?.mobileNumber || "Not provided"}</p>
+                </div>
+                <div className="sd-info-item">
+                  <label>Country</label>
+                  <p>{userdata?.country || "Not provided"}</p>
+                </div>
+                <div className="sd-info-item">
+                  <label>Nature of Business</label>
+                  <p>{userdata?.natureOfBusiness || "Not provided"}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Company Information Section */}
+            <div className="sd-info-section">
+              <h3 className="sd-section-title">Company Information</h3>
+              <div className="sd-info-grid">
+                <div className="sd-info-item">
+                  <label>Company Name</label>
+                  <p>{userdata?.CompanyName || "Not provided"}</p>
+                </div>
+                <div className="sd-info-item">
+                  <label>License Number</label>
+                  <p>{userdata?.licenseNumber || "Not provided"}</p>
+                </div>
+                <div className="sd-info-item">
+                  <label>GST Number</label>
+                  <p>{userdata?.gstNumber || "Not provided"}</p>
+                </div>
+                <div className="sd-info-item">
+                  <label>Account Status</label>
+                  <p
+                    className={`sd-status-badge sd-status-${
+                      userdata?.status || "pending"
+                    }`}
+                  >
+                    {userdata?.status || "Pending"}
+                  </p>
+                </div>
+              </div>
+            </div>
+            {/* Pending Approval Message */}
+            {userdata?.status !== "approved" && (
+              <div className="sd-pending-approval">
+                <div className="sd-pending-icon">⏳</div>
+                <div className="sd-pending-content">
+                  <h3 className="sd-pending-title">Account Pending Approval</h3>
+                  <p className="sd-pending-message">
+                    Your seller account is currently under review. You'll be
+                    able to add products and manage your inventory once your
+                    account is approved.
+                  </p>
+                </div>
+              </div>
+            )}
+          </section>
+        )}
+
+        {activeTab === "products" && (
+          <div className="sd-products-section">
+            <div className="sd-products-header">
+              <div className="sd-products-header-left">
+                <h2>My Products</h2>
+                <div className="sd-products-count">
+                  <span className="sd-count-number">{products.length}</span>
+                  <span className="sd-count-label">Products</span>
+                </div>
+              </div>
+              {userdata?.status === "approved" && (
+                <div className="sd-products-actions">
+                  <button
+                    className="sd-btn sd-btn--success"
+                    onClick={() => setIsProductModalOpen(true)}
+                  >
+                    Add Product
+                  </button>
+                  <button
+                    className="sd-btn sd-btn--secondary"
+                    onClick={() => setIsExcelModalOpen(true)}
+                  >
+                    Upload Excel
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {productsLoading ? (
+              <div className="sd-loading">
+                <div className="sd-spinner"></div>
+                <p>Loading products...</p>
+              </div>
+            ) : products.length > 0 ? (
+              <div className="sd-products-grid">
+                {products.map((product) => (
+                  <div key={product._id} className="sd-product-card">
+                    <div className="sd-product-image">
+                      {product.image ? (
+                        <img src={product.image} alt={product.name} />
+                      ) : (
+                        <div className="sd-product-no-image">📦</div>
+                      )}
+                    </div>
+                    <div className="sd-product-info">
+                      <h3 className="sd-product-name">{product.name}</h3>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="sd-no-products">
+                <div className="sd-no-products-icon">📦</div>
+                <h3>No products yet</h3>
+                <p>
+                  You haven't added any products. Click "Add Product" to get
+                  started.
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === "inquiries" && (
+          <>
+            <div className="sd-inquiries-section">
+              <div className="sd-inquiries-header">
+                <h3 className="sd-inquiries-title">Recent Inquiries</h3>
+                <div className="sd-inquiries-controls">
+                  <div className="sd-total-inquiries">
+                    <span className="sd-total-number">
+                      {filteredInquiries.length}
+                    </span>
+                    <span className="sd-total-label">Inquiries</span>
+                  </div>
+                  <div className="sd-date-filter">
+                    <label htmlFor="dateFilter">Filter by:</label>
+                    <select
+                      id="dateFilter"
+                      value={dateFilter}
+                      onChange={(e) => setDateFilter(e.target.value)}
+                      className="sd-filter-select"
+                    >
+                      <option value="all">All Time</option>
+                      <option value="today">Today</option>
+                      <option value="week">This Week</option>
+                      <option value="month">This Month</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div className="sd-inquiries-list">
+                {inquiriesLoading ? (
+                  <div className="sd-loading">
+                    <div className="sd-spinner"></div>
+                    <p>Loading inquiries...</p>
+                  </div>
+                ) : filteredInquiries.length > 0 ? (
+                  filteredInquiries.map((buyerGroup) => (
+                    <div key={buyerGroup.buyerId} className="sd-inquiry-item">
+                      <div
+                        className="sd-inquiry-header sd-inquiry-header-clickable"
+                        onClick={() =>
+                          toggleInquiryDropdown(buyerGroup.buyerId)
+                        }
+                      >
+                        <div className="sd-inquiry-buyer">
+                          <div className="sd-inquiry-title-row">
+                            <h4 className="sd-buyer-name">
+                              {buyerGroup.buyerName}
+                            </h4>
+                            <div className="sd-inquiry-toggle">
+                              <span className="sd-toggle-icon">
+                                {isInquiryExpanded(buyerGroup.buyerId)
+                                  ? "▼"
+                                  : "▶"}
+                              </span>
                             </div>
-                            {product.specifications &&
-                              product.specifications.length > 0 &&
-                              product.specifications
-                                .slice(0, 3)
-                                .map((spec, specIndex) => (
-                                  <div key={specIndex} className="sd-info-item">
-                                    <label>
-                                      {spec.key || spec.name || "Specification"}
-                                    </label>
-                                    <p>{spec.value || spec.val || "N/A"}</p>
+                          </div>
+                          <p className="sd-buyer-info">
+                            {buyerGroup.totalProducts} product
+                            {buyerGroup.totalProducts !== 1 ? "s" : ""} •
+                            Latest:{" "}
+                            {new Date(
+                              buyerGroup.latestDate
+                            ).toLocaleDateString()}
+                          </p>
+                          <p className="sd-expand-hint">
+                            {isInquiryExpanded(buyerGroup.buyerId)
+                              ? "Click to collapse"
+                              : "Click to expand products"}
+                          </p>
+                        </div>
+                        <div className="sd-inquiry-actions">
+                          <button
+                            className="sd-btn sd-btn-secondary"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleBuyerClick(buyerGroup.buyerId);
+                            }}
+                            disabled={buyerLoading}
+                          >
+                            {buyerLoading ? "Loading..." : "View Buyer Details"}
+                          </button>
+                        </div>
+                      </div>
+
+                      {isInquiryExpanded(buyerGroup.buyerId) && (
+                        <div className="sd-inquiry-dropdown">
+                          <div className="sd-products-list">
+                            {buyerGroup.products.map((product, index) => (
+                              <div
+                                key={`${buyerGroup.buyerId}-${product.id}-${index}`}
+                                className="sd-product-item"
+                              >
+                                <div className="sd-product-header">
+                                  <h5 className="sd-product-name">
+                                    {product.productName}
+                                  </h5>
+                                  <span
+                                    className={`sd-status-badge sd-status-${product.status.toLowerCase()}`}
+                                  >
+                                    {product.status}
+                                  </span>
+                                </div>
+
+                                <div className="sd-product-details">
+                                  <div className="sd-info-item">
+                                    <label>Date</label>
+                                    <p>
+                                      {new Date(
+                                        product.date
+                                      ).toLocaleDateString()}
+                                    </p>
                                   </div>
-                                ))}
+                                  {product.specifications &&
+                                    product.specifications.length > 0 &&
+                                    product.specifications
+                                      .slice(0, 3)
+                                      .map((spec, specIndex) => (
+                                        <div
+                                          key={specIndex}
+                                          className="sd-info-item"
+                                        >
+                                          <label>
+                                            {spec.key ||
+                                              spec.name ||
+                                              "Specification"}
+                                          </label>
+                                          <p>
+                                            {spec.value || spec.val || "N/A"}
+                                          </p>
+                                        </div>
+                                      ))}
+                                </div>
+                              </div>
+                            ))}
                           </div>
                         </div>
-                      ))}
+                      )}
                     </div>
+                  ))
+                ) : (
+                  <div className="sd-no-inquiries">
+                    <div className="sd-no-inquiries-icon">📋</div>
+                    <h3>No inquiries yet</h3>
+                    <p>
+                      You haven't received any product inquiries from buyers.
+                    </p>
                   </div>
                 )}
               </div>
-            ))
-          ) : (
-            <div className="sd-no-inquiries">
-              <div className="sd-no-inquiries-icon">📋</div>
-              <h3>No inquiries yet</h3>
-              <p>You haven't received any product inquiries from buyers.</p>
             </div>
-          )}
-        </div>
-      </div>
+          </>
+        )}
 
-      {/* Excel Products Display Section */}
-      {excelProducts.length > 0 && (
-        <div className="sd-excel-products-section">
-          <div className="sd-excel-products-header">
-            <h3 className="sd-excel-products-title">
-              Excel Products Ready for Upload
-            </h3>
-            <div className="sd-excel-products-actions">
-              <button
-                className="sd-btn sd-btn--primary sd-bulk-upload-btn"
-                onClick={handleBulkUpload}
-                disabled={isBulkUploading}
-              >
-                {isBulkUploading ? "Uploading..." : "Bulk Upload All"}
-              </button>
-              <button
-                className="sd-btn sd-btn--ghost"
-                onClick={() => setExcelProducts([])}
-              >
-                Clear All
-              </button>
-            </div>
-          </div>
-
-          <div className="sd-excel-products-table">
-            <table className="sd-excel-table">
-              <thead>
-                <tr>
-                  <th>Product Name</th>
-                  <th>Description</th>
-                  <th>Category</th>
-                  <th>Specifications</th>
-                  <th>Image</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {excelProducts.map((product) => (
-                  <tr key={product.id} className="sd-excel-product-row">
-                    <td className="sd-excel-cell">
-                      <strong>{product.productName}</strong>
-                    </td>
-                    <td className="sd-excel-cell">
-                      {product.description || "No description"}
-                    </td>
-                    <td className="sd-excel-cell">{product.categoryName}</td>
-                    <td className="sd-excel-cell">
-                      <div className="sd-specs-list">
-                        {product.specifications.map((spec, index) => (
-                          <div key={index} className="sd-spec-item">
-                            <span className="sd-spec-title">{spec.title}:</span>
-                            <span className="sd-spec-value">{spec.data}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </td>
-                    <td className="sd-excel-cell">
-                      <div className="sd-image-upload-cell">
-                        {product.productImage ? (
-                          <div className="sd-image-preview-cell">
-                            <img
-                              src={product.productImage.preview}
-                              alt="Product preview"
-                              className="sd-preview-image-cell"
-                            />
-                            <button
-                              type="button"
-                              className="sd-remove-image-btn-cell"
-                              onClick={() => removeProductImage(product.id)}
-                            >
-                              ×
-                            </button>
-                          </div>
-                        ) : (
-                          <div className="sd-image-upload-area-cell">
-                            <input
-                              type="file"
-                              id={`productImage-${product.id}`}
-                              accept="image/*"
-                              onChange={(e) =>
-                                handleProductImageUpload(product.id, e)
-                              }
-                              className="sd-image-input-cell"
-                            />
-                            <label
-                              htmlFor={`productImage-${product.id}`}
-                              className="sd-image-upload-label-cell"
-                            >
-                              <div className="sd-upload-icon-cell">📷</div>
-                              <span className="sd-upload-text-cell">
-                                Add Image
-                              </span>
-                            </label>
-                          </div>
-                        )}
-                      </div>
-                    </td>
-                    <td className="sd-excel-cell">
-                      <button
-                        className="sd-btn sd-btn--danger sd-remove-product-btn"
-                        onClick={() =>
-                          setExcelProducts((prev) =>
-                            prev.filter((p) => p.id !== product.id)
-                          )
-                        }
-                      >
-                        Remove
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {isCompanyModalOpen && (
-        <div
-          className="sd-modal"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="companyModalTitle"
-        >
-          <div className="sd-dialog">
-            <div className="sd-dialog-head">
-              <h3 id="companyModalTitle">Update Company Details</h3>
-              <button
-                className="sd-icon-btn"
-                onClick={() => setIsCompanyModalOpen(false)}
-                aria-label="Close"
-              >
-                ×
-              </button>
-            </div>
-            <form className="sd-form" onSubmit={(e) => e.preventDefault()}>
-              <label>
-                <span>Company Name</span>
-                <input type="text" defaultValue={userdata?.CompanyName || ""} />
-              </label>
-              <div className="sd-row">
-                <label>
-                  <span>Company Email</span>
-                  <input type="email" defaultValue={userdata?.email || ""} />
-                </label>
-                <label>
-                  <span>Phone</span>
-                  <input
-                    type="tel"
-                    defaultValue={userdata?.mobileNumber || ""}
-                  />
-                </label>
+        {/* Excel Products Display Section */}
+        {excelProducts.length > 0 && (
+          <div className="sd-excel-products-section">
+            <div className="sd-excel-products-header">
+              <h3 className="sd-excel-products-title">
+                Excel Products Ready for Upload
+              </h3>
+              <div className="sd-excel-products-actions">
+                <button
+                  className="sd-btn sd-btn--primary sd-bulk-upload-btn"
+                  onClick={handleBulkUpload}
+                  disabled={isBulkUploading}
+                >
+                  {isBulkUploading ? "Uploading..." : "Bulk Upload All"}
+                </button>
+                <button
+                  className="sd-btn sd-btn--ghost"
+                  onClick={() => setExcelProducts([])}
+                >
+                  Clear All
+                </button>
               </div>
-              <div className="sd-row">
+            </div>
+
+            <div className="sd-excel-products-table">
+              <table className="sd-excel-table">
+                <thead>
+                  <tr>
+                    <th>Product Name</th>
+                    <th>Description</th>
+                    <th>Category</th>
+                    <th>Specifications</th>
+                    <th>Image</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {excelProducts.map((product) => (
+                    <tr key={product.id} className="sd-excel-product-row">
+                      <td className="sd-excel-cell">
+                        <strong>{product.productName}</strong>
+                      </td>
+                      <td className="sd-excel-cell">
+                        {product.description || "No description"}
+                      </td>
+                      <td className="sd-excel-cell">{product.categoryName}</td>
+                      <td className="sd-excel-cell">
+                        <div className="sd-specs-list">
+                          {product.specifications.map((spec, index) => (
+                            <div key={index} className="sd-spec-item">
+                              <span className="sd-spec-title">
+                                {spec.title}:
+                              </span>
+                              <span className="sd-spec-value">{spec.data}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </td>
+                      <td className="sd-excel-cell">
+                        <div className="sd-image-upload-cell">
+                          {product.productImage ? (
+                            <div className="sd-image-preview-cell">
+                              <img
+                                src={product.productImage.preview}
+                                alt="Product preview"
+                                className="sd-preview-image-cell"
+                              />
+                              <button
+                                type="button"
+                                className="sd-remove-image-btn-cell"
+                                onClick={() => removeProductImage(product.id)}
+                              >
+                                ×
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="sd-image-upload-area-cell">
+                              <input
+                                type="file"
+                                id={`productImage-${product.id}`}
+                                accept="image/*"
+                                onChange={(e) =>
+                                  handleProductImageUpload(product.id, e)
+                                }
+                                className="sd-image-input-cell"
+                              />
+                              <label
+                                htmlFor={`productImage-${product.id}`}
+                                className="sd-image-upload-label-cell"
+                              >
+                                <div className="sd-upload-icon-cell">📷</div>
+                                <span className="sd-upload-text-cell">
+                                  Add Image
+                                </span>
+                              </label>
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                      <td className="sd-excel-cell">
+                        <button
+                          className="sd-btn sd-btn--danger sd-remove-product-btn"
+                          onClick={() =>
+                            setExcelProducts((prev) =>
+                              prev.filter((p) => p.id !== product.id)
+                            )
+                          }
+                        >
+                          Remove
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {isCompanyModalOpen && (
+          <div
+            className="sd-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="companyModalTitle"
+          >
+            <div className="sd-dialog">
+              <div className="sd-dialog-head">
+                <h3 id="companyModalTitle">Update Company Details</h3>
+                <button
+                  className="sd-icon-btn"
+                  onClick={() => setIsCompanyModalOpen(false)}
+                  aria-label="Close"
+                >
+                  ×
+                </button>
+              </div>
+              <form className="sd-form" onSubmit={(e) => e.preventDefault()}>
                 <label>
-                  <span>License Number</span>
+                  <span>Company Name</span>
                   <input
                     type="text"
-                    defaultValue={userdata?.licenseNumber || ""}
+                    defaultValue={userdata?.CompanyName || ""}
                   />
                 </label>
+                <div className="sd-row">
+                  <label>
+                    <span>Company Email</span>
+                    <input type="email" defaultValue={userdata?.email || ""} />
+                  </label>
+                  <label>
+                    <span>Phone</span>
+                    <input
+                      type="tel"
+                      defaultValue={userdata?.mobileNumber || ""}
+                    />
+                  </label>
+                </div>
+                <div className="sd-row">
+                  <label>
+                    <span>License Number</span>
+                    <input
+                      type="text"
+                      defaultValue={userdata?.licenseNumber || ""}
+                    />
+                  </label>
+                  <label>
+                    <span>GST Number</span>
+                    <input
+                      type="text"
+                      defaultValue={userdata?.gstNumber || ""}
+                    />
+                  </label>
+                </div>
                 <label>
-                  <span>GST Number</span>
-                  <input type="text" defaultValue={userdata?.gstNumber || ""} />
+                  <span>Address</span>
+                  <input
+                    type="text"
+                    defaultValue={userdata?.location?.formattedAddress || ""}
+                  />
                 </label>
-              </div>
-              <label>
-                <span>Address</span>
-                <input
-                  type="text"
-                  defaultValue={userdata?.location?.formattedAddress || ""}
-                />
-              </label>
-              <div className="sd-actions-inline">
-                <button className="sd-btn sd-btn--primary" type="submit">
-                  Save
-                </button>
-                <button
-                  className="sd-btn sd-btn--ghost"
-                  type="button"
-                  onClick={() => setIsCompanyModalOpen(false)}
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {isPasswordModalOpen && (
-        <div
-          className="sd-modal"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="passwordModalTitle"
-        >
-          <div className="sd-dialog">
-            <div className="sd-dialog-head">
-              <h3 id="passwordModalTitle">Change Password</h3>
-              <button
-                className="sd-icon-btn"
-                onClick={() => setIsPasswordModalOpen(false)}
-                aria-label="Close"
-              >
-                ×
-              </button>
+                <div className="sd-actions-inline">
+                  <button className="sd-btn sd-btn--primary" type="submit">
+                    Save
+                  </button>
+                  <button
+                    className="sd-btn sd-btn--ghost"
+                    type="button"
+                    onClick={() => setIsCompanyModalOpen(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
             </div>
-            <form className="sd-form" onSubmit={(e) => e.preventDefault()}>
-              <label>
-                <span>Current Password</span>
-                <input type="password" placeholder="••••••••" />
-              </label>
-              <label>
-                <span>New Password</span>
-                <input type="password" placeholder="At least 8 characters" />
-              </label>
-              <label>
-                <span>Confirm New Password</span>
-                <input type="password" placeholder="Re-type new password" />
-              </label>
-              <div className="sd-actions-inline">
-                <button className="sd-btn sd-btn--primary" type="submit">
-                  Update
-                </button>
+          </div>
+        )}
+
+        {isPasswordModalOpen && (
+          <div
+            className="sd-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="passwordModalTitle"
+          >
+            <div className="sd-dialog">
+              <div className="sd-dialog-head">
+                <h3 id="passwordModalTitle">Change Password</h3>
                 <button
-                  className="sd-btn sd-btn--ghost"
-                  type="button"
+                  className="sd-icon-btn"
                   onClick={() => setIsPasswordModalOpen(false)}
+                  aria-label="Close"
                 >
-                  Cancel
+                  ×
                 </button>
               </div>
-            </form>
+              <form className="sd-form" onSubmit={(e) => e.preventDefault()}>
+                <label>
+                  <span>Current Password</span>
+                  <input type="password" placeholder="••••••••" />
+                </label>
+                <label>
+                  <span>New Password</span>
+                  <input type="password" placeholder="At least 8 characters" />
+                </label>
+                <label>
+                  <span>Confirm New Password</span>
+                  <input type="password" placeholder="Re-type new password" />
+                </label>
+                <div className="sd-actions-inline">
+                  <button className="sd-btn sd-btn--primary" type="submit">
+                    Update
+                  </button>
+                  <button
+                    className="sd-btn sd-btn--ghost"
+                    type="button"
+                    onClick={() => setIsPasswordModalOpen(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Add Product Modal */}
       {isProductModalOpen && (
@@ -1749,7 +1950,7 @@ export default function SellerDashboard() {
                   <h4 className="sd-section-title">Product Specifications</h4>
                   <button
                     type="button"
-                    className="sd-btn sd-btn--secondary sd-add-spec-btn"
+                    className="sd-btn sd-btn--success sd-add-spec-btn"
                     onClick={addSpecification}
                   >
                     <span className="sd-btn-icon">+</span>
@@ -2053,13 +2254,19 @@ export default function SellerDashboard() {
 
       {/* Profile Update Modal */}
       {isProfileUpdateModalOpen && (
-        <div className="sd-modal-overlay">
-          <div className="sd-modal sd-profile-update-modal">
-            <div className="sd-modal-header">
-              <h3 className="sd-modal-title">Update Profile</h3>
+        <div
+          className="sd-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="profileUpdateModalTitle"
+        >
+          <div className="sd-dialog">
+            <div className="sd-dialog-head">
+              <h3 id="profileUpdateModalTitle">Update Profile</h3>
               <button
-                className="sd-modal-close"
+                className="sd-icon-btn"
                 onClick={() => setIsProfileUpdateModalOpen(false)}
+                aria-label="Close"
               >
                 ×
               </button>
@@ -2097,13 +2304,7 @@ export default function SellerDashboard() {
               </div>
               <label>
                 <span>Email Address</span>
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "8px",
-                    alignItems: "center",
-                  }}
-                >
+                <div className="sd-email-actions">
                   <input
                     type="email"
                     value={profileUpdateData.email}
@@ -2114,7 +2315,6 @@ export default function SellerDashboard() {
                       }))
                     }
                     required
-                    style={{ flex: 1 }}
                     readOnly={!emailOtpData.isOtpVerified}
                     className={
                       !emailOtpData.isOtpVerified ? "readonly-field" : ""
@@ -2125,7 +2325,6 @@ export default function SellerDashboard() {
                       type="button"
                       className="sd-btn sd-btn--ghost"
                       onClick={sendOTPForEmailUpdate}
-                      style={{ whiteSpace: "nowrap" }}
                     >
                       Change Email
                     </button>
@@ -2164,13 +2363,7 @@ export default function SellerDashboard() {
               <div className="sd-row">
                 <label>
                   <span>Mobile Number</span>
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "8px",
-                      alignItems: "center",
-                    }}
-                  >
+                  <div className="sd-mobile-actions">
                     <input
                       type="tel"
                       value={profileUpdateData.mobileNumber}
@@ -2181,7 +2374,6 @@ export default function SellerDashboard() {
                         }))
                       }
                       required
-                      style={{ flex: 1 }}
                       readOnly={!otpData.isOtpVerified}
                       className={!otpData.isOtpVerified ? "readonly-field" : ""}
                     />
@@ -2190,7 +2382,6 @@ export default function SellerDashboard() {
                         type="button"
                         className="sd-btn sd-btn--ghost"
                         onClick={sendOTPForMobileUpdate}
-                        style={{ whiteSpace: "nowrap" }}
                       >
                         Change Mobile
                       </button>
@@ -2306,6 +2497,18 @@ export default function SellerDashboard() {
                   required
                 />
               </label>
+              <div className="sd-actions-inline">
+                <button className="sd-btn sd-btn--primary" type="submit">
+                  Update Profile
+                </button>
+                <button
+                  type="button"
+                  className="sd-btn sd-btn--ghost"
+                  onClick={() => setIsProfileUpdateModalOpen(false)}
+                >
+                  Cancel
+                </button>
+              </div>
               <div className="sd-password-options">
                 <h4>Password Options</h4>
                 <div className="sd-actions-inline">
@@ -2331,18 +2534,6 @@ export default function SellerDashboard() {
                   </button>
                 </div>
               </div>
-              <div className="sd-actions-inline">
-                <button className="sd-btn sd-btn--primary" type="submit">
-                  Update Profile
-                </button>
-                <button
-                  type="button"
-                  className="sd-btn sd-btn--ghost"
-                  onClick={() => setIsProfileUpdateModalOpen(false)}
-                >
-                  Cancel
-                </button>
-              </div>
             </form>
           </div>
         </div>
@@ -2350,13 +2541,19 @@ export default function SellerDashboard() {
 
       {/* Password Change Modal */}
       {isPasswordChangeModalOpen && (
-        <div className="sd-modal-overlay">
-          <div className="sd-modal sd-password-change-modal">
-            <div className="sd-modal-header">
-              <h3 className="sd-modal-title">Change Password</h3>
+        <div
+          className="sd-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="passwordChangeModalTitle"
+        >
+          <div className="sd-dialog">
+            <div className="sd-dialog-head">
+              <h3 id="passwordChangeModalTitle">Change Password</h3>
               <button
-                className="sd-modal-close"
+                className="sd-icon-btn"
                 onClick={() => setIsPasswordChangeModalOpen(false)}
+                aria-label="Close"
               >
                 ×
               </button>
@@ -2427,13 +2624,19 @@ export default function SellerDashboard() {
 
       {/* Forgot Password Modal */}
       {isForgotPasswordModalOpen && (
-        <div className="sd-modal-overlay">
-          <div className="sd-modal sd-forgot-password-modal">
-            <div className="sd-modal-header">
-              <h3 className="sd-modal-title">Forgot Password</h3>
+        <div
+          className="sd-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="forgotPasswordModalTitle"
+        >
+          <div className="sd-dialog">
+            <div className="sd-dialog-head">
+              <h3 id="forgotPasswordModalTitle">Reset Password</h3>
               <button
-                className="sd-modal-close"
+                className="sd-icon-btn"
                 onClick={() => setIsForgotPasswordModalOpen(false)}
+                aria-label="Close"
               >
                 ×
               </button>
@@ -2442,7 +2645,8 @@ export default function SellerDashboard() {
               <div className="sd-forgot-password-info">
                 <span className="sd-forgot-password-info-icon">ℹ️</span>
                 <p className="sd-forgot-password-info-text">
-                  Enter your registered email address and we'll send you a link to reset your password.
+                  Enter your registered email address and we'll send you a link
+                  to reset your password.
                 </p>
               </div>
               <label>
@@ -2479,4 +2683,3 @@ export default function SellerDashboard() {
     </div>
   );
 }
-

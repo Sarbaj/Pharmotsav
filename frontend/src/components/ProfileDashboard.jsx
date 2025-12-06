@@ -1199,9 +1199,9 @@ export default function ProfileDashboard() {
         {/* Profile Section - SHOW/HIDE BASED ON TAB */}
         {activeTab === "profile" && (
           <section className="pd-header">
-            <div className="pd-profile-container">
-              {/* Avatar and Basic Info - Centered */}
-              <div className="pd-profile-top">
+            {/* Top Section: Profile and Buttons */}
+            <div className="pd-header-top">
+              <div className="pd-user">
                 <div className="pd-user-avatar">
                   {userdata
                     ? `${userdata.firstName?.charAt(0) || ""}${
@@ -1209,77 +1209,33 @@ export default function ProfileDashboard() {
                       }`.toUpperCase()
                     : "U"}
                 </div>
-                <h2 className="pd-name">
-                  {userdata
-                    ? `${userdata.firstName} ${userdata.lastName || ""}`
-                    : "Loading"}
-                </h2>
-                <p className="pd-role">
-                  {userdata
-                    ? userdata.natureOfBusiness || userdata.natureOfBuisness
-                    : "Loading"}
-                </p>
-                <div className="pd-tags">
-                  <span className="pd-tag">Verified</span>
-                  <span className="pd-tag pd-tag--accent">Business</span>
-                </div>
-              </div>
-
-              {/* Personal and Business Info - Two Columns */}
-              <div className="pd-info-grid">
-                {/* Personal Information */}
-                <div className="pd-info-section">
-                  <h3 className="pd-info-title">Personal Information</h3>
-                  <div className="pd-info-items">
-                    <div className="pd-info-item">
-                      <label>First Name</label>
-                      <p>{userdata?.firstName || "Not provided"}</p>
-                    </div>
-                    <div className="pd-info-item">
-                      <label>Last Name</label>
-                      <p>{userdata?.lastName || "Not provided"}</p>
-                    </div>
-                    <div className="pd-info-item">
-                      <label>Email</label>
-                      <p>{userdata?.email || "Not provided"}</p>
-                    </div>
-                    <div className="pd-info-item">
-                      <label>Mobile Number</label>
-                      <p>{userdata?.mobileNumber || "Not provided"}</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Business Information */}
-                <div className="pd-info-section">
-                  <h3 className="pd-info-title">Business Information</h3>
-                  <div className="pd-info-items">
-                    <div className="pd-info-item">
-                      <label>Country</label>
-                      <p>{userdata?.country || "Not provided"}</p>
-                    </div>
-                    <div className="pd-info-item">
-                      <label>Nature of Business</label>
-                      <p>
-                        {userdata?.natureOfBusiness ||
-                          userdata?.natureOfBuisness ||
-                          "Not provided"}
-                      </p>
-                    </div>
+                <div className="pd-user-meta">
+                  <h2 className="pd-name">
+                    {userdata
+                      ? `${userdata.firstName} ${userdata.lastName || ""}`
+                      : "Loading"}
+                  </h2>
+                  <p className="pd-role">
+                    {userdata
+                      ? userdata.natureOfBusiness || userdata.natureOfBuisness
+                      : "Loading"}
+                  </p>
+                  <div className="pd-tags">
+                    <span className="pd-tag">Verified</span>
+                    <span className="pd-tag pd-tag--accent">Business</span>
                   </div>
                 </div>
               </div>
 
-              {/* Action Buttons */}
               <div className="pd-actions">
                 <button
-                  className="pd-btn pd-btn--primary"
+                  className="pd-profile-btn pd-profile-btn--primary"
                   onClick={openProfileUpdateModal}
                 >
                   Update Profile
                 </button>
                 <button
-                  className="pd-btn pd-btn--logout"
+                  className="pd-profile-btn pd-profile-btn--logout"
                   onClick={() => {
                     localStorage.clear();
                     window.location.href = "/";
@@ -1287,6 +1243,48 @@ export default function ProfileDashboard() {
                 >
                   Logout
                 </button>
+              </div>
+            </div>
+
+            {/* Personal Information Section */}
+            <div className="pd-info-section">
+              <h3 className="pd-section-title">Personal Information</h3>
+              <div className="pd-info-grid">
+                <div className="pd-info-item">
+                  <label>First Name</label>
+                  <p>{userdata?.firstName || "Not provided"}</p>
+                </div>
+                <div className="pd-info-item">
+                  <label>Last Name</label>
+                  <p>{userdata?.lastName || "Not provided"}</p>
+                </div>
+                <div className="pd-info-item">
+                  <label>Email</label>
+                  <p>{userdata?.email || "Not provided"}</p>
+                </div>
+                <div className="pd-info-item">
+                  <label>Mobile Number</label>
+                  <p>{userdata?.mobileNumber || "Not provided"}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Business Information Section */}
+            <div className="pd-info-section">
+              <h3 className="pd-section-title">Business Information</h3>
+              <div className="pd-info-grid">
+                <div className="pd-info-item">
+                  <label>Country</label>
+                  <p>{userdata?.country || "Not provided"}</p>
+                </div>
+                <div className="pd-info-item">
+                  <label>Nature of Business</label>
+                  <p>
+                    {userdata?.natureOfBusiness ||
+                      userdata?.natureOfBuisness ||
+                      "Not provided"}
+                  </p>
+                </div>
               </div>
             </div>
           </section>
@@ -2013,9 +2011,8 @@ export default function ProfileDashboard() {
                   {!emailOtpData.isOtpVerified && (
                     <button
                       type="button"
-                      className="pd-btn pd-btn--ghost"
+                      className="pd-modal-btn pd-modal-btn--change"
                       onClick={sendOTPForEmailUpdate}
-                      style={{ whiteSpace: "nowrap" }}
                     >
                       Change Email
                     </button>
@@ -2078,9 +2075,8 @@ export default function ProfileDashboard() {
                     {!otpData.isOtpVerified && (
                       <button
                         type="button"
-                        className="pd-btn pd-btn--ghost"
+                        className="pd-modal-btn pd-modal-btn--change"
                         onClick={sendOTPForMobileUpdate}
-                        style={{ whiteSpace: "nowrap" }}
                       >
                         Change Mobile
                       </button>
@@ -2157,7 +2153,7 @@ export default function ProfileDashboard() {
                   Update Profile
                 </button>
                 <button
-                  className="pd-btn pd-btn--ghost"
+                  className="pd-modal-btn pd-modal-btn--cancel"
                   type="button"
                   onClick={() => setIsProfileUpdateModalOpen(false)}
                 >
@@ -2168,7 +2164,7 @@ export default function ProfileDashboard() {
                 <h4>Password Options</h4>
                 <div className="pd-actions-inline">
                   <button
-                    className="pd-btn pd-btn--ghost"
+                    className="pd-modal-btn pd-modal-btn--secondary"
                     type="button"
                     onClick={() => {
                       setIsProfileUpdateModalOpen(false);
@@ -2178,7 +2174,7 @@ export default function ProfileDashboard() {
                     Change Password
                   </button>
                   <button
-                    className="pd-btn pd-btn--ghost"
+                    className="pd-modal-btn pd-modal-btn--secondary"
                     type="button"
                     onClick={() => {
                       setIsProfileUpdateModalOpen(false);
@@ -2262,7 +2258,7 @@ export default function ProfileDashboard() {
                   Change Password
                 </button>
                 <button
-                  className="pd-btn pd-btn--ghost"
+                  className="pd-modal-btn pd-modal-btn--cancel"
                   type="button"
                   onClick={() => setIsPasswordChangeModalOpen(false)}
                 >
@@ -2315,7 +2311,7 @@ export default function ProfileDashboard() {
                   Send Reset Link
                 </button>
                 <button
-                  className="pd-btn pd-btn--ghost"
+                  className="pd-modal-btn pd-modal-btn--cancel"
                   type="button"
                   onClick={() => setIsForgotPasswordModalOpen(false)}
                 >
