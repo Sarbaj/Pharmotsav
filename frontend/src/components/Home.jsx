@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "../CSS/Home.css";
+import VideoLoader from "./VideoLoader";
 
 import img1 from "../IMGS/main1.png";
 import { useNavigate } from "react-router-dom";
@@ -15,6 +16,8 @@ gsap.registerPlugin(ScrollTrigger);
 const Home = () => {
   const navigate = useNavigate();
   const { isLogin } = useSelector((state) => state.user);
+  const [showLoader, setShowLoader] = useState(true);
+  const [hasLoadedBefore, setHasLoadedBefore] = useState(false);
 
   const heroTextRef = useRef(null);
   const heroButtonsRef = useRef(null);
@@ -236,8 +239,26 @@ const Home = () => {
     });
   }, []);
 
+  // For testing - show video every time
+  // Comment out these lines later to show only once per session
+  useEffect(() => {
+    // const hasSeenVideo = sessionStorage.getItem('hasSeenCapsuleVideo');
+    // if (hasSeenVideo) {
+    //   setShowLoader(false);
+    //   setHasLoadedBefore(true);
+    // }
+  }, []);
+
+  const handleLoaderComplete = () => {
+    setShowLoader(false);
+    // sessionStorage.setItem('hasSeenCapsuleVideo', 'true');
+  };
+
   return (
     <>
+      {showLoader && !hasLoadedBefore && (
+        <VideoLoader onComplete={handleLoaderComplete} />
+      )}
       <div className="home-hero">
         {/* Hero Section */}
         <section className="home-hero-section">
