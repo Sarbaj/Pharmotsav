@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "../CSS/Home.css";
-import VideoLoader from "./VideoLoader";
+import PillAnimation from "./PillAnimation";
 
 import img1 from "../IMGS/main1.png";
 import { useNavigate } from "react-router-dom";
@@ -239,25 +239,25 @@ const Home = () => {
     });
   }, []);
 
-  // For testing - show video every time
+  // For testing - show pill animation every time
   // Comment out these lines later to show only once per session
   useEffect(() => {
-    // const hasSeenVideo = sessionStorage.getItem('hasSeenCapsuleVideo');
-    // if (hasSeenVideo) {
+    // const hasSeenPillAnimation = sessionStorage.getItem('hasSeenPillAnimation');
+    // if (hasSeenPillAnimation) {
     //   setShowLoader(false);
     //   setHasLoadedBefore(true);
     // }
   }, []);
 
-  const handleLoaderComplete = () => {
+  const handleAnimationComplete = () => {
     setShowLoader(false);
-    // sessionStorage.setItem('hasSeenCapsuleVideo', 'true');
+    // sessionStorage.setItem('hasSeenPillAnimation', 'true');
   };
 
   return (
     <>
       {showLoader && !hasLoadedBefore && (
-        <VideoLoader onComplete={handleLoaderComplete} />
+        <PillAnimation onComplete={handleAnimationComplete} />
       )}
       <div className="home-hero">
         {/* Hero Section */}
