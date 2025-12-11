@@ -20,6 +20,12 @@ import {
   markNotificationAsReadController,
   markAllNotificationsAsReadController,
 } from "../controllers/admin.controller.js";
+import {
+  createCategoryController,
+  getAllCategoriesController,
+  updateCategoryController,
+  deleteCategoryController,
+} from "../controllers/category.controller.js";
 
 const adminRouter = Router();
 
@@ -68,5 +74,19 @@ adminRouter
 adminRouter
   .route("/notifications/mark-all-read")
   .put(verifyJwtAdmin, markAllNotificationsAsReadController);
+
+// Admin Category Management Routes
+adminRouter
+  .route("/add-category")
+  .post(verifyJwtAdmin, createCategoryController);
+adminRouter
+  .route("/update-category")
+  .put(verifyJwtAdmin, updateCategoryController);
+adminRouter
+  .route("/delete-category/:categoryId")
+  .delete(verifyJwtAdmin, deleteCategoryController);
+adminRouter
+  .route("/get-all-categories")
+  .get(verifyJwtAdmin, getAllCategoriesController);
 
 export default adminRouter;

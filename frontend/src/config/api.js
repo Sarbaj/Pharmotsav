@@ -64,6 +64,12 @@ export const API_ENDPOINTS = {
     GET_ALL: `${API_BASE_URL}/api/v1/categories/get-all-categories`,
     ADD: `${API_BASE_URL}/api/v1/categories/add-category`,
     UPDATE: `${API_BASE_URL}/api/v1/categories/update-category`,
+    DELETE: `${API_BASE_URL}/api/v1/categories/delete-category`,
+    // Admin Category Routes
+    ADMIN_GET_ALL: `${API_BASE_URL}/api/v1/admin/get-all-categories`,
+    ADMIN_ADD: `${API_BASE_URL}/api/v1/admin/add-category`,
+    ADMIN_UPDATE: `${API_BASE_URL}/api/v1/admin/update-category`,
+    ADMIN_DELETE: `${API_BASE_URL}/api/v1/admin/delete-category`,
   },
 
   // Inquiries
@@ -83,6 +89,7 @@ export const API_ENDPOINTS = {
     SUBMIT: `${API_BASE_URL}/api/v1/contact`,
     GET_ALL: `${API_BASE_URL}/api/v1/contact`,
     UPDATE: `${API_BASE_URL}/api/v1/contact`,
+    DELETE: `${API_BASE_URL}/api/v1/contact`,
     STATS: `${API_BASE_URL}/api/v1/contact/stats`,
   },
 

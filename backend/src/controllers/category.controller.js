@@ -46,8 +46,28 @@ const updateCategoryController=asyncHandler(async(req,res,next)=>{
     res.status(200).json(new ApiResponce(200,'Category updated successfully',category))
 })
 
+//delete category controller
+const deleteCategoryController=asyncHandler(async(req,res,next)=>{
+    const {categoryId} = req.params
+    if(!categoryId) throw new ApiError(400,'Category id is required')
+
+    const category=await Category.findById(categoryId)
+    if(!category) throw new ApiError(404,'Category not found')
+
+    // Check if category is being used by any products
+    // Note: You might want to add this check if you have products referencing categories
+    // const productsUsingCategory = await Product.find({category: categoryId})
+    // if(productsUsingCategory.length > 0) {
+    //     throw new ApiError(400,'Cannot delete category as it is being used by products')
+    // }
+
+    await Category.findByIdAndDelete(categoryId)
+    res.status(200).json(new ApiResponce(200,'Category deleted successfully',{deletedCategory: category}))
+})
+
 export {
     createCategoryController,
     getAllCategoriesController,
-    updateCategoryController
+    updateCategoryController,
+    deleteCategoryController
 }
