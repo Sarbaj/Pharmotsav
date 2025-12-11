@@ -182,6 +182,31 @@ const Home = () => {
       }
     });
 
+    // Trust and CTA animations will be initialized after pill animation completes
+  }, []);
+
+  // For testing - show pill animation every time
+  // Comment out these lines later to show only once per session
+  useEffect(() => {
+    // const hasSeenPillAnimation = sessionStorage.getItem('hasSeenPillAnimation');
+    // if (hasSeenPillAnimation) {
+    //   setShowLoader(false);
+    //   setHasLoadedBefore(true);
+    // }
+  }, []);
+
+  const handleAnimationComplete = () => {
+    setShowLoader(false);
+    // sessionStorage.setItem('hasSeenPillAnimation', 'true');
+    
+    // Initialize GSAP animations after pill animation completes
+    setTimeout(() => {
+      initializeAnimations();
+      ScrollTrigger.refresh();
+    }, 100);
+  };
+
+  const initializeAnimations = () => {
     // Trust items animation
     trustItemsRef.current.forEach((item, index) => {
       if (item) {
@@ -237,21 +262,6 @@ const Home = () => {
         });
       }
     });
-  }, []);
-
-  // For testing - show pill animation every time
-  // Comment out these lines later to show only once per session
-  useEffect(() => {
-    // const hasSeenPillAnimation = sessionStorage.getItem('hasSeenPillAnimation');
-    // if (hasSeenPillAnimation) {
-    //   setShowLoader(false);
-    //   setHasLoadedBefore(true);
-    // }
-  }, []);
-
-  const handleAnimationComplete = () => {
-    setShowLoader(false);
-    // sessionStorage.setItem('hasSeenPillAnimation', 'true');
   };
 
   return (
