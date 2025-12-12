@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 import healthcare from "../assets/healthcare.jpg";
 import pharma from "../assets/pharma.jpg";
 import network from "../assets/network.jpg";
-import loopVideo from "../assets/video/loop.webm";
+import loopVideo from "../assets/video/loops.mp4";
 
 gsap.registerPlugin(ScrollTrigger);
 

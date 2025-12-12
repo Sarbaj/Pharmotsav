@@ -596,7 +596,7 @@ main .container .div1 .btns button:hover {
 
 .home-video-player {
   width: 100%;
-  height: 110%;
+  height: 90%;
   object-fit: cover;
   object-position: center top;
   border: none;
