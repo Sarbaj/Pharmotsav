@@ -303,9 +303,6 @@ export default function Header() {
             <NavLink to="/contact" className="nav-link">
               Contact
             </NavLink>
-            <NavLink to="/login-admin" className="nav-link">
-              Admin
-            </NavLink>
           </div>
         </nav>
 

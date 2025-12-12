@@ -1,10 +1,42 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
 import "../CSS/Footer.css";
 import logo from "../IMGS/logo.png";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const [isLogin, setIsLogin] = useState(false);
+  const [role, setRole] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
+  const { UserInfo } = useSelector((state) => state.user);
+
+  // Check login status and role
+  useEffect(() => {
+    // Check for admin authentication
+    const adminToken = localStorage.getItem("adminToken");
+    const adminUserData = localStorage.getItem("adminUser");
+    
+    if (adminToken && adminUserData) {
+      setIsAdmin(true);
+      setIsLogin(true);
+      return;
+    }
+
+    // Check for regular user authentication
+    const token = localStorage.getItem("refreshToken");
+    const storedRole = localStorage.getItem("role");
+    
+    if (token && storedRole) {
+      setIsLogin(true);
+      setRole(storedRole);
+    } else if (UserInfo) {
+      setIsLogin(true);
+      // Determine role from UserInfo if available
+      const userRole = localStorage.getItem("role") || "";
+      setRole(userRole);
+    }
+  }, [UserInfo]);
 
   return (
     <footer className="footer">
@@ -69,28 +101,65 @@ export default function Footer() {
 
           {/* Services */}
           <div className="footer-section">
-            <h3 className="footer-heading">Services</h3>
+            <h3 className="footer-heading">
+              {isLogin ? "My Account" : "Services"}
+            </h3>
             <ul className="footer-links">
-              <li>
-                <NavLink to="/buyer" className="footer-link">
-                  For Buyers
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to="/seller" className="footer-link">
-                  For Sellers
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to="/buyerregister" className="footer-link">
-                  Buyer Registration
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to="/sellerregister" className="footer-link">
-                  Seller Registration
-                </NavLink>
-              </li>
+              {!isLogin ? (
+                // Show registration links for non-logged in users
+                <>
+                  <li>
+                    <NavLink to="/buyer" className="footer-link">
+                      For Buyers
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/seller" className="footer-link">
+                      For Sellers
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/buyerregister" className="footer-link">
+                      Buyer Registration
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/sellerregister" className="footer-link">
+                      Seller Registration
+                    </NavLink>
+                  </li>
+                </>
+              ) : (
+                // Show dashboard links for logged in users
+                <>
+                  <li>
+                    <NavLink 
+                      to={
+                        isAdmin 
+                          ? "/admin-dashboard" 
+                          : role === "buyer" 
+                          ? "/buyer-profile" 
+                          : "/seller-profile"
+                      } 
+                      className="footer-link"
+                    >
+                      My Dashboard
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/products" className="footer-link">
+                      Browse Products
+                    </NavLink>
+                  </li>
+
+
+                  <li>
+                    <NavLink to="/contact" className="footer-link">
+                      Support
+                    </NavLink>
+                  </li>
+                </>
+              )}
             </ul>
           </div>
 
