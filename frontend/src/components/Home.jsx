@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 import healthcare from "../assets/healthcare.jpg";
 import pharma from "../assets/pharma.jpg";
 import network from "../assets/network.jpg";
+import loopVideo from "../assets/video/loop.webm";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -198,7 +199,7 @@ const Home = () => {
   const handleAnimationComplete = () => {
     setShowLoader(false);
     // sessionStorage.setItem('hasSeenPillAnimation', 'true');
-    
+
     // Initialize GSAP animations after pill animation completes
     setTimeout(() => {
       initializeAnimations();
@@ -286,7 +287,10 @@ const Home = () => {
                   </span>
                 </span>{" "}
                 Pharma Connections for
-                <span className="home-gradient-text"> Trusted & Efficient</span>{" "}
+                <span className="home-gradient-text">
+                  {" "}
+                  Trusted & Efficient
+                </span>{" "}
                 Business
               </h1>
               <p className="home-hero-subtitle">
@@ -347,7 +351,8 @@ const Home = () => {
               </div>
             </div>
             <div className="home-hero-visual home-hero-visual-desktop">
-              <div className="home-floating-cards">
+              {/* Temporarily commented out cards - replaced with video */}
+              {/* <div className="home-floating-cards">
                 <div
                   className="home-card home-card-1"
                   ref={(el) => (floatingCardsRef.current[0] = el)}
@@ -378,6 +383,27 @@ const Home = () => {
                   <h3>Global Network</h3>
                   <p>Worldwide reach</p>
                 </div>
+              </div> */}
+
+              {/* Video replacement */}
+              <div className="home-hero-video">
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="home-video-player"
+                  src={loopVideo}
+                  onError={(e) => {
+                    console.error("Video error:", e);
+                    console.error("Video src:", e.target.src);
+                  }}
+                  onLoadStart={() => console.log("Video loading started")}
+                  onCanPlay={() => console.log("Video can play")}
+                  onLoadedData={() => console.log("Video loaded successfully")}
+                >
+                  Your browser does not support the video tag.
+                </video>
               </div>
             </div>
           </div>
