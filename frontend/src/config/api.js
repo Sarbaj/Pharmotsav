@@ -55,6 +55,7 @@ export const API_ENDPOINTS = {
   // Products
   PRODUCTS: {
     ADD: `${API_BASE_URL}/api/v1/products/add-product`,
+    DELETE: `${API_BASE_URL}/api/v1/products/remove-product`,
     GET_ALL_FULL: `${API_BASE_URL}/api/v1/products/get-all-products-full`,
     GET_BY_CATEGORY_FULL: `${API_BASE_URL}/api/v1/products/get-products-by-category-full`,
   },

@@ -240,8 +240,31 @@
   font-size: 1.1rem;
   font-weight: 600;
   color: #111827;
-  margin: 0;
+  margin: 0 0 1rem 0;
   line-height: 1.4;
+}
+
+.sd-product-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.sd-btn--danger {
+  background: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.sd-btn--danger:hover {
+  background: #fef2f2;
+  border-color: #dc2626;
+  transform: translateY(-2px);
+}
+
+.sd-btn--small {
+  padding: 6px 12px;
+  font-size: 0.875rem;
 }
 
 .sd-no-products {
@@ -2296,6 +2319,56 @@
   100% {
     transform: rotate(360deg);
   }
+}
+
+.sd-spinner-small {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/* Button disabled states */
+.sd-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.sd-btn:disabled:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Modal loading overlay */
+.sd-modal-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  border-radius: 12px;
+}
+
+.sd-modal-loading-content {
+  text-align: center;
+  color: var(--sd-text);
+}
+
+.sd-modal-loading-content p {
+  margin-top: 1rem;
+  font-size: 1rem;
+  font-weight: 500;
 }
 
 .sd-loading p {

@@ -1321,6 +1321,7 @@
   width: 90vw;
   max-height: 80vh;
   overflow-y: auto;
+  margin-top: 2rem;
 }
 
 .pd-seller-content {
@@ -1423,6 +1424,7 @@
 .pd-email-dialog {
   max-width: 600px;
   width: 90vw;
+  margin-top: 2rem;
 }
 
 .pd-seller-info-header {
@@ -2046,4 +2048,62 @@
     border: none;
     border-radius: 0;
   }
+}
+/* Large button style for email modal */
+.pd-btn--large {
+  padding: 16px 32px !important;
+  font-size: 1.1rem !important;
+  font-weight: 600 !important;
+  min-width: 180px;
+}
+
+.pd-email-actions .pd-btn--large {
+  padding: 16px 32px !important;
+  font-size: 1.1rem !important;
+}
+
+/* Medium size buttons for email actions */
+.pd-email-actions .pd-btn {
+  padding: 0.5rem !important;
+  font-size: 0.9rem !important;
+  cursor: pointer !important;
+  min-width: auto !important;
+}
+
+.pd-email-actions .pd-btn:hover {
+  cursor: pointer !important;
+}
+
+@media (max-width: 768px) {
+  .pd-btn--large {
+    padding: 14px 24px !important;
+    font-size: 1rem !important;
+    min-width: 150px;
+  }
+}/*
+ Small spinner for buttons */
+.pd-spinner-small {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: pd-spin 1s linear infinite;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+@keyframes pd-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}/*
+ Small button variant */
+.pd-btn--small {
+  padding: 0.5rem 1rem !important;
+  font-size: 0.875rem !important;
 }

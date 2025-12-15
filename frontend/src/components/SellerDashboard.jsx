@@ -63,6 +63,7 @@ export default function SellerDashboard() {
   // Products state
   const [products, setProducts] = useState([]);
   const [productsLoading, setProductsLoading] = useState(false);
+  const [addProductLoading, setAddProductLoading] = useState(false);
 
   const { UserInfo } = useSelector((state) => state.user);
   const navigate = useNavigate();
@@ -282,9 +283,10 @@ export default function SellerDashboard() {
 
       if (data.success && data.data) {
         console.log("Setting products:", data.data);
+        console.log("First product structure:", data.data[0]);
         setProducts(data.data);
       } else {
-        console.log("No products found or error");
+        console.log("No products found or error:", data);
         setProducts([]);
       }
     } catch (error) {
@@ -610,8 +612,11 @@ export default function SellerDashboard() {
       `Bulk upload completed!\nSuccess: ${successCount}\nFailed: ${failedCount}`
     );
 
-    // Clear Excel products
+    // Clear Excel products and refresh products list
     setExcelProducts([]);
+    if (successCount > 0) {
+      fetchSellerProducts();
+    }
   };
 
   const downloadExcelTemplate = () => {
@@ -687,15 +692,20 @@ export default function SellerDashboard() {
   const handleProductSubmit = async (e) => {
     e.preventDefault();
 
+    // Set loading state
+    setAddProductLoading(true);
+
     try {
       // Validate required fields
       if (!productForm.productName || !productForm.category) {
         alert("Product name and category are required!");
+        setAddProductLoading(false);
         return;
       }
 
       if (!productForm.productImage) {
         alert("Product image is required!");
+        setAddProductLoading(false);
         return;
       }
 
@@ -745,6 +755,8 @@ export default function SellerDashboard() {
           productImage: null,
         });
         setIsFormPopulatedFromExcel(false);
+        // Refresh the products list
+        fetchSellerProducts();
       } else {
         alert(data.message || "Failed to add product. Please try again.");
       }
@@ -752,6 +764,47 @@ export default function SellerDashboard() {
       console.error("Error adding product:", error);
       alert(
         "Failed to add product. Please check your connection and try again."
+      );
+    } finally {
+      // Reset loading state
+      setAddProductLoading(false);
+    }
+  };
+
+  // Delete product function
+  const handleDeleteProduct = async (productId, productName) => {
+    // Confirm deletion
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete "${productName}"? This action cannot be undone.`
+    );
+
+    if (!confirmDelete) {
+      return;
+    }
+
+    try {
+      const response = await fetchWithAuth(`${API_ENDPOINTS.PRODUCTS.DELETE}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ productId }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        alert("Product deleted successfully!");
+        // Refresh the products list
+        fetchSellerProducts();
+      } else {
+        alert(data.message || "Failed to delete product. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      alert(
+        "Failed to delete product. Please check your connection and try again."
       );
     }
   };
@@ -1374,7 +1427,10 @@ export default function SellerDashboard() {
               </div>
             ) : products.length > 0 ? (
               <div className="sd-products-grid">
-                {products.map((product) => (
+                {console.log("Rendering products:", products)}
+                {products.map((product) => {
+                  console.log("Rendering product:", product);
+                  return (
                   <div key={product._id} className="sd-product-card">
                     <div className="sd-product-image">
                       {product.image ? (
@@ -1385,9 +1441,19 @@ export default function SellerDashboard() {
                     </div>
                     <div className="sd-product-info">
                       <h3 className="sd-product-name">{product.name}</h3>
+                      <div className="sd-product-actions">
+                        <button
+                          className="sd-btn sd-btn--danger sd-btn--small"
+                          onClick={() => handleDeleteProduct(product._id, product.name)}
+                          title="Delete Product"
+                        >
+                          🗑️ Delete
+                        </button>
+                      </div>
                     </div>
                   </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <div className="sd-no-products">
@@ -1569,7 +1635,14 @@ export default function SellerDashboard() {
                   onClick={handleBulkUpload}
                   disabled={isBulkUploading}
                 >
-                  {isBulkUploading ? "Uploading..." : "Bulk Upload All"}
+                  {isBulkUploading ? (
+                    <>
+                      <span className="sd-spinner-small"></span>
+                      Uploading...
+                    </>
+                  ) : (
+                    "Bulk Upload All"
+                  )}
                 </button>
                 <button
                   className="sd-btn sd-btn--ghost"
@@ -1812,12 +1885,21 @@ export default function SellerDashboard() {
           aria-labelledby="productModalTitle"
         >
           <div className="sd-dialog sd-product-dialog">
+            {addProductLoading && (
+              <div className="sd-modal-loading-overlay">
+                <div className="sd-modal-loading-content">
+                  <div className="sd-spinner"></div>
+                  <p>Adding product...</p>
+                </div>
+              </div>
+            )}
             <div className="sd-dialog-head">
               <h3 id="productModalTitle">Add New Product</h3>
               <button
                 className="sd-icon-btn"
                 onClick={() => setIsProductModalOpen(false)}
                 aria-label="Close"
+                disabled={addProductLoading}
               >
                 ×
               </button>
@@ -2006,13 +2088,25 @@ export default function SellerDashboard() {
               </div>
 
               <div className="sd-actions-inline">
-                <button className="sd-btn sd-btn--primary" type="submit">
-                  Add Product
+                <button 
+                  className="sd-btn sd-btn--primary" 
+                  type="submit"
+                  disabled={addProductLoading}
+                >
+                  {addProductLoading ? (
+                    <>
+                      <span className="sd-spinner-small"></span>
+                      Adding Product...
+                    </>
+                  ) : (
+                    "Add Product"
+                  )}
                 </button>
                 <button
                   className="sd-btn sd-btn--ghost"
                   type="button"
                   onClick={() => setIsProductModalOpen(false)}
+                  disabled={addProductLoading}
                 >
                   Cancel
                 </button>

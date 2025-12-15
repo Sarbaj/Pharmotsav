@@ -9,6 +9,7 @@ const Product = () => {
   
   const [allProducts, setAllProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [displayedProducts, setDisplayedProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortBy, setSortBy] = useState("name");
@@ -31,6 +32,12 @@ const Product = () => {
   const [productsError, setProductsError] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  // New states for pagination and theme
+  const [currentPage, setCurrentPage] = useState(1);
+  const [productsPerPage] = useState(12);
+  const [isMachineTheme, setIsMachineTheme] = useState(false);
+  const [machineCategory, setMachineCategory] = useState(null);
 
   // Fetch categories from backend
   const fetchCategories = async () => {
@@ -53,6 +60,7 @@ const Product = () => {
       if (data.success && data.data && Array.isArray(data.data)) {
         // Store category data with IDs
         setCategoryData(data.data);
+        console.log("Category data set:", data.data);
 
         // Add "All" option at the beginning
         const categoryNames = [
@@ -136,6 +144,10 @@ const Product = () => {
         console.log("Transformed products by category:", transformedProducts);
         setAllProducts(transformedProducts);
         setFilteredProducts(transformedProducts);
+        
+        // Reset pagination
+        setCurrentPage(1);
+        updateDisplayedProducts(transformedProducts, 1);
       } else {
         console.warn(
           "Products by category API response structure unexpected:",
@@ -147,6 +159,7 @@ const Product = () => {
         // Fallback to empty array if API fails
         setAllProducts([]);
         setFilteredProducts([]);
+        setDisplayedProducts([]);
       }
     } catch (err) {
       console.error("Error fetching products by category:", err);
@@ -154,12 +167,13 @@ const Product = () => {
       // Fallback to empty array if API fails
       setAllProducts([]);
       setFilteredProducts([]);
+      setDisplayedProducts([]);
     } finally {
       setProductsLoading(false);
     }
   };
 
-  // Fetch products from backend
+  // Fetch products from backend (excluding machine category)
   const fetchProducts = async () => {
     try {
       setProductsLoading(true);
@@ -179,27 +193,37 @@ const Product = () => {
 
       if (data.success && data.data && Array.isArray(data.data)) {
         // Transform backend data to match frontend format
-        const transformedProducts = data.data.map((product, index) => ({
-          id: product._id,
-          name: product.productName,
-          description:
-            product.description ||
-            `High-quality ${product.productName} from verified supplier`,
-          category: product.categoryName || "General",
-          image:
-            product.productImage ||
-            "https://via.placeholder.com/300x200?text=Product+Image",
-          price: "Contact", // Price not available in endpoint
-          supplier: product.sellerName,
-          minOrder: "Contact Supplier",
-          sellerCity: product.sellerCity,
-          specification: product.specification || [],
-          createdAt: product.createdAt || product.date || new Date(),
-        }));
+        const transformedProducts = data.data
+          .filter(product => {
+            // Exclude machine category products from "All" view
+            const categoryName = (product.categoryName || "").toLowerCase();
+            return !categoryName.includes('machine') && !categoryName.includes('machinery');
+          })
+          .map((product, index) => ({
+            id: product._id,
+            name: product.productName,
+            description:
+              product.description ||
+              `High-quality ${product.productName} from verified supplier`,
+            category: product.categoryName || "General",
+            image:
+              product.productImage ||
+              "https://via.placeholder.com/300x200?text=Product+Image",
+            price: "Contact", // Price not available in endpoint
+            supplier: product.sellerName,
+            minOrder: "Contact Supplier",
+            sellerCity: product.sellerCity,
+            specification: product.specification || [],
+            createdAt: product.createdAt || product.date || new Date(),
+          }));
 
         console.log("Transformed products:", transformedProducts);
         setAllProducts(transformedProducts);
         setFilteredProducts(transformedProducts);
+        
+        // Reset pagination
+        setCurrentPage(1);
+        updateDisplayedProducts(transformedProducts, 1);
       } else {
         console.warn("Products API response structure unexpected:", data);
         setProductsError(
@@ -208,6 +232,7 @@ const Product = () => {
         // Fallback to empty array if API fails
         setAllProducts([]);
         setFilteredProducts([]);
+        setDisplayedProducts([]);
       }
     } catch (err) {
       console.error("Error fetching products:", err);
@@ -215,8 +240,44 @@ const Product = () => {
       // Fallback to empty array if API fails
       setAllProducts([]);
       setFilteredProducts([]);
+      setDisplayedProducts([]);
     } finally {
       setProductsLoading(false);
+    }
+  };
+
+  // Update displayed products based on pagination
+  const updateDisplayedProducts = (products, page) => {
+    const startIndex = (page - 1) * productsPerPage;
+    const endIndex = startIndex + productsPerPage;
+    setDisplayedProducts(products.slice(startIndex, endIndex));
+  };
+
+  // Load more products
+  const loadMoreProducts = () => {
+    const nextPage = currentPage + 1;
+    const startIndex = (nextPage - 1) * productsPerPage;
+    const endIndex = startIndex + productsPerPage;
+    const newProducts = filteredProducts.slice(startIndex, endIndex);
+    
+    setDisplayedProducts(prev => [...prev, ...newProducts]);
+    setCurrentPage(nextPage);
+  };
+
+  // Check if machine category is selected
+  const checkMachineCategory = (category) => {
+    const categoryName = category.toLowerCase();
+    return categoryName.includes('machine') || categoryName.includes('machinery');
+  };
+
+  // Apply machine theme
+  const applyMachineTheme = (isActive) => {
+    setIsMachineTheme(isActive);
+    
+    if (isActive) {
+      document.body.classList.add('machine-theme');
+    } else {
+      document.body.classList.remove('machine-theme');
     }
   };
 
@@ -240,6 +301,31 @@ const Product = () => {
         ease: "power3.out",
       });
     }
+  }, []);
+
+  // Set machine category when categoryData is loaded
+  useEffect(() => {
+    if (categoryData.length > 0) {
+      const machineCategory = categoryData.find(cat => {
+        const name = (cat.name || cat.categoryName || cat.title || '').toLowerCase();
+        return name.includes('machine') || name.includes('machinery');
+      });
+      setMachineCategory(machineCategory);
+      console.log("Machine category found:", machineCategory);
+    }
+  }, [categoryData]);
+
+  // Update displayed products when filtered products change
+  useEffect(() => {
+    updateDisplayedProducts(filteredProducts, 1);
+    setCurrentPage(1);
+  }, [filteredProducts]);
+
+  // Cleanup machine theme on component unmount
+  useEffect(() => {
+    return () => {
+      document.body.classList.remove('machine-theme');
+    };
   }, []);
 
   // Filter and search functionality (only for search and sort, category filtering is done via API)
@@ -282,8 +368,12 @@ const Product = () => {
   const handleCategoryFilter = (category) => {
     setSelectedCategory(category);
 
+    // Check if machine category is selected
+    const isMachine = checkMachineCategory(category);
+    applyMachineTheme(isMachine);
+
     if (category === "All") {
-      // Fetch all products
+      // Fetch all products (excluding machines)
       fetchProducts();
     } else {
       // Find category ID and fetch products by category
@@ -304,6 +394,38 @@ const Product = () => {
     }
   };
 
+  // Handle floating machine button click
+  const handleMachineButtonClick = () => {
+    if (machineCategory) {
+      const categoryName = machineCategory.name || machineCategory.categoryName || machineCategory.title;
+      console.log("Machine button clicked, category:", categoryName);
+      
+      // Scroll to top
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+      
+      // Filter to machine category
+      handleCategoryFilter(categoryName);
+    } else {
+      console.warn("Machine category not found");
+      // Fallback: try to find machine category in categories array
+      const machineCategoryName = categories.find(cat => 
+        cat.toLowerCase().includes('machine') || cat.toLowerCase().includes('machinery')
+      );
+      
+      if (machineCategoryName) {
+        console.log("Using fallback machine category:", machineCategoryName);
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+        handleCategoryFilter(machineCategoryName);
+      }
+    }
+  };
+
   const handleInquire = async (product) => {
     try {
       // Get buyer ID from localStorage or Redux store
@@ -311,11 +433,19 @@ const Product = () => {
         localStorage.getItem("buyerId") ||
         JSON.parse(localStorage.getItem("user"))?._id;
 
-      if (!buyerId) {
+      const token = localStorage.getItem("token");
+      const role = localStorage.getItem("role");
+
+      console.log("Inquiry Debug:", { buyerId, token: !!token, role, productId: product.id });
+
+      if (!buyerId || !token || role !== "buyer") {
         alert("Please login as a buyer to make inquiries");
         window.location.href = "/login";
         return;
       }
+
+      console.log("Sending inquiry request to:", API_ENDPOINTS.INQUIRIES.CREATE);
+      console.log("Request body:", { productId: product.id });
 
       const response = await fetchWithAuth(
         `${API_ENDPOINTS.INQUIRIES.CREATE}`,
@@ -329,10 +459,12 @@ const Product = () => {
       );
 
       const data = await response.json();
+      console.log("Inquiry response:", { status: response.status, data });
 
       if (response.ok && data.success) {
         alert(`Inquiry added successfully for ${product.name}!`);
       } else {
+        console.error("Inquiry failed:", data);
         alert(data.message || "Failed to add inquiry");
       }
     } catch (error) {
@@ -499,6 +631,11 @@ const Product = () => {
                 ({filteredProducts.length} products)
               </span>
             </h2>
+            {displayedProducts.length < filteredProducts.length && (
+              <p className="showing-count">
+                Showing {displayedProducts.length} of {filteredProducts.length} products
+              </p>
+            )}
           </div>
 
           {productsLoading ? (
@@ -513,68 +650,82 @@ const Product = () => {
               <p>Thank you for your patience</p>
             </div>
           ) : filteredProducts.length > 0 ? (
-            <div className="products-grid">
-              {filteredProducts.map((product) => (
-                <div
-                  key={product.id}
-                  className="product-card"
-                  onClick={() => openProductModal(product)}
-                >
-                  <div className="product-image-container">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="product-image"
-                      onError={(e) => {
-                        e.target.src =
-                          "https://via.placeholder.com/300x200?text=Product+Image";
-                      }}
-                    />
-                  </div>
+            <>
+              <div className="products-grid">
+                {displayedProducts.map((product) => (
+                  <div
+                    key={product.id}
+                    className="product-card"
+                    onClick={() => openProductModal(product)}
+                  >
+                    <div className="product-image-container">
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="product-image"
+                        onError={(e) => {
+                          e.target.src =
+                            "https://via.placeholder.com/300x200?text=Product+Image";
+                        }}
+                      />
+                    </div>
 
-                  <div className="product-info">
-                    <h3 className="product-name">{product.name}</h3>
-                    <p className="product-description">{product.description}</p>
+                    <div className="product-info">
+                      <h3 className="product-name">{product.name}</h3>
+                      <p className="product-description">{product.description}</p>
 
-                    <div className="product-details">
-                      <div className="detail-item">
-                        <span className="detail-value">
-                          <strong>Supplier:</strong> {product.supplier}
-                        </span>
-                      </div>
-                      {product.sellerCity && (
+                      <div className="product-details">
                         <div className="detail-item">
                           <span className="detail-value">
-                            <strong>Location:</strong> {product.sellerCity}
+                            <strong>Supplier:</strong> {product.supplier}
                           </span>
                         </div>
-                      )}
+                        {product.sellerCity && (
+                          <div className="detail-item">
+                            <span className="detail-value">
+                              <strong>Location:</strong> {product.sellerCity}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="product-footer">
+                      <button
+                        className="see-more-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openProductModal(product);
+                        }}
+                      >
+                        See Details
+                      </button>
+                      <button
+                        className="inquire-button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleInquire(product);
+                        }}
+                      >
+                        Inquire Now
+                      </button>
                     </div>
                   </div>
-
-                  <div className="product-footer">
-                    <button
-                      className="see-more-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        openProductModal(product);
-                      }}
-                    >
-                      See Details
-                    </button>
-                    <button
-                      className="inquire-button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleInquire(product);
-                      }}
-                    >
-                      Inquire Now
-                    </button>
-                  </div>
+                ))}
+              </div>
+              
+              {/* Load More Button */}
+              {displayedProducts.length < filteredProducts.length && (
+                <div className="load-more-container">
+                  <button 
+                    className="load-more-btn"
+                    onClick={loadMoreProducts}
+                  >
+                    Load More Products
+                  </button>
                 </div>
-              ))}
-            </div>
+              )}
+            </>
           ) : (
             <div className="no-products">
               <div className="no-products-icon">📦</div>
@@ -585,14 +736,17 @@ const Product = () => {
         </div>
       </div>
 
-      {/* Floating Category Button */}
-      <div className="mobile-category-floating">
+      {/* Floating Machine Button */}
+      <div className="floating-machine-button">
         <button
-          className="mobile-category-toggle"
-          onClick={scrollToCategorySection}
+          className={`machine-toggle-btn ${isMachineTheme ? 'active' : ''}`}
+          onClick={handleMachineButtonClick}
+          title="View Machine Products"
         >
-          <span className="category-icon">📂</span>
-          <span className="category-text">Categories</span>
+          <svg className="machine-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.22,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.22,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z"/>
+          </svg>
+          <span className="machine-text">Machines</span>
         </button>
       </div>
 

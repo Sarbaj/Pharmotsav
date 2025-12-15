@@ -1027,3 +1027,232 @@
 .no-products:hover .no-products-icon {
   transform: scale(1.1);
 }
+
+/* Machine Theme Styles */
+body.machine-theme {
+  --primary-color: #dc2626;
+  --secondary-color: #16a34a;
+  --accent-color: #dc2626;
+  --gradient-start: #fef2f2;
+  --gradient-end: #f0fdf4;
+}
+
+body.machine-theme .product-header {
+  background: linear-gradient(135deg, #fef2f2 0%, #f0fdf4 100%);
+}
+
+body.machine-theme .product-header::before {
+  background: radial-gradient(circle at 20% 50%, rgba(220, 38, 38, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, rgba(22, 163, 74, 0.1) 0%, transparent 50%);
+}
+
+body.machine-theme .header-content::before {
+  background: #dc2626;
+  color: white;
+}
+
+body.machine-theme .search-button,
+body.machine-theme .category-item.active {
+  background: #dc2626;
+  color: white;
+}
+
+body.machine-theme .search-button:hover,
+body.machine-theme .category-item.active:hover {
+  background: #b91c1c;
+  transform: translateY(-2px);
+}
+
+/* See Details button - white background with red text, red background on hover */
+body.machine-theme .see-more-btn {
+  background: white;
+  color: #dc2626;
+  border: 1px solid #dc2626;
+}
+
+body.machine-theme .see-more-btn:hover {
+  background: #dc2626;
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* Keep Inquire Now button original green color */
+body.machine-theme .inquire-button {
+  background: #16a34a;
+  color: white;
+}
+
+body.machine-theme .inquire-button:hover {
+  background: #15803d;
+  transform: translateY(-2px);
+}
+
+body.machine-theme .product-card:hover {
+  border-color: #dc2626;
+  box-shadow: 0 8px 32px rgba(220, 38, 38, 0.15);
+}
+
+body.machine-theme .product-modal {
+  border-top: 4px solid #dc2626;
+}
+
+body.machine-theme .load-more-btn {
+  background: #dc2626;
+  color: white;
+}
+
+body.machine-theme .load-more-btn:hover {
+  background: #b91c1c;
+}
+
+/* Floating Machine Button */
+.floating-machine-button {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 1000;
+}
+
+.machine-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  background: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(220, 38, 38, 0.3);
+  transition: all 0.3s ease;
+  transform: translateY(0);
+}
+
+.machine-toggle-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(220, 38, 38, 0.4);
+  background: #b91c1c;
+}
+
+.machine-toggle-btn.active {
+  background: #dc2626;
+  animation: pulse 2s infinite;
+}
+
+.machine-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.machine-text {
+  font-weight: 600;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 4px 20px rgba(220, 38, 38, 0.3);
+  }
+  50% {
+    box-shadow: 0 6px 30px rgba(220, 38, 38, 0.5);
+  }
+  100% {
+    box-shadow: 0 4px 20px rgba(220, 38, 38, 0.3);
+  }
+}
+
+/* Load More Button */
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  margin: 3rem 0;
+}
+
+.load-more-btn {
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #06b6d4, #10b981);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(6, 182, 212, 0.2);
+}
+
+.load-more-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(6, 182, 212, 0.3);
+}
+
+/* Responsive Design for Machine Button */
+@media (max-width: 768px) {
+  .floating-machine-button {
+    bottom: 1rem;
+    right: 1rem;
+  }
+  
+  .machine-toggle-btn {
+    padding: 0.8rem 1.2rem;
+    font-size: 0.8rem;
+  }
+  
+  .machine-icon {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* Enhanced Product Grid for Machine Theme */
+body.machine-theme .products-grid {
+  gap: 2rem;
+}
+
+body.machine-theme .product-card {
+  border: 2px solid transparent;
+  background: white;
+}
+
+body.machine-theme .product-name {
+  color: #dc2626;
+}
+
+body.machine-theme .detail-value strong {
+  color: #16a34a;
+}
+
+/* Machine Theme Modal */
+body.machine-theme .product-modal-overlay {
+  background: rgba(220, 38, 38, 0.1);
+}
+
+body.machine-theme .product-modal-title {
+  color: #dc2626;
+}
+
+body.machine-theme .product-modal-supplier {
+  color: #16a34a;
+}
+
+/* Smooth transitions for theme changes */
+.product-container,
+.product-header,
+.product-card,
+.inquire-button,
+.see-more-btn,
+.load-more-btn {
+  transition: all 0.3s ease;
+}/* Sho
+wing count styles */
+.showing-count {
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+body.machine-theme .showing-count {
+  color: #16a34a;
+}

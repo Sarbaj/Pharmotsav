@@ -24,6 +24,7 @@ export default function ProfileDashboard() {
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const [currentSellerGroup, setCurrentSellerGroup] = useState(null);
   const [expandedInquiries, setExpandedInquiries] = useState(new Set());
+  const [sendingEmail, setSendingEmail] = useState(false);
   const [isProfileUpdateModalOpen, setIsProfileUpdateModalOpen] =
     useState(false);
   const [isPasswordChangeModalOpen, setIsPasswordChangeModalOpen] =
@@ -197,20 +198,23 @@ export default function ProfileDashboard() {
 
       // Process pending inquiries
       if (pendingData.success && pendingData.data.inquiries) {
-        const transformedPending = pendingData.data.inquiries.map((inquiry) => {
-          // Create specifications object from the specification array
-          const specifications = {};
-          if (
-            inquiry.productId.specification &&
-            Array.isArray(inquiry.productId.specification)
-          ) {
-            inquiry.productId.specification.forEach((spec) => {
-              specifications[spec.key] = spec.value;
-            });
-          }
+        const transformedPending = pendingData.data.inquiries
+          .filter((inquiry) => inquiry.productId) // Filter out inquiries with null productId
+          .map((inquiry) => {
+            // Create specifications object from the specification array
+            const specifications = {};
+            if (
+              inquiry.productId &&
+              inquiry.productId.specification &&
+              Array.isArray(inquiry.productId.specification)
+            ) {
+              inquiry.productId.specification.forEach((spec) => {
+                specifications[spec.key] = spec.value;
+              });
+            }
 
           return {
-            id: inquiry.productId._id,
+            id: inquiry.productId?._id || inquiry.inquiryId,
             inquiryId: inquiry._id, // Store the actual inquiry ID for deletion
             productName: inquiry.productName,
             sellerName:
@@ -223,12 +227,12 @@ export default function ProfileDashboard() {
             status: inquiry.status,
             productDetails: {
               description:
-                inquiry.productId.description ||
+                inquiry.productId?.description ||
                 `High-quality ${inquiry.productName} from verified supplier`,
               category:
-                inquiry.productId.category?.name ||
-                inquiry.productId.category?.categoryName ||
-                inquiry.productId.category?.title ||
+                inquiry.productId?.category?.name ||
+                inquiry.productId?.category?.categoryName ||
+                inquiry.productId?.category?.title ||
                 "General",
               purity:
                 specifications.Purity ||
@@ -282,19 +286,22 @@ export default function ProfileDashboard() {
 
       // Process recent inquiries
       if (recentData.success && recentData.data.inquiries) {
-        const transformedRecent = recentData.data.inquiries.map((inquiry) => {
-          const specifications = {};
-          if (
-            inquiry.productId.specification &&
-            Array.isArray(inquiry.productId.specification)
-          ) {
-            inquiry.productId.specification.forEach((spec) => {
-              specifications[spec.key] = spec.value;
-            });
-          }
+        const transformedRecent = recentData.data.inquiries
+          .filter((inquiry) => inquiry.productId) // Filter out inquiries with null productId
+          .map((inquiry) => {
+            const specifications = {};
+            if (
+              inquiry.productId &&
+              inquiry.productId.specification &&
+              Array.isArray(inquiry.productId.specification)
+            ) {
+              inquiry.productId.specification.forEach((spec) => {
+                specifications[spec.key] = spec.value;
+              });
+            }
 
           return {
-            id: inquiry.productId._id,
+            id: inquiry.productId?._id || inquiry.inquiryId,
             inquiryId: inquiry._id,
             productName: inquiry.productName,
             sellerName:
@@ -305,12 +312,12 @@ export default function ProfileDashboard() {
             status: inquiry.status,
             productDetails: {
               description:
-                inquiry.productId.description ||
+                inquiry.productId?.description ||
                 `High-quality ${inquiry.productName} from verified supplier`,
               category:
-                inquiry.productId.category?.name ||
-                inquiry.productId.category?.categoryName ||
-                inquiry.productId.category?.title ||
+                inquiry.productId?.category?.name ||
+                inquiry.productId?.category?.categoryName ||
+                inquiry.productId?.category?.title ||
                 "General",
               purity:
                 specifications.Purity ||
@@ -589,6 +596,8 @@ export default function ProfileDashboard() {
       return;
     }
 
+    setSendingEmail(true);
+
     try {
       const seller = currentSellerGroup[0];
 
@@ -698,6 +707,8 @@ export default function ProfileDashboard() {
       }
 
       alert(errorMessage);
+    } finally {
+      setSendingEmail(false);
     }
   };
 
@@ -1366,7 +1377,7 @@ export default function ProfileDashboard() {
                           handleSendMail(sellerInquiries);
                         }}
                       >
-                        Send Mail
+                        Send Inquiry
                       </button>
                     </div>
                   </div>
@@ -1716,19 +1727,7 @@ export default function ProfileDashboard() {
 
               <div className="pd-product-actions">
                 <button
-                  className="pd-btn pd-btn--primary"
-                  onClick={() => {
-                    // Add to cart or contact seller functionality
-                    console.log(
-                      "Contact seller for:",
-                      selectedProduct.productName
-                    );
-                  }}
-                >
-                  Contact Seller
-                </button>
-                <button
-                  className="pd-btn pd-btn--ghost"
+                  className="pd-btn pd-btn--ghost pd-btn--small"
                   onClick={closeProductModal}
                 >
                   Close
@@ -1745,8 +1744,12 @@ export default function ProfileDashboard() {
           role="dialog"
           aria-modal="true"
           aria-labelledby="sellerModalTitle"
+          onClick={closeSellerModal}
         >
-          <div className="pd-dialog pd-seller-dialog">
+          <div 
+            className="pd-dialog pd-seller-dialog"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="pd-dialog-head">
               <h3 id="sellerModalTitle">Seller Information</h3>
               <button
@@ -1832,25 +1835,7 @@ export default function ProfileDashboard() {
                 )}
               </div>
 
-              <div className="pd-seller-actions">
-                <button
-                  className="pd-btn pd-btn--primary"
-                  onClick={() => {
-                    // You can add contact functionality here
-                    alert(
-                      `Contacting ${selectedSeller.firstName} ${selectedSeller.lastName}`
-                    );
-                  }}
-                >
-                  Contact Seller
-                </button>
-                <button
-                  className="pd-btn pd-btn--ghost"
-                  onClick={closeSellerModal}
-                >
-                  Close
-                </button>
-              </div>
+
             </div>
           </div>
         </div>
@@ -1865,7 +1850,7 @@ export default function ProfileDashboard() {
         >
           <div className="pd-dialog pd-email-dialog">
             <div className="pd-dialog-head">
-              <h3 id="emailModalTitle">Select Products to Send Email</h3>
+              <h3 id="emailModalTitle">Select Products to Send Inquiry</h3>
               <button
                 className="pd-icon-btn"
                 onClick={closeEmailModal}
@@ -1877,7 +1862,7 @@ export default function ProfileDashboard() {
             <div className="pd-email-content">
               <div className="pd-seller-info-header">
                 <h4>Sending to: {currentSellerGroup[0]?.sellerName}</h4>
-                <p>Select the products you want to inquire about:</p>
+                <p>Select the products you want to send inquiry about:</p>
               </div>
 
               <div className="pd-product-selection">
@@ -1918,9 +1903,16 @@ export default function ProfileDashboard() {
                 <button
                   className="pd-btn pd-btn--primary"
                   onClick={sendEmailToSeller}
-                  disabled={selectedInquiries.length === 0}
+                  disabled={selectedInquiries.length === 0 || sendingEmail}
                 >
-                  Send Email ({selectedInquiries.length} selected)
+                  {sendingEmail ? (
+                    <>
+                      <span className="pd-spinner-small"></span>
+                      Sending...
+                    </>
+                  ) : (
+                    `Send Inquiry (${selectedInquiries.length} selected)`
+                  )}
                 </button>
                 <button
                   className="pd-btn pd-btn--ghost"

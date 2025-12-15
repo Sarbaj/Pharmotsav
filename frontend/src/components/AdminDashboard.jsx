@@ -142,13 +142,29 @@ const AdminDashboard = () => {
         return;
       }
 
+      console.log("Fetching categories from:", API_ENDPOINTS.CATEGORIES.ADMIN_GET_ALL);
+      console.log("Using token:", token ? "Token exists" : "No token");
+      
       const response = await fetch(`${API_ENDPOINTS.CATEGORIES.ADMIN_GET_ALL}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
+      
+      console.log("Response status:", response.status);
+      console.log("Response headers:", response.headers);
+      
+      if (!response.ok) {
+        console.error("Response not OK:", response.status, response.statusText);
+        if (response.status === 404) {
+          setError("Admin categories endpoint not found. Please check if the backend server is running.");
+          return;
+        }
+      }
+      
       const data = await response.json();
+      console.log("Categories response data:", data);
       
       // Check for JWT errors first
       if (handleJWTError(response, data)) {
@@ -162,7 +178,23 @@ const AdminDashboard = () => {
       }
     } catch (error) {
       console.error("Error fetching categories:", error);
-      setError("Failed to fetch categories");
+      
+      // Fallback: Try the regular categories endpoint
+      try {
+        console.log("Trying fallback categories endpoint...");
+        const fallbackResponse = await fetch(`${API_ENDPOINTS.CATEGORIES.GET_ALL}`);
+        const fallbackData = await fallbackResponse.json();
+        
+        if (fallbackData.success) {
+          console.log("Fallback successful, using regular categories endpoint");
+          setCategories(fallbackData.data);
+          return;
+        }
+      } catch (fallbackError) {
+        console.error("Fallback also failed:", fallbackError);
+      }
+      
+      setError("Failed to fetch categories. Please check if the backend server is running.");
     } finally {
       setCategoriesLoading(false);
     }

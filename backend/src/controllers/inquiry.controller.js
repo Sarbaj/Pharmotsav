@@ -13,6 +13,8 @@ const createOrUpdateInquiry = asyncHandler(async (req, res) => {
   const { productId } = req.body;
   const buyerId = req.member._id;
 
+  console.log("Create inquiry request:", { productId, buyerId, userType: req.userType });
+
   if (!productId) {
     throw new ApiError(400, "Product ID is required");
   }
