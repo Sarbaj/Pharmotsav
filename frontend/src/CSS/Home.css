@@ -844,7 +844,7 @@ main .container .div1 .btns button:hover {
 .home-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 0rem;
 }
 
 .home-trust-content {
@@ -2250,5 +2250,393 @@ Additional Animations for Trust Section */
 
   .home-stat-label-mobile {
     font-size: 0.55rem;
+  }
+}
+/* Who It's For Section */
+.home-stakeholders {
+  padding: 6rem 2rem;
+  background-image: linear-gradient(
+      rgba(255, 255, 255, 0.85),
+      rgba(248, 250, 252, 0.85)
+    ),
+    url("../assets/buyersellerhand.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  position: relative;
+  overflow: hidden;
+}
+
+.stakeholders-header {
+  text-align: center;
+  margin-bottom: 4rem;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.stakeholders-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.5rem;
+  background: linear-gradient(
+    135deg,
+    rgba(20, 219, 154, 0.1) 0%,
+    rgba(16, 185, 129, 0.1) 100%
+  );
+  border: 1px solid rgba(20, 219, 154, 0.3);
+  border-radius: 50px;
+  color: #14db9a;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+
+.stakeholders-title {
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 800;
+  color: #1f2937;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.stakeholders-description {
+  font-size: 1.2rem;
+  color: #6b7280;
+  line-height: 1.6;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Stakeholder Cards Grid */
+.stakeholders-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2.5rem;
+  margin-bottom: 4rem;
+}
+
+.stakeholder-card {
+  background: white;
+  padding: 2.5rem 2rem;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e5e7eb;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stakeholder-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #14db9a 0%, #10b981 100%);
+  transition: all 0.3s ease;
+}
+
+.stakeholder-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.stakeholder-card:hover::before {
+  height: 6px;
+}
+
+.stakeholder-icon {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  transition: all 0.3s ease;
+  color: #059669;
+}
+
+.stakeholder-card h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.stakeholder-subtitle {
+  color: #6b7280;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+/* Benefits List */
+.benefits-list {
+  margin-bottom: 1.5rem;
+}
+
+.benefit-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0;
+}
+
+.benefit-icon {
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: bold;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.benefit-item span {
+  color: #4b5563;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+.stakeholder-footer {
+  padding-top: 1rem;
+  border-top: 1px solid #f3f4f6;
+}
+
+.best-for {
+  font-size: 0.85rem;
+  color: #9ca3af;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+/* Why This Matters */
+.why-matters {
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  padding: 3rem 2.5rem;
+  border-radius: 20px;
+  color: white;
+  text-align: center;
+}
+
+.why-matters h3 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.why-matters > p {
+  font-size: 1.1rem;
+  color: #d1d5db;
+  margin-bottom: 2rem;
+}
+
+.matters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.matter-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-align: left;
+}
+
+.matter-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135d, #14db9a 0%, #10b981 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.matter-content h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 0.25rem;
+}
+
+.matter-content p {
+  font-size: 0.9rem;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.matters-conclusion {
+  font-size: 1.1rem;
+  color: #10b981;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .home-stakeholders {
+    padding: 4rem 1rem;
+  }
+
+  .stakeholders-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .stakeholder-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .matters-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .matter-item {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+  }
+
+  .why-matters {
+    padding: 2rem 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .stakeholders-header {
+    margin-bottom: 3rem;
+  }
+
+  .stakeholder-card {
+    padding: 1.5rem 1rem;
+  }
+
+  .stakeholder-icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .why-matters {
+    padding: 1.5rem 1rem;
+  }
+}
+/* Stakeholders Section Animations */
+.stakeholder-icon {
+  animation: iconFloat 4s ease-in-out infinite;
+}
+
+.stakeholder-card:nth-child(1) .stakeholder-icon {
+  animation-delay: 0s;
+}
+
+.stakeholder-card:nth-child(2) .stakeholder-icon {
+  animation-delay: 1.3s;
+}
+
+.stakeholder-card:nth-child(3) .stakeholder-icon {
+  animation-delay: 2.6s;
+}
+
+@keyframes iconFloat {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.benefit-icon {
+  animation: checkPulse 3s ease-in-out infinite;
+}
+
+@keyframes checkPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+  }
+}
+
+.matter-icon {
+  animation: matterGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes matterGlow {
+  from {
+    box-shadow: 0 0 5px rgba(20, 219, 154, 0.3);
+  }
+  to {
+    box-shadow: 0 0 15px rgba(20, 219, 154, 0.6);
+  }
+}
+
+/* Hover animations */
+.stakeholder-card:hover .stakeholder-icon {
+  animation: iconBounce 0.6s ease-in-out;
+}
+
+@keyframes iconBounce {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-12px) scale(1.1);
+  }
+}
+
+.stakeholder-card:hover .benefit-item {
+  animation: benefitSlide 0.3s ease-out forwards;
+}
+
+@keyframes benefitSlide {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(5px);
+  }
+}
+
+.matter-item:hover .matter-icon {
+  animation: matterSpin 0.5s ease-in-out;
+}
+
+@keyframes matterSpin {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.1);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
   }
 }

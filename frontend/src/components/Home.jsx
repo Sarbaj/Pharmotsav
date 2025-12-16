@@ -31,6 +31,10 @@ const Home = () => {
   const b2bRef = useRef(null);
   const firstBRef = useRef(null);
   const secondBRef = useRef(null);
+  const stakeholdersHeaderRef = useRef(null);
+  const stakeholderCardsRef = useRef([]);
+  const whyMattersRef = useRef(null);
+  const matterItemsRef = useRef([]);
 
   const handleSelling = () => {
     // Check if user is already logged in
@@ -357,6 +361,111 @@ const Home = () => {
             });
           });
         }
+      }
+    });
+
+    // Stakeholders section animations
+    // Header animation
+    if (stakeholdersHeaderRef.current) {
+      const headerElements = stakeholdersHeaderRef.current.children;
+      gsap.from(headerElements, {
+        scrollTrigger: {
+          trigger: stakeholdersHeaderRef.current,
+          start: "top 85%",
+          toggleActions: "play none none reverse",
+        },
+        opacity: 0,
+        y: 30,
+        duration: 0.8,
+        stagger: 0.2,
+        ease: "power3.out",
+      });
+    }
+
+    // Stakeholder cards animation
+    stakeholderCardsRef.current.forEach((card, index) => {
+      if (card) {
+        // Card entrance animation
+        gsap.from(card, {
+          scrollTrigger: {
+            trigger: card,
+            start: "top 85%",
+            toggleActions: "play none none reverse",
+          },
+          opacity: 0,
+          y: 50,
+          scale: 0.95,
+          duration: 0.8,
+          delay: index * 0.2,
+          ease: "back.out(1.7)",
+        });
+
+        // Icon animation
+        const icon = card.querySelector('.stakeholder-icon');
+        if (icon) {
+          gsap.from(icon, {
+            scrollTrigger: {
+              trigger: card,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+            scale: 0,
+            rotation: 180,
+            duration: 0.6,
+            delay: index * 0.2 + 0.3,
+            ease: "back.out(2)",
+          });
+        }
+
+        // Benefits list animation
+        const benefits = card.querySelectorAll('.benefit-item');
+        benefits.forEach((benefit, benefitIndex) => {
+          gsap.from(benefit, {
+            scrollTrigger: {
+              trigger: card,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+            opacity: 0,
+            x: -20,
+            duration: 0.5,
+            delay: index * 0.2 + 0.5 + benefitIndex * 0.1,
+            ease: "power2.out",
+          });
+        });
+      }
+    });
+
+    // Why matters section animation
+    if (whyMattersRef.current) {
+      gsap.from(whyMattersRef.current, {
+        scrollTrigger: {
+          trigger: whyMattersRef.current,
+          start: "top 85%",
+          toggleActions: "play none none reverse",
+        },
+        opacity: 0,
+        y: 40,
+        duration: 0.8,
+        ease: "power3.out",
+      });
+    }
+
+    // Matter items animation
+    matterItemsRef.current.forEach((item, index) => {
+      if (item) {
+        gsap.from(item, {
+          scrollTrigger: {
+            trigger: whyMattersRef.current,
+            start: "top 85%",
+            toggleActions: "play none none reverse",
+          },
+          opacity: 0,
+          scale: 0.8,
+          duration: 0.6,
+          delay: 0.3 + index * 0.15,
+          ease: "back.out(1.7)",
+        });
       }
     });
 
@@ -694,6 +803,187 @@ const Home = () => {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Who It's For Section */}
+      <section className="home-stakeholders">
+        <div className="home-container">
+          {/* Header */}
+          <div className="stakeholders-header" ref={stakeholdersHeaderRef}>
+            <div className="stakeholders-badge">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zM4 18v-4h3v4h2v-7.5c0-1.1.9-2 2-2s2 .9 2 2V18h2v-4h3v4h1v2H3v-2h1z"/>
+              </svg>
+              Built for Every Pharmaceutical Stakeholder
+            </div>
+            <h2 className="stakeholders-title">Who It's For</h2>
+            <p className="stakeholders-description">
+              Saathsource is designed to connect verified buyers and suppliers, enabling faster discovery, 
+              trusted introductions, and compliant business relationships across the global pharmaceutical ecosystem.
+            </p>
+          </div>
+
+          {/* Stakeholder Cards */}
+          <div className="stakeholders-grid">
+            {/* Manufacturers & Suppliers */}
+            <div className="stakeholder-card manufacturers" ref={(el) => (stakeholderCardsRef.current[0] = el)}>
+              <div className="stakeholder-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+              </div>
+              <h3>Manufacturers & Suppliers</h3>
+              <p className="stakeholder-subtitle">Expand your reach and connect with the right buyers worldwide</p>
+              
+              <div className="benefits-list">
+                <div className="benefit-item">
+                  <div className="benefit-icon">✓</div>
+                  <span>Showcase pharmaceutical products to verified global buyers</span>
+                </div>
+                <div className="benefit-item">
+                  <div className="benefit-icon">✓</div>
+                  <span>Receive qualified business inquiries from relevant buyers</span>
+                </div>
+                <div className="benefit-item">
+                  <div className="benefit-icon">✓</div>
+                  <span>Reduce time spent on lead generation and outreach</span>
+                </div>
+                <div className="benefit-item">
+                  <div className="benefit-icon">✓</div>
+                  <span>Build visibility in regulated international markets</span>
+                </div>
+                <div className="benefit-item">
+                  <div className="benefit-icon">✓</div>
+                  <span>Strengthen credibility through supplier verification</span>
+                </div>
+              </div>
+              
+              <div className="stakeholder-footer">
+                <span className="best-for">Best for: API manufacturers, formulation companies, contract manufacturers, exporters</span>
+              </div>
+            </div>
+
+            {/* Distributors & Wholesalers */}
+            <div className="stakeholder-card distributors" ref={(el) => (stakeholderCardsRef.current[1] = el)}>
+              <div className="stakeholder-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19 7h-3V6a4 4 0 0 0-8 0v1H5a1 1 0 0 0-1 1v11a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V8a1 1 0 0 0-1-1zM10 6a2 2 0 0 1 4 0v1h-4V6zm8 13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V9h2v1a1 1 0 0 0 2 0V9h4v1a1 1 0 0 0 2 0V9h2v10z"/>
+                </svg>
+              </div>
+              <h3>Distributors & Wholesalers</h3>
+              <p className="stakeholder-subtitle">Find reliable suppliers and build long-term sourcing relationships</p>
+              
+              <div className="benefits-list">
+                <div className="benefit-item">
+                  <div className="benefit-icon">✓</div>
+                  <span>Discover pre-verified manufacturers and suppliers</span>
+                </div>
+                <div className="benefit-item">
+                  <div className="benefit-icon">✓</div>
+                  <span>Access detailed supplier profiles and certifications</span>
+                </div>
+                <div className="benefit-item">
+                  <div className="benefit-icon">✓</div>
+                  <span>Compare multiple suppliers in one centralized platform</span>
+                </div>
+                <div className="benefit-item">
+                  <div className="benefit-icon">✓</div>
+                  <span>Reduce sourcing risks with compliance-focused discovery</span>
+                </div>
+                <div className="benefit-item">
+                  <div className="benefit-icon">✓</div>
+                  <span>Expand supplier networks across multiple regions</span>
+                </div>
+              </div>
+              
+              <div className="stakeholder-footer">
+                <span className="best-for">Best for: Regional distributors, national wholesalers, importers, exporters</span>
+              </div>
+            </div>
+
+            {/* Buyers & Procurement Teams */}
+            <div className="stakeholder-card buyers" ref={(el) => (stakeholderCardsRef.current[2] = el)}>
+              <div className="stakeholder-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+              </div>
+              <h3>Buyers & Procurement Teams</h3>
+              <p className="stakeholder-subtitle">Source confidently with transparency and compliance</p>
+              
+              <div className="benefits-list">
+                <div className="benefit-item">
+                  <div className="benefit-icon">✓</div>
+                  <span>Identify trusted, verified pharmaceutical suppliers</span>
+                </div>
+                <div className="benefit-item">
+                  <div className="benefit-icon">✓</div>
+                  <span>Access supplier credentials and regulatory information</span>
+                </div>
+                <div className="benefit-item">
+                  <div className="benefit-icon">✓</div>
+                  <span>Shortlist suppliers based on country and certification</span>
+                </div>
+                <div className="benefit-item">
+                  <div className="benefit-icon">✓</div>
+                  <span>Simplify supplier discovery for regulated procurement</span>
+                </div>
+                <div className="benefit-item">
+                  <div className="benefit-icon">✓</div>
+                  <span>Build reliable long-term supplier relationships</span>
+                </div>
+              </div>
+              
+              <div className="stakeholder-footer">
+                <span className="best-for">Best for: Hospitals, pharmacies, procurement teams, healthcare organizations</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Why This Matters */}
+          <div className="why-matters" ref={whyMattersRef}>
+            <h3>Why This Matters</h3>
+            <p>Unlike traditional marketplaces, Saathsource focuses on:</p>
+            <div className="matters-grid">
+              <div className="matter-item" ref={(el) => (matterItemsRef.current[0] = el)}>
+                <div className="matter-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zM4 18v-4h3v4h2v-7.5c0-1.1.9-2 2-2s2 .9 2 2V18h2v-4h3v4h1v2H3v-2h1z"/>
+                  </svg>
+                </div>
+                <div className="matter-content">
+                  <h4>Connection, not transactions</h4>
+                  <p>Building lasting business relationships</p>
+                </div>
+              </div>
+              <div className="matter-item" ref={(el) => (matterItemsRef.current[1] = el)}>
+                <div className="matter-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                  </svg>
+                </div>
+                <div className="matter-content">
+                  <h4>Verified information, not open listings</h4>
+                  <p>Quality-assured supplier profiles</p>
+                </div>
+              </div>
+              <div className="matter-item" ref={(el) => (matterItemsRef.current[2] = el)}>
+                <div className="matter-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M10,17L6,13L7.41,11.59L10,14.17L16.59,7.58L18,9L10,17Z"/>
+                  </svg>
+                </div>
+                <div className="matter-content">
+                  <h4>Compliance-first discovery</h4>
+                  <p>Regulatory-focused platform design</p>
+                </div>
+              </div>
+            </div>
+            <p className="matters-conclusion">
+              We help pharmaceutical businesses find the right partners faster, with confidence and clarity.
+            </p>
           </div>
         </div>
       </section>
