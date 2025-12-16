@@ -14,12 +14,25 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #f0fdfa 0%, #ecfeff 50%, #ffffff 100%);
             overflow-x: hidden;
+            margin: 0;
+            padding: 0;
         }
 
-        .hero-section {
+        .pill-animation-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #f0fdfa 0%, #ecfeff 50%, #ffffff 100%);
+            z-index: 9999;
+            overflow: hidden;
+        }
+
+        .pill-hero-section {
             height: 100vh;
             display: flex;
             align-items: center;
@@ -27,7 +40,7 @@
             position: relative;
         }
 
-        .pill-container {
+        .pill-container-wrapper {
             position: fixed;
             top: 50%;
             left: 50%;
@@ -228,11 +241,23 @@
     </style>
 </head>
 <body>
-    <div class="hero-section">
-        <div class="pill-container">
-            <div class="pill" id="pill">
-                <div class="pill-half pill-left">Saath</div>
-                <div class="pill-half pill-right">Source</div>
+    <div class="pill-animation-container">
+        <div class="pill-hero-section">
+            <!-- Pharmaceutical Icons -->
+            <div class="floating-shape"></div>
+            <div class="floating-shape"></div>
+            <div class="floating-shape"></div>
+            <div class="floating-shape"></div>
+            <div class="floating-shape"></div>
+            <div class="floating-shape"></div>
+            <div class="floating-shape"></div>
+            <div class="floating-shape"></div>
+            
+            <div class="pill-container-wrapper">
+                <div class="pill" id="pill">
+                    <div class="pill-half pill-left">Saath</div>
+                    <div class="pill-half pill-right">Source</div>
+                </div>
             </div>
         </div>
     </div>
@@ -290,7 +315,7 @@
         // Main animation timeline with scrub
         const tl = gsap.timeline({
             scrollTrigger: {
-                trigger: ".hero-section",
+                trigger: ".pill-hero-section",
                 start: "top top",
                 end: "bottom top",
                 scrub: true
@@ -320,7 +345,7 @@
         const pillLeft = document.querySelector('.pill-left');
         const pillRight = document.querySelector('.pill-right');
         const pill = document.querySelector('.pill');
-        const pillContainer = document.querySelector('.pill-container');
+        const pillContainer = document.querySelector('.pill-container-wrapper');
         
         // First make the pill bigger
         tl.to(pill, {
