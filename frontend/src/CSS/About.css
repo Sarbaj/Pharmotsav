@@ -27,14 +27,14 @@
 
 .about-container {
   width: 100%;
-  min-height: 110vh;
-  background: var(--bg-primary);
+  min-height: 100vh;
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     sans-serif;
   line-height: 1.6;
   padding: 4rem 0rem 0rem;
   color: var(--text-primary);
   overflow-x: hidden;
+  position: relative;
 }
 
 .container {
@@ -60,12 +60,13 @@
 /* About Section */
 .about-section {
   padding: 2rem 0 6rem;
-  background: white;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(1px);
   position: relative;
   z-index: 1;
   overflow-x: hidden;
-  margin-top: 3rem;
   overflow-y: hidden;
+  border-radius: 20px;
 }
 
 .section-header {
@@ -442,48 +443,19 @@
 
 /* Intro Section for About Page */
 .about-container .home-intro {
-  padding: 2rem 2rem 1rem;
-  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  padding: 2rem 2rem 0rem;
   position: relative;
   overflow: hidden;
 }
 
-.about-container .home-intro::before {
-  content: "";
-  position: absolute;
-  top: -50%;
-  right: -10%;
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(
-    circle,
-    rgba(6, 182, 212, 0.08) 0%,
-    transparent 70%
-  );
-  border-radius: 50%;
-}
 
-.about-container .home-intro::after {
-  content: "";
-  position: absolute;
-  bottom: -30%;
-  left: -5%;
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(
-    circle,
-    rgba(16, 185, 129, 0.08) 0%,
-    transparent 70%
-  );
-  border-radius: 50%;
-}
 
 .about-container .intro-content {
   max-width: 900px;
   margin: 0 auto;
   text-align: center;
   position: relative;
-  z-index: 1;
+  z-index: 2;
   overflow: hidden;
 }
 

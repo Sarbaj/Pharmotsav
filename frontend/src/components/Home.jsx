@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 import healthcare from "../assets/healthcare.jpg";
 import pharma from "../assets/pharma.jpg";
 import network from "../assets/network.jpg";
-import loopVideo from "../assets/video/loops.mp4";
+import loopVideo from "../assets/video/loopss.mp4";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -274,8 +274,16 @@ const Home = () => {
         {/* Scrolling Ticker */}
         <div className="home-ticker">
           <div className="home-ticker-content">
-            <span>SaathSource • Connecting Global B2B Trade • SaathSource • Trusted Pharmaceutical Marketplace • SaathSource • Verified Suppliers Worldwide • SaathSource • Efficient Business Solutions • </span>
-            <span>SaathSource • Connecting Global B2B Trade • SaathSource • Trusted Pharmaceutical Marketplace • SaathSource • Verified Suppliers Worldwide • SaathSource • Efficient Business Solutions • </span>
+            <span>
+              SaathSource • Connecting Global B2B Trade • SaathSource • Trusted
+              Pharmaceutical Marketplace • SaathSource • Verified Suppliers
+              Worldwide • SaathSource • Efficient Business Solutions •{" "}
+            </span>
+            <span>
+              SaathSource • Connecting Global B2B Trade • SaathSource • Trusted
+              Pharmaceutical Marketplace • SaathSource • Verified Suppliers
+              Worldwide • SaathSource • Efficient Business Solutions •{" "}
+            </span>
           </div>
         </div>
 

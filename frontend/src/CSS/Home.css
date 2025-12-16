@@ -584,26 +584,24 @@ main .container .div1 .btns button:hover {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 120%;
+  height: 120%;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  overflow: visible;
   border-radius: 0;
   z-index: 1;
+  transform: translate(-10%, -10%);
 }
 
 .home-video-player {
   width: 100%;
-  height: 90%;
-  object-fit: cover;
-  object-position: center top;
+  height: 100%;
   border: none;
   outline: none;
   border-radius: 0;
   background: transparent;
-  transform: translateY(-5%);
 }
 
 .home-card h3 {

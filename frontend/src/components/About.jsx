@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "../CSS/About.css";
@@ -9,6 +9,7 @@ import realtime from "../assets/realtime.jpg";
 import global from "../assets/global.jpg";
 import fast from "../assets/fast.jpg";
 import quality from "../assets/quality.jpg";
+import hand from "../assets/hand.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -123,7 +124,7 @@ function About() {
   }, []);
 
   return (
-    <div className="about-container">
+    <div className="about-container" style={{backgroundImage: `linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(248,250,252,0.75) 100%), url(${hand})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed'}}>
       {/* Intro Section */}
       <section className="home-intro">
         <div className="container">
