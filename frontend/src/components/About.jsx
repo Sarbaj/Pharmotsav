@@ -275,16 +275,7 @@ function About() {
         </div>
       </section>
 
-      {/* Closing Section */}
-      <section className="about-closing-section">
-        <div className="container">
-          <div className="about-closing-content" ref={aboutCtaRef}>
-            <p className="closing-text">
-              Join thousands of businesses transforming pharmaceutical trade with <span className="closing-logo">Saath</span><span className="closing-logo-source">source</span>
-            </p>
-          </div>
-        </div>
-      </section>
+
     </div>
   );
 }
