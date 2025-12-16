@@ -351,6 +351,9 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .about-section{
+    margin-top: 10rem;
+  }
   .hero-content {
     grid-template-columns: 1fr;
     gap: 2rem;
@@ -383,15 +386,29 @@
     width: 100%;
     max-width: 300px;
   }
+
+  .about-container .intro-title {
+    font-size: 2rem !important;
+  }
+
+  .about-container .intro-description {
+    font-size: 1.1rem !important;
+  }
 }
 
 @media (max-width: 480px) {
+  .about-section{
+    margin-top: 10rem;
+  }
   .hero-title {
     font-size: 2rem;
   }
 
   .section-title {
     font-size: 2rem;
+  }
+  .intro-content{
+    margin-top: -2rem !important;
   }
 
   .hero-visual {
@@ -404,6 +421,14 @@
 
   .container {
     padding: 0 1rem;
+  }
+
+  .about-container .intro-title {
+    font-size: 2.1rem !important;
+  }
+
+  .about-container .intro-description {
+    font-size: 1.3rem !important;
   }
 }
 
@@ -555,12 +580,12 @@
   }
 
   .about-container .intro-title {
-    font-size: 1.5rem;
+    font-size: 2rem;
     padding: 0 0.5rem;
   }
 
   .about-container .intro-description {
-    font-size: 0.95rem;
+    font-size: 1.1rem;
     padding: 0 0.5rem;
   }
 
@@ -729,8 +754,13 @@
     text-align: center;
   }
   
-  .about-image {
+  .about-item .about-image {
+    order: 1;
     max-width: 100%;
+  }
+  
+  .about-item .about-content {
+    order: 2;
   }
   
   .about-image img {
