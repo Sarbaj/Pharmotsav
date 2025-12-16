@@ -172,43 +172,44 @@ function About() {
             </p>
           </div>
 
-          <div className="about-grid">
-            <div className="about-card" ref={(el) => (aboutCardsRef.current[0] = el)}>
-              <div className="card-icon-large">
+          <div className="about-grid-new">
+            {/* Our Mission - Image Left, Text Right */}
+            <div className="about-item mission" ref={(el) => (aboutCardsRef.current[0] = el)}>
+              <div className="about-image">
                 <img src={mission} alt="Our Mission" />
               </div>
-              <h3>Our Mission</h3>
-              <p>
-                To simplify global B2B trade by connecting procurers and
-                suppliers on a seamless, intelligent, and scalable platform that
-                enables efficient sourcing and secure international
-                transactions.
-              </p>
+              <div className="about-content">
+                <h3>Our Mission</h3>
+                <p>
+                  At SaathSource, our mission is to simplify and strengthen global B2B trade by building a trusted digital ecosystem for procurers and suppliers worldwide. We aim to eliminate complexity in sourcing by offering a seamless, intelligent, and scalable platform that supports efficient decision-making. By leveraging technology and data-driven insights, we enable faster discovery of reliable suppliers and high-quality products. Our platform is designed to ensure transparency, compliance, and security across international transactions. Ultimately, we strive to empower businesses of all sizes to trade confidently, grow sustainably, and expand across borders with ease.
+                </p>
+              </div>
             </div>
 
-            <div className="about-card" ref={(el) => (aboutCardsRef.current[1] = el)}>
-              <div className="card-icon-large">
+            {/* Our Vision - Text Left, Image Right */}
+            <div className="about-item vision" ref={(el) => (aboutCardsRef.current[1] = el)}>
+              <div className="about-content">
+                <h3>Our Vision</h3>
+                <p>
+                  Our vision is to become the world's most trusted B2B sourcing platform, setting new standards for reliability, transparency, and efficiency in global trade. We aspire to connect businesses across borders through strong, long-term partnerships built on trust and accountability. By continuously innovating with advanced technology, we aim to simplify complex supply chains and improve sourcing experiences. Our goal is to enable seamless collaboration between buyers and suppliers worldwide. Through smart, secure, and scalable solutions, we seek to drive sustainable growth in the global B2B ecosystem.
+                </p>
+              </div>
+              <div className="about-image">
                 <img src={vision} alt="Our Vision" />
               </div>
-              <h3>Our Vision</h3>
-              <p>
-                To become the world's most trusted B2B sourcing platform,
-                driving global trade through transparent partnerships,
-                innovative technology, and seamless supply chain solutions.
-              </p>
             </div>
 
-            <div className="about-card" ref={(el) => (aboutCardsRef.current[2] = el)}>
-              <div className="card-icon-large">
+            {/* Our Impact - Image Left, Text Right */}
+            <div className="about-item impact" ref={(el) => (aboutCardsRef.current[2] = el)}>
+              <div className="about-image">
                 <img src={impact} alt="Our Impact" />
               </div>
-              <h3>Our Impact</h3>
-              <p>
-                We streamline international trade, offering faster sourcing,
-                better matching, and secure transactions to simplify global B2B
-                trade and empower businesses with efficient and scalable
-                solutions.
-              </p>
+              <div className="about-content">
+                <h3>Our Impact</h3>
+                <p>
+                  We transform the way businesses engage in international trade by reducing complexity and increasing efficiency at every stage of sourcing. Our platform enables faster supplier discovery, smarter matching, and secure, reliable transactions across borders. By streamlining global B2B processes, we help businesses save time, lower operational costs, and scale with confidence. SaathSource empowers companies with transparent, technology-driven solutions that support sustainable growth and long-term success in global markets.
+                </p>
+              </div>
             </div>
           </div>
         </div>
