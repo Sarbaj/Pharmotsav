@@ -128,29 +128,46 @@ function About() {
       <section className="home-intro">
         <div className="container">
           <div className="intro-content">
-            <div className="intro-badge" ref={introBadgeRef}>Welcome to Saathsource</div>
+            <div className="intro-badge" ref={introBadgeRef}>
+              Welcome to Saathsource
+            </div>
             <h2 className="intro-title" ref={introTitleRef}>
-              Connecting Global Healthcare Through <span className="brand-name">Innovation</span>
+              Connecting Global Healthcare Through{" "}
+              <span className="brand-name">Innovation</span>
             </h2>
             <p className="intro-description" ref={introDescRef}>
-              Saathsource is a leading B2B pharmaceutical marketplace that bridges the gap between 
-              quality manufacturers and healthcare providers worldwide. We're committed to making 
-              pharmaceutical trade more accessible, transparent, and efficient for businesses of all sizes.
+              Saathsource is a leading B2B pharmaceutical marketplace that
+              bridges the gap between quality manufacturers and healthcare
+              providers worldwide. We're committed to making pharmaceutical
+              trade more accessible, transparent, and efficient for businesses
+              of all sizes.
             </p>
             <div className="intro-highlights">
-              <div className="highlight-item" ref={(el) => (introHighlightsRef.current[0] = el)}>
+              <div
+                className="highlight-item"
+                ref={(el) => (introHighlightsRef.current[0] = el)}
+              >
                 <div className="highlight-icon">✓</div>
                 <span>Verified Suppliers</span>
               </div>
-              <div className="highlight-item" ref={(el) => (introHighlightsRef.current[1] = el)}>
+              <div
+                className="highlight-item"
+                ref={(el) => (introHighlightsRef.current[1] = el)}
+              >
                 <div className="highlight-icon">✓</div>
                 <span>Verified Buyers</span>
               </div>
-              <div className="highlight-item" ref={(el) => (introHighlightsRef.current[2] = el)}>
+              <div
+                className="highlight-item"
+                ref={(el) => (introHighlightsRef.current[2] = el)}
+              >
                 <div className="highlight-icon">✓</div>
                 <span>Global Network</span>
               </div>
-              <div className="highlight-item" ref={(el) => (introHighlightsRef.current[3] = el)}>
+              <div
+                className="highlight-item"
+                ref={(el) => (introHighlightsRef.current[3] = el)}
+              >
                 <div className="highlight-icon">✓</div>
                 <span>24/7 Support</span>
               </div>
@@ -174,24 +191,51 @@ function About() {
 
           <div className="about-grid-new">
             {/* Our Mission - Image Left, Text Right */}
-            <div className="about-item mission" ref={(el) => (aboutCardsRef.current[0] = el)}>
+            <div
+              className="about-item mission"
+              ref={(el) => (aboutCardsRef.current[0] = el)}
+            >
               <div className="about-image">
                 <img src={mission} alt="Our Mission" />
               </div>
               <div className="about-content">
                 <h3>Our Mission</h3>
                 <p>
-                  At SaathSource, our mission is to simplify and strengthen global B2B trade by building a trusted digital ecosystem for procurers and suppliers worldwide. We aim to eliminate complexity in sourcing by offering a seamless, intelligent, and scalable platform that supports efficient decision-making. By leveraging technology and data-driven insights, we enable faster discovery of reliable suppliers and high-quality products. Our platform is designed to ensure transparency, compliance, and security across international transactions. Ultimately, we strive to empower businesses of all sizes to trade confidently, grow sustainably, and expand across borders with ease.
+                  At SaathSource, our mission is to simplify and strengthen
+                  global B2B trade by building a trusted digital ecosystem for
+                  procurers and suppliers worldwide. We aim to eliminate
+                  complexity in sourcing by offering a seamless, intelligent,
+                  and scalable platform that supports efficient decision-making.
+                  By leveraging technology and data-driven insights, we enable
+                  faster discovery of reliable suppliers and high-quality
+                  products. Our platform is designed to ensure transparency,
+                  compliance, and security across international transactions.
+                  Ultimately, we strive to empower businesses of all sizes to
+                  trade confidently, grow sustainably, and expand across borders
+                  with ease.
                 </p>
               </div>
             </div>
 
             {/* Our Vision - Text Left, Image Right */}
-            <div className="about-item vision" ref={(el) => (aboutCardsRef.current[1] = el)}>
+            <div
+              className="about-item vision"
+              ref={(el) => (aboutCardsRef.current[1] = el)}
+            >
               <div className="about-content">
                 <h3>Our Vision</h3>
                 <p>
-                  Our vision is to become the world's most trusted B2B sourcing platform, setting new standards for reliability, transparency, and efficiency in global trade. We aspire to connect businesses across borders through strong, long-term partnerships built on trust and accountability. By continuously innovating with advanced technology, we aim to simplify complex supply chains and improve sourcing experiences. Our goal is to enable seamless collaboration between buyers and suppliers worldwide. Through smart, secure, and scalable solutions, we seek to drive sustainable growth in the global B2B ecosystem.
+                  Our vision is to become the world's most trusted B2B sourcing
+                  platform, setting new standards for reliability, transparency,
+                  and efficiency in global trade. We aspire to connect
+                  businesses across borders through strong, long-term
+                  partnerships built on trust and accountability. By
+                  continuously innovating with advanced technology, we aim to
+                  simplify complex supply chains and improve sourcing
+                  experiences. Our goal is to enable seamless collaboration
+                  between buyers and suppliers worldwide. Through smart, secure,
+                  and scalable solutions, we seek to drive sustainable growth in
+                  the global B2B ecosystem.
                 </p>
               </div>
               <div className="about-image">
@@ -200,14 +244,25 @@ function About() {
             </div>
 
             {/* Our Impact - Image Left, Text Right */}
-            <div className="about-item impact" ref={(el) => (aboutCardsRef.current[2] = el)}>
+            <div
+              className="about-item impact"
+              ref={(el) => (aboutCardsRef.current[2] = el)}
+            >
               <div className="about-image">
                 <img src={impact} alt="Our Impact" />
               </div>
               <div className="about-content">
                 <h3>Our Impact</h3>
                 <p>
-                  We transform the way businesses engage in international trade by reducing complexity and increasing efficiency at every stage of sourcing. Our platform enables faster supplier discovery, smarter matching, and secure, reliable transactions across borders. By streamlining global B2B processes, we help businesses save time, lower operational costs, and scale with confidence. SaathSource empowers companies with transparent, technology-driven solutions that support sustainable growth and long-term success in global markets.
+                  We transform the way businesses engage in international trade
+                  by reducing complexity and increasing efficiency at every
+                  stage of sourcing. Our platform enables faster supplier
+                  discovery, smarter matching, and secure, reliable transactions
+                  across borders. By streamlining global B2B processes, we help
+                  businesses save time, lower operational costs, and scale with
+                  confidence. SaathSource empowers companies with transparent,
+                  technology-driven solutions that support sustainable growth
+                  and long-term success in global markets.
                 </p>
               </div>
             </div>
@@ -228,7 +283,10 @@ function About() {
           </div>
 
           <div className="features-grid">
-            <div className="feature-item" ref={(el) => (featureCardsRef.current[0] = el)}>
+            <div
+              className="feature-item"
+              ref={(el) => (featureCardsRef.current[0] = el)}
+            >
               <div className="feature-icon">
                 <img src={realtime} alt="Real-time Analytics" />
               </div>
@@ -239,7 +297,10 @@ function About() {
               </p>
             </div>
 
-            <div className="feature-item" ref={(el) => (featureCardsRef.current[1] = el)}>
+            <div
+              className="feature-item"
+              ref={(el) => (featureCardsRef.current[1] = el)}
+            >
               <div className="feature-icon">
                 <img src={global} alt="Global Reach" />
               </div>
@@ -250,7 +311,10 @@ function About() {
               </p>
             </div>
 
-            <div className="feature-item" ref={(el) => (featureCardsRef.current[2] = el)}>
+            <div
+              className="feature-item"
+              ref={(el) => (featureCardsRef.current[2] = el)}
+            >
               <div className="feature-icon">
                 <img src={fast} alt="Fast Processing" />
               </div>
@@ -261,7 +325,10 @@ function About() {
               </p>
             </div>
 
-            <div className="feature-item" ref={(el) => (featureCardsRef.current[3] = el)}>
+            <div
+              className="feature-item"
+              ref={(el) => (featureCardsRef.current[3] = el)}
+            >
               <div className="feature-icon">
                 <img src={quality} alt="Quality Assurance" />
               </div>
@@ -274,8 +341,6 @@ function About() {
           </div>
         </div>
       </section>
-
-
     </div>
   );
 }
