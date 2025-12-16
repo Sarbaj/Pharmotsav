@@ -10,7 +10,8 @@ import { useSelector } from "react-redux";
 import healthcare from "../assets/healthcare.jpg";
 import pharma from "../assets/pharma.jpg";
 import network from "../assets/network.jpg";
-import loopVideo from "../assets/video/loopss.mp4";
+import hometablet from "../assets/hometablet.jpeg";
+import homeback from "../assets/homeback.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -288,9 +289,15 @@ const Home = () => {
         </div>
 
         {/* Hero Section */}
-        <section className="home-hero-section">
+        <section className="home-hero-section" style={{backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url(${homeback})`, backgroundSize: 'auto', backgroundPosition: 'center', backgroundRepeat: 'no-repeat'}}>
           <div className="home-hero-content">
             <div className="home-hero-text" ref={heroTextRef}>
+              <p className="home-hero-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M10,17L6,13L7.41,11.59L10,14.17L16.59,7.58L18,9L10,17Z"/>
+                </svg>
+                Trusted by 2500+ Global Suppliers
+              </p>
               <h1 className="home-hero-title">
                 Simplifying{" "}
                 <span className="home-b2b-container" ref={b2bRef}>
@@ -365,6 +372,12 @@ const Home = () => {
                   Learn More
                 </button>
               </div>
+
+              {/* Trust Badge */}
+              <div className="home-trust-badge">
+                <div className="home-trust-icon">✓</div>
+                <span className="home-trust-text">Trusted by 2,500+ Global Suppliers</span>
+              </div>
             </div>
             <div className="home-hero-visual home-hero-visual-desktop">
               {/* Temporarily commented out cards - replaced with video */}
@@ -401,25 +414,34 @@ const Home = () => {
                 </div>
               </div> */}
 
-              {/* Video replacement */}
-              <div className="home-hero-video">
-                <video
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="home-video-player"
-                  src={loopVideo}
-                  onError={(e) => {
-                    console.error("Video error:", e);
-                    console.error("Video src:", e.target.src);
-                  }}
-                  onLoadStart={() => console.log("Video loading started")}
-                  onCanPlay={() => console.log("Video can play")}
-                  onLoadedData={() => console.log("Video loaded successfully")}
-                >
-                  Your browser does not support the video tag.
-                </video>
+              {/* Hero Image with Stats */}
+              <div className="home-hero-image">
+                <img src={hometablet} alt="Pharmaceutical Products" className="home-tablet-image" />
+                
+                {/* Stat Cards */}
+                <div className="home-stat-card home-stat-card-1">
+                  <div className="home-stat-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/>
+                    </svg>
+                  </div>
+                  <div className="home-stat-content">
+                    <span className="home-stat-number">$2.5B+</span>
+                    <span className="home-stat-label">Annual Volume</span>
+                  </div>
+                </div>
+                
+                <div className="home-stat-card home-stat-card-2">
+                  <div className="home-stat-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                  </div>
+                  <div className="home-stat-content">
+                    <span className="home-stat-number">50+</span>
+                    <span className="home-stat-label">Countries</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

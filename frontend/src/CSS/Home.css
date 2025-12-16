@@ -376,7 +376,7 @@ main .container .div1 .btns button:hover {
 /* Hero Section */
 .home-hero-section {
   min-height: 100vh;
-  background: #ffffff;
+  background: transparent;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -388,16 +388,7 @@ main .container .div1 .btns button:hover {
   margin-bottom: 0;
 }
 
-.home-hero-section::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%"><stop offset="0%" stop-color="%23ffffff" stop-opacity="0.1"/><stop offset="100%" stop-color="%23ffffff" stop-opacity="0"/></radialGradient></defs><circle cx="200" cy="200" r="100" fill="url(%23a)"/><circle cx="800" cy="300" r="150" fill="url(%23a)"/><circle cx="400" cy="700" r="120" fill="url(%23a)"/></svg>');
-  opacity: 0.1;
-}
+
 
 .home-hero-content {
   display: grid;
@@ -410,6 +401,7 @@ main .container .div1 .btns button:hover {
   position: relative;
   z-index: 2;
   overflow: visible;
+  margin-top: -6rem;
 }
 
 .home-hero-text {
@@ -1473,5 +1465,200 @@ main .container .div1 .btns button:hover {
   .home-ticker-content span {
     font-size: 0.75rem;
     padding-right: 1.5rem;
+  }
+}/* Hero I
+mage and Stats */
+.home-hero-image {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.home-tablet-image {
+  width: 100%;
+  height: auto;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.home-tablet-image:hover {
+  transform: translateY(-5px);
+}
+
+/* Stat Cards */
+.home-stat-card {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  animation: float 3s ease-in-out infinite;
+  z-index: 10;
+}
+
+.home-stat-card-1 {
+  top: 15%;
+  right: -10%;
+  animation-delay: 0s;
+}
+
+.home-stat-card-2 {
+  bottom: 20%;
+  left: -15%;
+  animation-delay: 1.5s;
+}
+
+.home-stat-icon {
+  width: 40px;
+  height: 40px;
+  background: #f1f5f9;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+}
+
+.home-stat-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.home-stat-number {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  line-height: 1;
+}
+
+.home-stat-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* Hero Badge */
+.home-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  background: linear-gradient(135deg, rgba(20, 219, 154, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%);
+  border: 1px solid rgba(20, 219, 154, 0.3);
+  border-radius: 50px;
+  color: #14db9a;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  margin-bottom: 1rem;
+}
+
+/* Trust Badge */
+.home-trust-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, rgba(20, 219, 154, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%);
+  border: 2px solid rgba(20, 219, 154, 0.2);
+  border-radius: 50px;
+  width: fit-content;
+}
+
+.home-trust-icon {
+  width: 24px;
+  height: 24px;
+  background: linear-gradient(135deg, #14db9a 0%, #0891b2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.home-trust-text {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #0891b2;
+  letter-spacing: 0.5px;
+}
+
+/* Floating Animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Update hero section background */
+.home-hero {
+  background: transparent;
+}
+
+/* Responsive Design for New Elements */
+@media (max-width: 768px) {
+  .home-stat-card {
+    padding: 0.75rem 1rem;
+    gap: 0.5rem;
+  }
+  
+  .home-stat-card-1 {
+    top: 10%;
+    right: -5%;
+  }
+  
+  .home-stat-card-2 {
+    bottom: 15%;
+    left: -10%;
+  }
+  
+  .home-stat-number {
+    font-size: 1rem;
+  }
+  
+  .home-stat-label {
+    font-size: 0.7rem;
+  }
+  
+  .home-trust-badge {
+    margin-top: 1.5rem;
+    padding: 0.5rem 1rem;
+  }
+  
+  .home-trust-text {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-stat-card {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .home-stat-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 1.2rem;
+  }
+  
+  .home-stat-number {
+    font-size: 0.9rem;
+  }
+  
+  .home-trust-badge {
+    padding: 0.5rem 0.75rem;
   }
 }
