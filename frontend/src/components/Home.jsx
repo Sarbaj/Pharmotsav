@@ -271,6 +271,14 @@ const Home = () => {
         <PillAnimation onComplete={handleAnimationComplete} />
       )}
       <div className="home-hero">
+        {/* Scrolling Ticker */}
+        <div className="home-ticker">
+          <div className="home-ticker-content">
+            <span>SaathSource • Connecting Global B2B Trade • SaathSource • Trusted Pharmaceutical Marketplace • SaathSource • Verified Suppliers Worldwide • SaathSource • Efficient Business Solutions • </span>
+            <span>SaathSource • Connecting Global B2B Trade • SaathSource • Trusted Pharmaceutical Marketplace • SaathSource • Verified Suppliers Worldwide • SaathSource • Efficient Business Solutions • </span>
+          </div>
+        </div>
+
         {/* Hero Section */}
         <section className="home-hero-section">
           <div className="home-hero-content">

@@ -1416,3 +1416,64 @@ main .container .div1 .btns button:hover {
 .home-hero-visual-mobile {
   display: none;
 }
+/* Scrolling Ticker */
+.home-ticker {
+  width: 100%;
+  height: 40px;
+  background: linear-gradient(135deg, #14db9a 0%, #00b894 100%);
+  overflow: hidden;
+  position: relative;
+  z-index: 10;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  margin-top: 1rem;
+}
+
+.home-ticker-content {
+  display: flex;
+  white-space: nowrap;
+  animation: scroll-left 30s linear infinite;
+  height: 100%;
+  align-items: center;
+}
+
+.home-ticker-content span {
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding-right: 2rem;
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+/* Responsive ticker */
+@media (max-width: 768px) {
+  .home-ticker {
+    height: 35px;
+  }
+  
+  .home-ticker-content span {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-ticker {
+    height: 30px;
+  }
+  
+  .home-ticker-content span {
+    font-size: 0.75rem;
+    padding-right: 1.5rem;
+  }
+}
