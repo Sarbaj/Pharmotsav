@@ -308,6 +308,69 @@
   gap: 1.5rem;
 }
 
+/* Empty State Styles */
+.pd-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  background: #ffffff;
+  border: 2px dashed #e5e7eb;
+  border-radius: 16px;
+  margin: 2rem 0;
+}
+
+.pd-empty-icon {
+  color: #9ca3af;
+  margin-bottom: 1.5rem;
+  opacity: 0.7;
+}
+
+.pd-empty-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.75rem;
+  font-family: "Poppins", sans-serif;
+}
+
+.pd-empty-description {
+  font-size: 1rem;
+  color: #6b7280;
+  margin-bottom: 2rem;
+  max-width: 400px;
+  line-height: 1.6;
+}
+
+.pd-empty-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.5rem;
+  background: linear-gradient(135deg, #14db9a 0%, #10b981 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: "uppercasefont", sans-serif;
+}
+
+.pd-empty-action-btn:hover {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+}
+
+.pd-empty-action-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
 /* Seller Group Styles */
 .pd-seller-group {
   background: #ffffff;

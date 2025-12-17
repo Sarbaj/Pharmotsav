@@ -274,8 +274,8 @@
 
 .feature-item {
   background: white;
-  padding: 2.5rem 2rem;
-  border-radius: 20px;
+  padding: 1.5rem 1.25rem;
+  border-radius: 16px;
   box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
   border: 2px solid #e5e7eb;
   transition: all 0.4s ease;
@@ -291,16 +291,17 @@
 }
 
 .feature-icon {
-  width: 180px;
-  height: 180px;
-  border-radius: 20px;
+  width: 80px;
+  height: 80px;
+  border-radius: 16px;
   background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 1.5rem;
+  margin: 0 auto 1rem;
   position: relative;
   overflow: hidden;
+  color: #3b82f6;
 }
 
 .feature-icon::before {
@@ -312,7 +313,7 @@
     rgba(59, 130, 246, 0.08) 0%,
     rgba(6, 182, 212, 0.08) 100%
   );
-  border-radius: 20px;
+  border-radius: 16px;
   z-index: -1;
   transition: all 0.3s ease;
 }
@@ -325,31 +326,30 @@
   );
 }
 
-.feature-icon img {
-  width: 150px;
-  height: 150px;
-  object-fit: contain;
-  filter: none;
-  transition: transform 0.3s ease;
+.feature-icon svg {
+  width: 48px;
+  height: 48px;
+  transition: all 0.3s ease;
 }
 
-.feature-item:hover .feature-icon img {
-  transform: scale(1.08);
+.feature-item:hover .feature-icon svg {
+  transform: scale(1.1);
+  color: #2563eb;
 }
 
 .feature-item h3 {
-  font-size: 1.3rem;
-  font-weight: 700;
+  font-size: 1.1rem;
+  font-weight: 600;
   color: #0f172a;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   letter-spacing: 0.02em;
   font-family: "Poppins", sans-serif;
 }
 
 .feature-item p {
   color: #64748b;
-  line-height: 1.7;
-  font-size: 1rem;
+  line-height: 1.6;
+  font-size: 0.9rem;
 }
 
 /* Responsive Design */
@@ -474,6 +474,10 @@
   padding: 2rem 2rem 0rem;
   position: relative;
   overflow: hidden;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(248, 250, 252, 0.7)), url('../assets/earthabout.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .about-container .intro-content {

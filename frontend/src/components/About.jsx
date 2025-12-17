@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "../CSS/About.css";
@@ -14,6 +15,7 @@ import hand from "../assets/hand.png";
 gsap.registerPlugin(ScrollTrigger);
 
 function About() {
+  const navigate = useNavigate();
   const aboutCardsRef = useRef([]);
   const featureCardsRef = useRef([]);
   const introHighlightsRef = useRef([]);
@@ -289,12 +291,13 @@ function About() {
               ref={(el) => (featureCardsRef.current[0] = el)}
             >
               <div className="feature-icon">
-                <img src={realtime} alt="Real-time Analytics" />
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm5-18v4h3V3h-3z"/>
+                </svg>
               </div>
               <h3>Real-time Analytics</h3>
               <p>
-                Comprehensive insights and analytics to optimize your sourcing
-                strategies.
+                Comprehensive insights and analytics to optimize your sourcing strategies.
               </p>
             </div>
 
@@ -303,12 +306,13 @@ function About() {
               ref={(el) => (featureCardsRef.current[1] = el)}
             >
               <div className="feature-icon">
-                <img src={global} alt="Global Reach" />
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
               </div>
               <h3>Global Reach</h3>
               <p>
-                Access to suppliers and buyers from over 50 countries across the
-                globe.
+                Access to suppliers and buyers from over 50 countries across the globe.
               </p>
             </div>
 
@@ -317,12 +321,13 @@ function About() {
               ref={(el) => (featureCardsRef.current[2] = el)}
             >
               <div className="feature-icon">
-                <img src={fast} alt="Fast Processing" />
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M13 1.07V9h7c0-4.08-3.05-7.44-7-7.93zM4 15c0 4.42 3.58 8 8 8s8-3.58 8-8v-4H4v4zm7-13.93C7.05 1.56 4 4.92 4 9h7V1.07z"/>
+                </svg>
               </div>
               <h3>Fast Processing</h3>
               <p>
-                Streamlined processes that reduce sourcing time from weeks to
-                days.
+                Streamlined processes that reduce sourcing time from weeks to days.
               </p>
             </div>
 
@@ -331,12 +336,13 @@ function About() {
               ref={(el) => (featureCardsRef.current[3] = el)}
             >
               <div className="feature-icon">
-                <img src={quality} alt="Quality Assurance" />
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+                </svg>
               </div>
               <h3>Quality Assurance</h3>
               <p>
-                Rigorous verification process ensures only certified and quality
-                suppliers.
+                Rigorous verification process ensures only certified and quality suppliers.
               </p>
             </div>
           </div>
@@ -358,7 +364,10 @@ function About() {
             </p>
 
             <div className="final-cta-buttons">
-              <button className="final-btn-primary">
+              <button 
+                className="final-btn-primary"
+                onClick={() => navigate('/login')}
+              >
                 Get Started Today
               </button>
               <button className="final-btn-secondary">

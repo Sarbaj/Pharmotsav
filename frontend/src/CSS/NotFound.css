@@ -1,0 +1,200 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+.notfound-container {
+  margin-top: 5rem;
+  width: 100vw;
+  height: 100vh;
+  background-image: url("../assets/404.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  font-family: "Poppins", sans-serif;
+}
+
+.notfound-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  max-width: 600px;
+  padding: 2rem;
+  margin-top: 15rem;
+}
+
+/* Floating Elements */
+.notfound-floating-elements {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.floating-element {
+  position: absolute;
+  font-size: 2rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  opacity: 0.6;
+}
+
+.floating-404 {
+  top: 15%;
+  left: 10%;
+  font-size: 3rem;
+  color: #cbd5e1;
+}
+
+.floating-question {
+  top: 20%;
+  right: 15%;
+  font-size: 4rem;
+  color: #e2e8f0;
+}
+
+.floating-settings {
+  bottom: 30%;
+  left: 8%;
+  font-size: 2.5rem;
+}
+
+.floating-search {
+  bottom: 15%;
+  right: 12%;
+  font-size: 2rem;
+}
+
+.floating-warning {
+  top: 60%;
+  left: 85%;
+  font-size: 2rem;
+}
+
+/* Text Content */
+.notfound-text {
+  z-index: 2;
+  position: relative;
+}
+
+.notfound-title {
+  margin-bottom: 1.5rem;
+}
+
+.notfound-404-text {
+  display: block;
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+}
+
+.notfound-title-text {
+  display: block;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 600;
+  color: #475569;
+}
+
+.notfound-subtitle {
+  font-size: 1.1rem;
+  color: #64748b;
+  line-height: 1.6;
+  margin-bottom: 2.5rem;
+  max-width: 400px;
+}
+
+/* Buttons */
+.notfound-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.notfound-btn {
+  padding: 0.875rem 2rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: "Poppins", sans-serif;
+  min-width: 120px;
+}
+
+.notfound-btn-primary {
+  background: #14db9a;
+  color: white;
+}
+
+.notfound-btn-primary:hover {
+  background: #10b981;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(20, 219, 154, 0.3);
+}
+
+.notfound-btn-secondary {
+  background: white;
+  color: #475569;
+  border: 2px solid #e2e8f0;
+}
+
+.notfound-btn-secondary:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .notfound-container {
+    margin-top: -7rem;
+    height: auto;
+  }
+  .notfound-content {
+    padding: 1rem;
+    margin-top: 38rem;
+  }
+
+  .notfound-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .notfound-btn {
+    width: 100%;
+    max-width: 250px;
+  }
+
+  .floating-element {
+    font-size: 1.5rem;
+  }
+
+  .floating-404 {
+    font-size: 2rem;
+  }
+
+  .floating-question {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .notfound-subtitle {
+    font-size: 1rem;
+  }
+
+  .floating-element {
+    display: none;
+  }
+}

@@ -1331,9 +1331,31 @@ export default function ProfileDashboard() {
             </div>
 
             <div className="pd-inquiries-list">
-              {Object.entries(
-                groupInquiriesBySeller(filteredPendingInquiries)
-              ).map(([sellerName, sellerInquiries]) => (
+              {filteredPendingInquiries.length === 0 ? (
+                <div className="pd-empty-state">
+                  <div className="pd-empty-icon">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                  </div>
+                  <h4 className="pd-empty-title">No Pending Inquiries</h4>
+                  <p className="pd-empty-description">
+                    You haven't made any inquiries yet. Browse our products and start connecting with suppliers.
+                  </p>
+                  <button 
+                    className="pd-empty-action-btn"
+                    onClick={() => navigate('/products')}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M19 7h-3V6a4 4 0 0 0-8 0v1H5a1 1 0 0 0-1 1v11a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V8a1 1 0 0 0-1-1zM10 6a2 2 0 0 1 4 0v1h-4V6zm8 15a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V9h2v1a1 1 0 0 0 2 0V9h4v1a1 1 0 0 0 2 0V9h2v12z"/>
+                    </svg>
+                    View Products
+                  </button>
+                </div>
+              ) : (
+                Object.entries(
+                  groupInquiriesBySeller(filteredPendingInquiries)
+                ).map(([sellerName, sellerInquiries]) => (
                 <div key={sellerName} className="pd-seller-group">
                   <div
                     className="pd-seller-header pd-seller-header-clickable"
@@ -1418,7 +1440,8 @@ export default function ProfileDashboard() {
                     </div>
                   )}
                 </div>
-              ))}
+              ))
+              )}
             </div>
           </div>
         )}

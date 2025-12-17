@@ -17,6 +17,7 @@ import SellerProfile from "./components/SellerProfile.jsx";
 import About from "./components/About.jsx";
 import SellerDashboard from "./components/SellerDashboard.jsx";
 import ScrollToTop from "./components/ScrollToTop.jsx";
+import NotFound from "./components/NotFound.jsx";
 
 const App = () => {
   return (
@@ -39,6 +40,9 @@ const App = () => {
         <Route path="/buyer-profile" element={<BuyerProfile />} />
         <Route path="/seller-profile" element={<SellerDashboard />} />
         {/* <Route path="products" element={<Products />}/> */}
+        
+        {/* Catch-all route for 404 - Must be last */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
     </>
