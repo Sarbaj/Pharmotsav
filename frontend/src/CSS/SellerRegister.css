@@ -1,7 +1,10 @@
 /* Seller Register - Modern Step-wise Layout */
 .seller-register-wrapper {
   min-height: 100vh;
-  background: linear-gradient(135deg, #06b6d4 0%, #10b981 100%);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.8), rgba(248, 250, 252, 0.8)), url('../assets/homeback.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   display: flex;
   align-items: center;
   justify-content: center;

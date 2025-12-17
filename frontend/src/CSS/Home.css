@@ -61,11 +61,11 @@ body {
 main {
   width: 100vw;
   margin-top: 4rem;
-  background-image: url(../assets/back.png);
+  background-image: url(../assets/homeheroback.png);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  min-height: 90vh;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -2322,6 +2322,7 @@ Additional Animations for Trust Section */
 
 .stakeholder-card {
   background: white;
+  width: 25rem;
   padding: 2.5rem 2rem;
   border-radius: 20px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
@@ -2387,7 +2388,6 @@ Additional Animations for Trust Section */
   display: flex;
   align-items: flex-start;
   gap: 0.75rem;
-  margin-bottom: 0.75rem;
   padding: 0.5rem 0;
 }
 

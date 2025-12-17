@@ -342,6 +342,32 @@ function About() {
           </div>
         </div>
       </section>
+
+      {/* Simple Closing CTA Section */}
+      <section className="about-final-cta">
+        <div className="container">
+          <div className="final-cta-content" ref={aboutCtaRef}>
+            <h2 className="final-cta-title">
+              Ready to Transform Your 
+              <span className="final-cta-highlight"> Business?</span>
+            </h2>
+            
+            <p className="final-cta-description">
+              Join thousands of pharmaceutical businesses already using Saathsource 
+              to streamline their operations and expand their reach.
+            </p>
+
+            <div className="final-cta-buttons">
+              <button className="final-btn-primary">
+                Get Started Today
+              </button>
+              <button className="final-btn-secondary">
+                Learn More
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

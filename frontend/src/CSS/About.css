@@ -245,7 +245,10 @@
 /* Features Section */
 .features-section {
   padding: 6rem 0;
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  background-image: linear-gradient(rgba(248, 250, 252, 0.8), rgba(241, 245, 249, 0.8)), url('../assets/abouthero.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   position: relative;
   overflow-x: hidden;
   overflow-y: hidden;
@@ -351,7 +354,7 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .about-section{
+  .about-section {
     margin-top: 10rem;
   }
   .hero-content {
@@ -397,7 +400,7 @@
 }
 
 @media (max-width: 480px) {
-  .about-section{
+  .about-section {
     margin-top: 10rem;
   }
   .hero-title {
@@ -407,7 +410,7 @@
   .section-title {
     font-size: 2rem;
   }
-  .intro-content{
+  .intro-content {
     margin-top: -2rem !important;
   }
 
@@ -472,8 +475,6 @@
   position: relative;
   overflow: hidden;
 }
-
-
 
 .about-container .intro-content {
   max-width: 900px;
@@ -573,6 +574,7 @@
 @media (max-width: 768px) {
   .about-container .home-intro {
     padding: 2rem 1rem;
+    margin-top: -3rem;
   }
 
   .about-container .home-intro .container {
@@ -625,6 +627,9 @@
 }
 
 @media (max-width: 768px) {
+  .about-container.home-intro {
+    margin-top: -3rem;
+  }
   .about-closing-section {
     padding: 2rem 1rem;
   }
@@ -753,29 +758,29 @@
     gap: 2rem;
     text-align: center;
   }
-  
+
   .about-item .about-image {
     order: 1;
     max-width: 100%;
   }
-  
+
   .about-item .about-content {
     order: 2;
   }
-  
+
   .about-image img {
     height: 250px;
   }
-  
+
   .about-content h3 {
     font-size: 1.8rem;
   }
-  
+
   .about-content p {
     font-size: 1rem;
     text-align: left;
   }
-  
+
   .about-grid-new {
     gap: 3rem;
   }
@@ -785,16 +790,123 @@
   .about-item {
     gap: 1.5rem;
   }
-  
+
   .about-image img {
     height: 200px;
   }
-  
+
   .about-content h3 {
     font-size: 1.6rem;
   }
-  
+
   .about-content p {
     font-size: 0.95rem;
+  }
+} /* Simple 
+Final CTA Section - Unique Classes */
+.about-final-cta {
+  padding: 4rem 2rem;
+  background: linear-gradient(135deg, #06b6d4 0%, #10b981 100%);
+  color: white;
+  text-align: center;
+}
+
+.final-cta-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.final-cta-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.final-cta-highlight {
+  color: #fbbf24;
+}
+
+.final-cta-description {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 2.5rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+.final-cta-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.final-btn-primary,
+.final-btn-secondary {
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 160px;
+}
+
+.final-btn-primary {
+  background: white;
+  color: #0891b2;
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.3);
+}
+
+.final-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(255, 255, 255, 0.4);
+}
+
+.final-btn-secondary {
+  background: transparent;
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.final-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: white;
+  transform: translateY(-2px);
+}
+
+/* Responsive for Final CTA */
+@media (max-width: 768px) {
+  .about-final-cta {
+    padding: 3rem 1rem;
+  }
+
+  .final-cta-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .final-btn-primary,
+  .final-btn-secondary {
+    width: 100%;
+    max-width: 280px;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-final-cta {
+    padding: 2.5rem 1rem;
+  }
+
+  .final-cta-title {
+    font-size: 1.8rem;
+  }
+
+  .final-cta-description {
+    font-size: 1rem;
   }
 }

@@ -11,7 +11,10 @@
 /* Hero Section */
 .buyer-hero {
   padding: 6rem 2rem 4rem;
-  background: #ffffff;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.8), rgba(248, 250, 252, 0.8)), url('../assets/buyer_back.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   color: #111827;
   position: relative;
   overflow-x: hidden;
@@ -336,7 +339,10 @@
 /* Benefits Section */
 .buyer-benefits-section {
   padding: 6rem 2rem;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background-image: linear-gradient(rgba(245, 247, 250, 0.8), rgba(195, 207, 226, 0.8)), url('../assets/abouthero.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .buyer-benefits-content {
@@ -461,7 +467,10 @@
 /* CTA Section */
 .buyer-cta-section {
   padding: 6rem 2rem;
-  background: white;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.8), rgba(248, 250, 252, 0.8)), url('../assets/buyersellercta.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   text-align: center;
 }
 

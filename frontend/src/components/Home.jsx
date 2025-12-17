@@ -11,7 +11,7 @@ import healthcare from "../assets/healthcare.jpg";
 import pharma from "../assets/pharma.jpg";
 import network from "../assets/network.jpg";
 import hometablet from "../assets/hometablet.jpeg";
-import homeback from "../assets/homeback.png";
+import homeheroback from "../assets/homeheroback.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -512,7 +512,7 @@ const Home = () => {
         </div>
 
         {/* Hero Section */}
-        <section className="home-hero-section" style={{backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url(${homeback})`, backgroundSize: 'auto', backgroundPosition: 'center', backgroundRepeat: 'no-repeat'}}>
+        <section className="home-hero-section" style={{backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url(${homeheroback})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat'}}>
           <div className="home-hero-content">
             <div className="home-hero-text" ref={heroTextRef}>
               <p className="home-hero-badge">
