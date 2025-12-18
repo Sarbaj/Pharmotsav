@@ -190,14 +190,19 @@ export default function SellerDashboard() {
   const fetchSellerInquiries = async () => {
     try {
       setInquiriesLoading(true);
+      console.log("Fetching seller inquiries from:", API_ENDPOINTS.INQUIRIES.SELLER_RECENT);
+      console.log("Seller user:", sellerUser);
+      
       const response = await fetchWithAuth(
-        `${API_ENDPOINTS.INQUIRIES.SELLER_RECENT}`,
+        `${API_ENDPOINTS.INQUIRIES.SELLER}`,
         {
           headers: getAuthHeaders(),
         }
       );
 
+      console.log("Seller inquiries response status:", response.status);
       const data = await response.json();
+      console.log("Seller inquiries response data:", data);
 
       if (data.success && data.data.inquiries) {
         // Group inquiries by buyer
@@ -254,12 +259,15 @@ export default function SellerDashboard() {
           (a, b) => new Date(b.latestDate) - new Date(a.latestDate)
         );
 
+        console.log("Transformed seller inquiries:", transformedInquiries);
         setInquiries(transformedInquiries);
       } else {
+        console.log("No seller inquiries found or API error:", data);
         setInquiries([]);
       }
     } catch (error) {
       console.error("Error fetching seller recent inquiries:", error);
+      console.error("Error details:", error.message);
       setInquiries([]);
     } finally {
       setInquiriesLoading(false);

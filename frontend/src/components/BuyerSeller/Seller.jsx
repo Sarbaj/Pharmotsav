@@ -13,6 +13,10 @@ import sellerregister from "../../assets/seller-image.png";
 import productcatelog from "../../assets/productcatelog.png";
 import respondeinquires from "../../assets/respondeinquires.png";
 import builddeals from "../../assets/builddeals.png";
+import sellerRegisterVideo from "../../assets/video/seller/seller-register.mp4";
+import addProductVideo from "../../assets/video/seller/add-product.mp4";
+import getBuyerVideo from "../../assets/video/seller/get-buyer.mp4";
+import step4Video from "../../assets/video/seller/step-4.mp4";
 import whatseller from "../../assets/whatseller.png";
 import globalreach from "../../assets/globalreach.webp";
 import sales from "../../assets/sales.webp";
@@ -126,22 +130,10 @@ function Seller() {
   };
 
   const sellerSteps = [
-    {
-      step: "01",
-      image: sellerregister,
-    },
-    {
-      step: "02",
-      image: productcatelog,
-    },
-    {
-      step: "03",
-      image: respondeinquires,
-    },
-    {
-      step: "04",
-      image: builddeals,
-    },
+    { step: "01", image: sellerregister, video: sellerRegisterVideo, title: "Register as Seller", description: "Create your seller account and set up your business profile" },
+    { step: "02", image: productcatelog, video: addProductVideo, title: "Add Products", description: "Upload your product catalog and manage inventory" },
+    { step: "03", image: respondeinquires, video: getBuyerVideo, title: "Get Buyers", description: "Receive and respond to buyer inquiries" },
+    { step: "04", image: builddeals, video: step4Video, title: "Build Deals", description: "Negotiate and close deals with potential buyers" },
   ];
 
   const sellerFeatures = [
@@ -264,8 +256,23 @@ function Seller() {
                 }`}
               >
                 <div className="seller-step-number">{step.step}</div>
+                
+                {/* Image - smaller size */}
                 <div className="seller-step-image">
                   <img src={step.image} alt={`Step ${step.step}`} />
+                </div>
+                
+                {/* Video - larger size, opposite side */}
+                <div className="seller-step-video">
+                  <video 
+                    autoPlay 
+                    loop 
+                    muted 
+                    playsInline
+                    className="step-video"
+                  >
+                    <source src={step.video} type="video/mp4" />
+                  </video>
                 </div>
               </div>
             ))}
@@ -277,15 +284,45 @@ function Seller() {
           <div className="seller-benefits-content">
             <h2 className="seller-benefits-title">Why Choose SaathSource for Selling?</h2>
             <div className="seller-benefits-grid">
-              {sellerBenefits.map((benefit, index) => (
-                <div key={index} className="seller-benefit-item" ref={(el) => (benefitCardsRef.current[index] = el)}>
-                  <div className="seller-benefit-image">
-                    <img src={benefit.image} alt={benefit.title} />
-                  </div>
-                  <h3>{benefit.title}</h3>
-                  <p>{benefit.description}</p>
+              <div className="seller-benefit-item" ref={(el) => (benefitCardsRef.current[0] = el)}>
+                <div className="seller-benefit-icon">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                  </svg>
                 </div>
-              ))}
+                <h3>Global Reach</h3>
+                <p>Access buyers from around the world and expand your market presence internationally</p>
+              </div>
+              
+              <div className="seller-benefit-item" ref={(el) => (benefitCardsRef.current[1] = el)}>
+                <div className="seller-benefit-icon">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M7,15H9C9,16.08 10.37,17 12,17C13.63,17 15,16.08 15,15C15,13.9 13.96,13.5 11.76,12.97C9.64,12.44 7,11.78 7,9C7,7.21 8.47,5.69 10.5,5.18V3H13.5V5.18C15.53,5.69 17,7.21 17,9H15C15,7.92 13.63,7 12,7C10.37,7 9,7.92 9,9C9,10.1 10.04,10.5 12.24,11.03C14.36,11.56 17,12.22 17,15C17,16.79 15.53,18.31 13.5,18.82V21H10.5V18.82C8.47,18.31 7,16.79 7,15Z"/>
+                  </svg>
+                </div>
+                <h3>Increased Sales</h3>
+                <p>Boost your sales with our platform's advanced matching algorithms and buyer discovery</p>
+              </div>
+              
+              <div className="seller-benefit-item" ref={(el) => (benefitCardsRef.current[2] = el)}>
+                <div className="seller-benefit-icon">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M15,1H9V3H15M19,8H17V3H15V8H9V3H7V8H5A2,2 0 0,0 3,10V20A2,2 0 0,0 5,22H19A2,2 0 0,0 21,20V10A2,2 0 0,0 19,8Z"/>
+                  </svg>
+                </div>
+                <h3>Time Efficient</h3>
+                <p>Save time with automated lead generation and streamlined communication tools</p>
+              </div>
+              
+              <div className="seller-benefit-item" ref={(el) => (benefitCardsRef.current[3] = el)}>
+                <div className="seller-benefit-icon">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+                  </svg>
+                </div>
+                <h3>Verified Buyers</h3>
+                <p>Connect only with verified and serious buyers to ensure quality business relationships</p>
+              </div>
             </div>
           </div>
         </div>
